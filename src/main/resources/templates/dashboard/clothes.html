@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="dashboard/layout/header :: header"></head>
+<body>
+        <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
+        <div class="card-body clothinstall">
+            <div class = "imagebox"> <img th:src= "@{${'/images/' + profile}}" alt="Not Found" width="200" height="200"></div>
+            <div class ="middlebox">
+                <div>
+                    <span class = "clothname" th:text = "${name}"><span>
+                </div>
+                <div style="display: flex;">
+                    <span class = "brandname" th:text = "${brand}"></span>
+                    <span class="dot"></span>
+                    <span class = "category" th:text = "${category}"></span>
+                </div>
+                <div class="shortd">
+                    <span  th:text = "${short_description}">
+
+                    </span>
+                </div>
+                <div>
+                    <span>Select Size</span>
+                </div>
+            </div>
+            <div class = "paybox">
+                <div>
+                    <span class = "price">Price</span>
+                </div>
+                <div style="margin-top: 10px; width: 200px;">
+                    <button type="button" class="btn addtocart" >Add to Cart</button>
+                </div>
+                
+            </div>
+            
+        </div>    
+        <div style="margin-left: auto;margin-right: auto;width: 1200px;">
+
+            <h3 style="font-weight: 600; font-size: 30px;position:absolute; top: 500px;">Description</h3>
+
+            <div th:text="${long_description}" style="width: 700px;position:absolute; top: 540px;"></div>
+
+        </div>
+       
+</body>

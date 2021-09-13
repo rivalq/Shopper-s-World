@@ -1,0 +1,114 @@
+.clothinstall{
+    margin-left: auto; 
+    margin-right: auto; 
+    margin-top: 45px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); 
+    padding: 20px;
+    height: 240px;
+    width: 1200px;
+    display: flex;
+}
+.imagebox{
+    margin-top:auto;
+    width: 200px;
+    height: 200px;
+}
+.middlebox{
+    margin-left: 20px;
+    height: 300px;
+    width: 700px;
+}
+.clothname{
+    font-size: 34px;
+    line-height: 42px;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.paybox{
+    
+}
+.brandname{
+    font-size: 15px;
+    font-weight: 400;
+    line-height: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dot {
+    height: 4px;
+    width: 4px;
+    margin-left: 10px;
+    margin-top: 5px;
+    background-color: black;
+    border-radius: 50%;
+    display: inline-block;
+}
+.category{
+    font-size: 15px;
+    font-weight: 400;
+    line-height: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-left: 10px;
+}
+.shortd{
+    padding-top: 30px;
+    font-size: 15px;
+    font-weight: 400;
+    height: 100px;
+    width: 600px;
+    line-height: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.size{
+    font-size: 15px;
+    font-weight: 400;
+    line-height: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+.price{
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana,
+}
+
+.addtocart{
+    width: 100%;
+    background-color:rgb(0,103,184); 
+    color: aliceblue;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.imagescroll{
+    position: absolute;
+    top: 800px;
+}
+
+.clothlist{
+    width: 1232px;
+    height: auto;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.clothcardname{
+    width:130px;
+}
+
+.clothrow{
+    display: flex;
+}
+
+.clothcard{
+    width: 250px;
+    padding: 10px;
+    margin: 20px;
+}
+.clothcardbrand{
+    position: absolute;
+    right: 20px;
+}

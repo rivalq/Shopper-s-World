@@ -12,25 +12,36 @@ Create table if not exists images(
 		url varchar(100),
 		id int,
 		FOREIGN KEY(id) REFERENCES cloth(id)
-		);
+);
+
+Create table if not exists user_details(
+		username varchar(100),
+		first_name varchar(100),
+		last_name varchar(100),
+		pincode int,
+		city varchar(100),
+		street varchar(100),
+		phone varchar(100),
+		profile_image varchar(100),
+		FOREIGN KEY(username) REFERENCES user(username)
+);
+
+
+insert into user_details(username,first_name,last_name,pincode,city,street,phone) values (
+		"rivalq",
+		"Jatin",
+		"Garg",
+		147101,
+		"Samana",
+		"Peer Gori",
+		"7009260790"
+);
 
 
 
 
 
 
-insert into images (id,url) values (4,'4_1.jpg');
-insert into images (id,url) values (5,'5_1.jpg');
-
-
-/**insert into cloth (name,short_description,long_description,brand,category) values (
-										   "Tuxedo",
-										   "A tux is a fancy black suit that you might wear, along with a bow tie, to your senior prom or your wedding",
-										   "Image result for tuxedo description This type of jacket traditionally has four buttons and fastens with either the bottom row (known as 4-on-1 style)or 										    		both rows (4-on-2) depending on the cut. The most traditional model of tuxedo jacket: black and 
-											single-breasted with one closing button, peaked lapels with silk facings, and no rear vents.",	 
-										   "Black Lapel",
-										   "Suit"
-										  );					**/
-										  
+									  
 		
 		

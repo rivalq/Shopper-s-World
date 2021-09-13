@@ -40,7 +40,7 @@ public class DashboardController extends BaseController {
         @GetMapping("/dashboard")
         public String dashboard(Model model, HttpSession session) {
             if (!isAuthenticated(session)) {
-                return "redirect:/";
+                return "redirect:/login";
             }
     
             addDefaultAttributes(model, session);
@@ -49,7 +49,7 @@ public class DashboardController extends BaseController {
         @GetMapping("/dashboard/clothes/{id}")
         public String clothInterface(@PathVariable("id") int id, Model model, HttpSession session){
             if (!isAuthenticated(session)) {
-                return "redirect:/";
+                return "redirect:/login";
             }
             Cloth cloth = clothRepository.getCloth(id);
             List<String> urls = clothRepository.getImages(id);
@@ -65,7 +65,7 @@ public class DashboardController extends BaseController {
         @GetMapping("/dashboard/clothes")
         public String listclothes(Model model, HttpSession session){
             if (!isAuthenticated(session)) {
-                return "redirect:/";
+                return "redirect:/login";
             }
             List<Cloth> clothes_temp = clothRepository.getAllClothes();
             List<List<Pair>> clothes = new ArrayList<>();

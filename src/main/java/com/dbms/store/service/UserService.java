@@ -17,10 +17,6 @@ public class UserService {
         if (user.getIsAdmin()) {
             return "admin";
         }
-        return "employee";
-    }
-    public void changePassword(String username, User user) {
-        user.setUsername(username);
-        users.update(user);
+        return "user";
     }
 }

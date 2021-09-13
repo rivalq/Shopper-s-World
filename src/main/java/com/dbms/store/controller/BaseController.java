@@ -24,7 +24,6 @@ abstract class BaseController {
         String currentUser = authService.getCurrentUser(session);
         if (currentUser != null) {
             model.addAttribute("username", currentUser);
-
         }
     }
 }

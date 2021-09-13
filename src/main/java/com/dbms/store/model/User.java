@@ -5,6 +5,7 @@ public class User {
     private String password;
     private Boolean isAdmin;
 
+
     public String getPassword() {
         return password;
     }

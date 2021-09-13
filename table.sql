@@ -27,15 +27,7 @@ Create table if not exists user_details(
 );
 
 
-insert into user_details(username,first_name,last_name,pincode,city,street,phone) values (
-		"rivalq",
-		"Jatin",
-		"Garg",
-		147101,
-		"Samana",
-		"Peer Gori",
-		"7009260790"
-);
+
 
 
 

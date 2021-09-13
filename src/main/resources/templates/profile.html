@@ -3,7 +3,89 @@
 
 <head th:replace="dashboard/layout/header :: header"></head>
 
-<body>
+<!--class name begins with profile-->
+
+<body style="background-color: rgb(242,242,242);">
     <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
-        <span th:text = "${uDetails.username}"></span>
+        <div class = "profile_body">
+            <div>
+                <span style = "font-size:24px; font-weight: 600; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;" th:text = "${uDetails.username}"></span>
+            </div>
+            <div class = "profile_1">
+                <div class = "profile_1_1">
+                    <div class="profile_1_1_1">
+                        <i class='fas fa-user-circle' style='font-size:170px;color:rgb(0,120,212)'></i>
+                    </div>
+                    <div class="profile_1_1_2">
+                        <span>Personalize your account with a photo. Your profile photo will appear on apps and devices that use your Microsoft account.</span>
+                    </div>
+                </div>
+                <div class="profile_1_2">
+                    <div class="profile_1_2_1">
+                        <span>Full name</span>
+                    </div>
+                    <div class="profile_1_2_2">
+                        <span th:text = "${uDetails.first_name} +' ' + ${uDetails.last_name}"></span>
+                    </div>
+                </div>
+            </div>
+            <div class = "profile_2">
+                <div class = "profile_2_1">
+                   <span>Account info</span> 
+                </div>
+                <div class="profile_2_2">
+                    <div class="profile_2_2_1">
+                        <span>Email address</span>
+                    </div>
+                    <div class="profile_2_2_2">
+                        <span th:text = "${uDetails.email}"></span>
+                    </div>
+                </div>
+                <div class="profile_2_2">
+                    <div class="profile_2_2_1">
+                        <span>Username</span>
+                    </div>
+                    <div class="profile_2_2_2">
+                        <span th:text = "${uDetails.username}"></span>
+                    </div>
+                </div>
+                <div class="profile_2_2">
+                    <div class="profile_2_2_1">
+                        <span>Phone</span>
+                    </div>
+                    <div class="profile_2_2_2">
+                        <span th:text = "${uDetails.phone}"></span>
+                    </div>
+                </div>
+            </div>
+            <div class = "profile_2">
+                <div class = "profile_2_1">
+                   <span>Address</span> 
+                </div>
+                <div class="profile_2_2">
+                    <div class="profile_2_2_1">
+                        <span>City</span>
+                    </div>
+                    <div class="profile_2_2_2">
+                        <span th:text = "${uDetails.city}"></span>
+                    </div>
+                </div>
+                <div class="profile_2_2">
+                    <div class="profile_2_2_1">
+                        <span>Pincode</span>
+                    </div>
+                    <div class="profile_2_2_2">
+                        <span th:text = "${uDetails.pincode}"></span>
+                    </div>
+                </div>
+                <div class="profile_2_2">
+                    <div class="profile_2_2_1">
+                        <span>Street</span>
+                    </div>
+                    <div class="profile_2_2_2">
+                        <span th:text = "${uDetails.street}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
 </body>

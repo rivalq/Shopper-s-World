@@ -12,7 +12,7 @@ public class UserDetails extends User{
     private String profile_image;
     private String phone;
     private int pincode;
-
+    private String email;
     
     
 
@@ -112,6 +112,21 @@ public class UserDetails extends User{
      */
     public void setPincode(int pincode) {
         this.pincode = pincode;
+    }
+
+
+    /**
+     * @return String return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

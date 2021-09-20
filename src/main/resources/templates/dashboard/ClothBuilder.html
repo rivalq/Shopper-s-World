@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="dashboard/layout/header :: header"></head>
+
+<body>
+        <nav th:replace = "dashboard/layout/navbar :: navbar"></nav>
+        <form id = "form-submit" enctype="multipart/form-data">
+            <div class="container mt-5 py-5">
+                <div class="row mb-5 shadow-sm py-4">
+                    <div class="col-md-4 mx-auto">
+                        
+                            <input type = "image" src="/images/cloth-upload.svg"  width = "200px" height="200px" />
+                            <input type= "file" accept="image/*" id = "cloth-upload" name = "image_file" style="display: none;" />
+                            
+                    </div>
+                    <div class="col">
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                            
+                                <div class="col mb-3">
+                                    <div>
+                                        <label class="form-label" for="form">Cloth Heading</label>
+                                        <input type="text" name = "name" id = "form" class="form-control" placeholder="Cloth Heading"/>
+                                    </div>
+                                </div>    
+                            
+                                <div class="col">
+                                    <div>
+                                        <label class="form-label" for="form">Cloth Description</label>
+                                        <textarea type="text" name = "short_description" id = "form" class="form-control" placeholder="Cloth Description" rows = "2"></textarea> 
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="row shadow-sm py-4 mb-5">
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label" for="form">Category</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name = "category" id = "form" class="form-control" placeholder="Category"/>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label" for="form">Brand</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name = "brand" id = "form" class="form-control" placeholder="Brand"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="form-label" for="form">About Product</label>
+                            </div>
+                            <div class="col-md-6">
+                                <textarea type="text" name = "long_description" id = "form" class="form-control" placeholder="About Product"></textarea>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="row justify-content-center">
+                                <div class="col-sm-4 mx-auto">
+                                     <div class = "row">
+                                        <button  type="submit" class="btn btn-primary">Create</button>
+                                     </div>
+                                   
+                                </div>    
+                </div>
+            </div> 
+        </form>
+        <script th:inline = "javascript">
+        /*<![CDATA[*/
+                $("input[type='image']").click(function(event) {
+                    event.preventDefault();
+                    $("#cloth-upload").click();
+                });
+                $("#form-submit").submit(function(event){
+                        event.preventDefault();
+                        var form = $("#form-submit");
+                        var data = new FormData(form[0]);
+
+                        console.log(data.get("image_file"));
+                        //var data = new FormData(form);
+                        /**$.ajax({
+                            type: "POST",
+                            enctype: 'multipart/form-data',
+                            url : "/create/upload",
+                            data: data,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function(data){
+                                console.log("Success");
+                            }
+                        });**/
+                }); 
+
+         /*]]>*/               
+        </script>
+
+
+</body>

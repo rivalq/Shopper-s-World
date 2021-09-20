@@ -88,4 +88,59 @@
                 </div>
             </div>
         </div>
+
+
+        <!--Modal For Name-->
+        <div class="modal fade" id = "profile_modal_1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                           Title 
+                    </div>
+                    <div class="modal-body">
+                            Body
+                    </div>
+                    <div class="modal-footer">
+                        Footer
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+
+
+        <script th:inline = "javascript">
+        /*<![CDATA[*/
+
+            
+            var username = [[${uDetails.username}]];
+
+            var userDetails = {
+                first_name : [[${uDetails.first_name}]],
+                last_name :  [[${uDetails.last_name}]],
+            };
+
+            $(".profile_1_2").click(function(){
+                    $('#profile_modal_1').modal({
+                            backdrop: 'static',
+                            keyboard: true, 
+                            show : true,
+                    });
+                    $.ajax({
+                        type: "GET",
+                        contentType : 'application/json; charset=utf-8',
+                        url: "/profile/${uDetails.username}/details",
+                        dataType: 'json',
+                        data : JSON.stringify(userDetails),
+                        success(data){
+                            console.log(data);
+                        }
+                    })
+
+            })
+        /*]]>*/    
+        </script>
+
 </body>
+
+

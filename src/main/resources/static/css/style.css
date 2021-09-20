@@ -130,6 +130,7 @@
 .profile_1_1{
     display: flex;
     height: 210px;
+    border-bottom: 1px solid #dee2e6;
 }
 .profile_1_1_1{
     margin-left: 10px;
@@ -144,6 +145,10 @@
 .profile_1_2{
     display: flex;
 }
+.profile_1_2:hover{
+    background-color: rgb(242,242,242);
+}
+
 .profile_1_2_1{
     padding: 20px;
     width: 25%;
@@ -174,11 +179,13 @@
     font-size: 14px;
     line-height: 19.6px;
     display: flex;
+    border-bottom: 1px solid #dee2e6;
 }
 
 .profile_2_2{
     height: 25%;
     display: flex;
+    border-bottom: 1px solid #dee2e6;
 }
 .profile_2_2_1{
     padding: 15px;
@@ -195,3 +202,4 @@
     font-size: 14px;
     line-height: 19.6px;
 }
+

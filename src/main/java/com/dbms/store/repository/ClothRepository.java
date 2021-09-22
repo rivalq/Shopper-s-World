@@ -16,12 +16,23 @@ public class ClothRepository {
     @Autowired
     private JdbcTemplate template;
 
-    public void createCloth(String name, 
-                                String type,String category,
+    public int countClothes(){
+        String sql = "SELECT COUNT(id) FROM cloth";
+        return template.queryForObject(sql,int.class);
+    }
+
+    public int getLastid(){
+        String sql = "SELECT id FROM cloth ORDER BY id desc LIMIT 1";
+        return template.queryForObject(sql, int.class);
+    }
+
+    public int createCloth(String name, 
+                                String brand,String category,
                                 String short_description,
                                 String long_description) {
-        String sql = "INSERT INTO cloth (name, type, category, short_descritption,long_description) VALUES (?, ?, ?, ?, ?)";
-        template.update(sql, name, type, category,short_description,long_description);
+        String sql = "INSERT INTO cloth (name, brand, category, short_description,long_description) VALUES (?, ?, ?, ?, ?)";
+        template.update(sql, name, brand, category, short_description, long_description);
+        return getLastid();
     }
     public Cloth getCloth(int id){
             Cloth cloth = new Cloth();
@@ -63,5 +74,9 @@ public class ClothRepository {
         String sql = "SELECT url FROM images where id = %s LIMIT 1";
         sql = String.format(sql,id);
         return template.queryForObject(sql, String.class);
+    }
+    public void addImage(String url, int id){
+        String sql = "INSERT into images (id,url) VALUES(?, ?)";
+        template.update(sql, id, url);
     }
 }

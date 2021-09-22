@@ -1,11 +1,6 @@
 package com.dbms.store.controller;
 
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,19 +11,11 @@ import com.dbms.store.repository.ClothRepository;
 import com.dbms.store.service.ClothService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.RequestParam;
-
-
 
 
 @Controller
@@ -39,6 +26,9 @@ public class DashboardController extends BaseController {
 
         @Autowired
         ClothRepository clothRepository;   
+
+        @Value("${API_CONTEXT_ROOT}")
+        private String context;
 
         public class Pair{
          
@@ -103,28 +93,5 @@ public class DashboardController extends BaseController {
             model.addAttribute("image_urls", image_urls);
             return "/dashboard/listclothes";
         }
-        @GetMapping("/create")
-        public String createClothInterface(Model model,HttpSession session){
-            if(!isAuthenticated(session)){
-                return "redirect:/login";
-            }
-            return "/dashboard/ClothBuilder";
-        }
-        @PostMapping("/create/upload")
-        @ResponseBody
-        public String imageUpload(@RequestParam("file") MultipartFile image){
-            if(image == null){
-                System.out.println("NUll file");
-                return "fail";
-            }
-            try{
-                String path = "/home/rivalq/spring.jpg";
-                File file = new File(path);
-                image.transferTo(file);
-                
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return "Pass";
-        }
+       
 }    

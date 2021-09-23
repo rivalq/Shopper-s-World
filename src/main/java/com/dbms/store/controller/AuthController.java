@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -68,4 +69,13 @@ public class AuthController {
         return "redirect:/login";
     }
     
+    @GetMapping("/api/permission")
+    @ResponseBody
+    public String getPermissions(HttpSession session){
+        if(!authService.isAuthenticated(session)){
+            return "null";
+        }else{
+            return authService.getRole(session);
+        }
+    }
 }

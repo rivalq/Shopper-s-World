@@ -2,51 +2,6 @@
 
 
 
-var id = window.location.href.split("/").at(-1);
-var cached_cloth = null;
-
-
-
-function getDetails(id){
-
-        $.ajax({
-            url: `/api/clothes/${id}`,
-            type: "GET",
-            success: function(data){
-                cached_cloth = data;
-                updatePage();
-            },
-            error: function(data){
-                console.log(data);
-            }
-        });
-
-}
-
-function getImages(id){
-    $.ajax({
-        url: `/api/clothes/images/${id}`,
-        type: "GET",
-        success: function(data){
-            var main_image = data[0]
-            var location_image = "/images/" + main_image;
-            document.getElementById("cloth-main-image").setAttribute("src",location_image);
-        },
-        error: function(data){
-            displayError("Image Not Loaded");
-        }
-    });
-}
-
-function updatePage(){
-
-    document.getElementById("cloth-heading").innerHTML = cached_cloth["name"];
-    document.getElementById("cloth-brand").innerHTML = cached_cloth["brand"];
-    document.getElementById("cloth-category").innerHTML = cached_cloth["category"];
-    document.getElementById("cloth-short-description").innerHTML = cached_cloth["short_description"];
-    
-}
-
 function changeHeading(){
     console.log(1);
     var modal = $("#changeHeading");
@@ -55,6 +10,7 @@ function changeHeading(){
     document.getElementById("new-category").value = cached_cloth["category"];
     document.getElementById("new-brand").value = cached_cloth["brand"];
     document.getElementById("new-short_description").value = cached_cloth["short_description"];
+    document.getElementById("new-long_description").value = cached_cloth["long_description"];
 }
 
 function closeHeading(){
@@ -69,12 +25,14 @@ function saveHeading(){
     var new_category= document.getElementById("new-category").value;
     var new_brand = document.getElementById("new-brand").value;
     var new_short_description = document.getElementById("new-short_description").value;
+    var new_long_description = document.getElementById("new-long_description").value;
 
 
     if(new_heading != cached_cloth["name"])isChanged = true;
     if(new_category != cached_cloth["category"])isChanged = true;
     if(new_brand != cached_cloth["brand"])isChanged = true;
     if(new_short_description != cached_cloth["short_description"])isChanged = true;
+    if(new_long_description != cached_cloth["long_description"])isChanged = true;
 
 
     if(isChanged){
@@ -83,6 +41,7 @@ function saveHeading(){
             category : new_category,
             brand : new_brand,
             short_description: new_short_description,
+            long_description: new_long_description,
         };
         $.ajax({
             url : `/api/clothes/heading/${id}`,
@@ -93,6 +52,7 @@ function saveHeading(){
                 cached_cloth["category"] = new_category;
                 cached_cloth["brand"] = new_brand;
                 cached_cloth["short_description"] = new_short_description;
+                cached_cloth["long_description"] = new_long_description; 
                 updatePage();
                 displaySuccess("Heading Changed");   
                 closeHeading();
@@ -107,8 +67,6 @@ function saveHeading(){
     }
 }
 
-getDetails(id)
-getImages(id)
 
 
 

@@ -11,10 +11,10 @@ import javax.servlet.http.HttpSession;
 
 abstract class BaseController {
     @Autowired
-    private AuthService authService;
+    public AuthService authService;
 
     @Autowired
-    private UserService userService;
+    public UserService userService;
 
     public Boolean isAuthenticated(HttpSession session) {
         return authService.isAuthenticated(session);

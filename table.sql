@@ -26,6 +26,14 @@ Create table if not exists user_details(
 		FOREIGN KEY(username) REFERENCES user(username)
 );
 
+Create table if not exists stock(
+		cloth_id int,
+		Size varchar(10),
+		Quantity int,
+		price int,
+		FOREIGN KEY(cloth_id) REFERENCES cloth(id)
+);
+
 
 
 

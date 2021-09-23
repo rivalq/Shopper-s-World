@@ -37,4 +37,10 @@ public class AuthService {
     public Boolean isAuthenticated(HttpSession session) {
         return getCurrentUser(session) != null;
     }
+
+    public String getRole(HttpSession session){
+        User user = users.getUser(getCurrentUser(session));
+        if(user.getIsAdmin())return "admin";
+        return "customer";
+    }
 }    

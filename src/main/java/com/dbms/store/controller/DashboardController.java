@@ -49,22 +49,7 @@ public class DashboardController extends BaseController {
             addDefaultAttributes(model, session);
             return "dashboard/index";
         }
-        @GetMapping("/dashboard/clothes/{id}")
-        public String clothInterface(@PathVariable("id") int id, Model model, HttpSession session){
-            if (!isAuthenticated(session)) {
-                return "redirect:/login";
-            }
-            Cloth cloth = clothRepository.getCloth(id);
-            List<String> urls = clothRepository.getImages(id);
-            model.addAttribute("profile", urls.get(0));
-            model.addAttribute("name", cloth.getName());
-            model.addAttribute("brand", cloth.getBrand());
-            model.addAttribute("category", cloth.getCategory());
-            model.addAttribute("short_description", cloth.getShort_description());
-            model.addAttribute("long_description",cloth.getLong_description());
-            model.addAttribute("snapshots", urls);
-            return "/dashboard/clothes";
-        }
+        
         @GetMapping("/dashboard/clothes")
         public String listclothes(Model model, HttpSession session){
             if (!isAuthenticated(session)) {

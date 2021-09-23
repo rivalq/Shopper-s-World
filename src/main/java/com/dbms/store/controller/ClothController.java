@@ -1,6 +1,7 @@
 package com.dbms.store.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -80,38 +81,55 @@ public class ClothController extends BaseController{
         }
         return new ResponseEntity<String>("Passed",HttpStatus.OK);
     }
-    @GetMapping("/clothes/{id}")
-    public String clothWithEdit(@PathVariable("id") int id,Model model,HttpSession session){
-        if (!isAuthenticated(session)) {
-            return "redirect:/login";
-        }
-        
-        return "/clothWithEdit";
+    
+    @GetMapping("/dashboard/clothes/{id}")
+    public String clothInterface(@PathVariable("id") int id, Model model, HttpSession session){
+            if (!isAuthenticated(session)) {
+                return "redirect:/login";
+            }
+            model.addAttribute("role", authService.getRole(session));
+            return "/clothWithEdit";
     }
+
+
+    /* 
+    * Api endpoints to access database from js
+    * 
+    */
+
     @GetMapping("/api/clothes/{id}")
     @ResponseBody
-    public Cloth GetClothInfo(@PathVariable("id") int id){
-
-        
+    public Cloth GetClothInfo(@PathVariable("id") int id,HttpSession session){
+        if(!isAuthenticated(session)){
+            return new Cloth();
+        }
+    
         Cloth cloth = clothRepository.getCloth(id);
         return cloth;
     }
     @GetMapping("/api/clothes/images/{id}")
     @ResponseBody
-    public List<String> GetClothImages(@PathVariable("id") int id){
+    public List<String> GetClothImages(@PathVariable("id") int id,HttpSession session){
+        if(!isAuthenticated(session)){
+               return new ArrayList<String>(); 
+        }
         List<String> images = clothRepository.getImages(id);
         return images;
     }
 
     @PutMapping("/api/clothes/heading/{id}")
     @ResponseBody
-    public ResponseEntity<String> updateHeading(@PathVariable("id") int id,
+    public ResponseEntity<String> updateHeading(HttpSession session,@PathVariable("id") int id,
                               @RequestParam("heading") String heading,
                               @RequestParam("category") String category,
                               @RequestParam("brand") String brand,
-                              @RequestParam("short_description") String short_description){
-
-        clothRepository.changeHeading(id, heading, category, brand, short_description);   
+                              @RequestParam("short_description") String short_description,
+                              @RequestParam("long_description") String long_description){
+        if(!isAuthenticated(session)){
+            return new ResponseEntity<String>("Access Denied",HttpStatus.FORBIDDEN);
+        }
+                                
+        clothRepository.changeHeading(id, heading, category, brand, short_description,long_description);   
         return new ResponseEntity<String>("Success",HttpStatus.OK);               
     }
 }

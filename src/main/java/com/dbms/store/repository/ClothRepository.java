@@ -79,9 +79,9 @@ public class ClothRepository {
         template.update(sql, id, url);
     }
 
-    public void changeHeading(int id,String name, String category, String brand,String short_description){
-        String sql = "UPDATE cloth SET name = ?, category = ?, brand = ?, short_description = ? where id = ?";
-        template.update(sql, name, category, brand, short_description, id);
+    public void changeHeading(int id,String name, String category, String brand,String short_description, String long_description){
+        String sql = "UPDATE cloth SET name = ?, category = ?, brand = ?, short_description = ?, long_description = ? where id = ?";
+        template.update(sql, name, category, brand, short_description, long_description,id);
     }
 
 }

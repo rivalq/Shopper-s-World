@@ -38,13 +38,25 @@
                                     <button type="button" class="btn" style="background-color: rgb(0,103,184); color:aliceblue; width:200px" >Add to Cart</button>
                                 </div>
                             </div>
-                            <div class="row align-items-end" style="height: 130px;">
-                                <div class="col" style = "text-align: end;" id = "edit-heading" >
-                                        <button onclick = changeHeading() class = "btn btn-primary">Edit Heading</button>
-                                </div>
-                            </div>
                 </div>
                
+            </div>
+
+            <div class="row" style="margin-top:140px;">
+                <div class="col">
+                    <div class="row">
+                        <div class="col"><h2>About Product</h2></div>
+                    </div>
+                    <div class="row mt-2">
+                        <div id = "cloth-long-description" class="col-md-6 text-wrap"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div th:if = "${role == 'admin'}" class="row mt-5">
+                <div class="col">
+                    <button onclick = changeHeading() class = "btn btn-primary">Admin panel</button>
+                </div>
             </div>
 
 
@@ -53,13 +65,11 @@
 
 
 
-
-
-            <div id = "changeHeading" class="modal fade">
+            <div id = "changeHeading" class="modal fade" th:if="${role == 'admin'}">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header fs-5 fw-bold">
-                            Change Heading
+                             Admin Panel
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -85,7 +95,13 @@
                                 <div class="row mt-3">
                                     <div class="col">
                                         <label class="form-label">Description</label>
-                                        <input type="text" id = "new-short_description" class="form-control"/>
+                                        <textarea type="text" id = "new-short_description" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label class="form-label">About Product</label>
+                                        <textarea type="text" id = "new-long_description" class="form-control"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -101,8 +117,6 @@
      </div>
 
 
-
-
-    <script type="text/javascript" th:inline="javascript" th:src = "@{/js/toast.js}"></script>
-    <script type="text/javascript" th:inline="javascript" th:src="@{/js/clothWithEdit.js}"></script>
+    <script th:if = "${role == 'admin'}" type="text/javascript" th:inline="javascript" th:src="@{/js/clothWithEdit_update.js}"></script>
+    <script  type="text/javascript" th:inline="javascript" th:src="@{/js/clothWithEdit_get.js}"></script> 
 </body>

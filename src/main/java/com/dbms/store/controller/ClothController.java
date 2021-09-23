@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Stock;
 import com.dbms.store.repository.ClothRepository;
 import com.dbms.store.service.ClothService;
 
@@ -109,12 +110,21 @@ public class ClothController extends BaseController{
     }
     @GetMapping("/api/clothes/images/{id}")
     @ResponseBody
-    public List<String> GetClothImages(@PathVariable("id") int id,HttpSession session){
+    public List<String> getClothImages(@PathVariable("id") int id,HttpSession session){
         if(!isAuthenticated(session)){
                return new ArrayList<String>(); 
         }
         List<String> images = clothRepository.getImages(id);
         return images;
+    }
+
+    @GetMapping("/api/clothes/stock/{id}")
+    @ResponseBody
+    public List<Stock> getStock(@PathVariable("id") int id, HttpSession session){
+        if(!isAuthenticated(session)){
+            return new ArrayList<Stock>();
+        }
+        return clothRepository.getStock(id);
     }
 
     @PutMapping("/api/clothes/heading/{id}")

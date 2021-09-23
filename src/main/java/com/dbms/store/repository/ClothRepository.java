@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -74,6 +75,19 @@ public class ClothRepository {
         sql = String.format(sql,id);
         return template.queryForObject(sql, String.class);
     }
+    
+    public List<Stock> getStock(int cloth_id){
+        String sql = "SELECT * FROM stock where cloth_id = ?";
+        try{
+            return template.query(sql, new BeanPropertyRowMapper<>(Stock.class), new Object[]{cloth_id});
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println(e);
+            return new ArrayList<Stock>();
+        }
+        
+    }
+
     public void addImage(String url, int id){
         String sql = "INSERT into images (id,url) VALUES(?, ?)";
         template.update(sql, id, url);

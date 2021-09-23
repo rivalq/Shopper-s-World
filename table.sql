@@ -34,6 +34,14 @@ Create table if not exists stock(
 		FOREIGN KEY(cloth_id) REFERENCES cloth(id)
 );
 
+Create table if not exists cart(
+		cloth_id int,
+		username varchar(100),
+		quantity int,
+		size varchar(10),
+		FOREIGN KEY(username) REFERENCES user(username),
+		FOREIGN KEY(cloth_id) REFERENCES cloth(id)
+);
 
 
 

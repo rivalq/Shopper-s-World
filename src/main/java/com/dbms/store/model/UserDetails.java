@@ -1,7 +1,5 @@
 package com.dbms.store.model;
 
-import com.dbms.store.model.User;
-
 
 public class UserDetails extends User{
 
@@ -13,8 +11,7 @@ public class UserDetails extends User{
     private String phone;
     private int pincode;
     private String email;
-    
-    
+     
 
     /**
      * @return String return the first_name

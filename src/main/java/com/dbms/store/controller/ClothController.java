@@ -1,9 +1,11 @@
 package com.dbms.store.controller;
 
 import java.io.File;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.dbms.store.model.Cloth;
 import com.dbms.store.repository.ClothRepository;
 import com.dbms.store.service.ClothService;
 
@@ -15,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,5 +80,38 @@ public class ClothController extends BaseController{
         }
         return new ResponseEntity<String>("Passed",HttpStatus.OK);
     }
+    @GetMapping("/clothes/{id}")
+    public String clothWithEdit(@PathVariable("id") int id,Model model,HttpSession session){
+        if (!isAuthenticated(session)) {
+            return "redirect:/login";
+        }
+        
+        return "/clothWithEdit";
+    }
+    @GetMapping("/api/clothes/{id}")
+    @ResponseBody
+    public Cloth GetClothInfo(@PathVariable("id") int id){
 
+        
+        Cloth cloth = clothRepository.getCloth(id);
+        return cloth;
+    }
+    @GetMapping("/api/clothes/images/{id}")
+    @ResponseBody
+    public List<String> GetClothImages(@PathVariable("id") int id){
+        List<String> images = clothRepository.getImages(id);
+        return images;
+    }
+
+    @PutMapping("/api/clothes/heading/{id}")
+    @ResponseBody
+    public ResponseEntity<String> updateHeading(@PathVariable("id") int id,
+                              @RequestParam("heading") String heading,
+                              @RequestParam("category") String category,
+                              @RequestParam("brand") String brand,
+                              @RequestParam("short_description") String short_description){
+
+        clothRepository.changeHeading(id, heading, category, brand, short_description);   
+        return new ResponseEntity<String>("Success",HttpStatus.OK);               
+    }
 }

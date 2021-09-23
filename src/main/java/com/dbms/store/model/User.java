@@ -4,7 +4,7 @@ public class User {
     private String username;
     private String password;
     private Boolean isAdmin;
-
+    
 
     public String getPassword() {
         return password;

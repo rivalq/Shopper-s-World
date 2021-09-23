@@ -25,7 +25,6 @@ public class ClothRepository {
         String sql = "SELECT id FROM cloth ORDER BY id desc LIMIT 1";
         return template.queryForObject(sql, int.class);
     }
-
     public int createCloth(String name, 
                                 String brand,String category,
                                 String short_description,
@@ -79,4 +78,11 @@ public class ClothRepository {
         String sql = "INSERT into images (id,url) VALUES(?, ?)";
         template.update(sql, id, url);
     }
+
+    public void changeHeading(int id,String name, String category, String brand,String short_description){
+        String sql = "UPDATE cloth SET name = ?, category = ?, brand = ?, short_description = ? where id = ?";
+        template.update(sql, name, category, brand, short_description, id);
+    }
+
 }
+

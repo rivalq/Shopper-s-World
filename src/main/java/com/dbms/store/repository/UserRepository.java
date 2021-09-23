@@ -59,7 +59,4 @@ public class UserRepository {
         template.update(sql, user.getLast_name(), user.getUsername());
     }
 
-    
-
-
 }

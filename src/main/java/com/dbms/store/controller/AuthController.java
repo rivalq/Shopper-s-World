@@ -67,5 +67,5 @@ public class AuthController {
         authService.logoutUser(session);
         return "redirect:/login";
     }
-
+    
 }

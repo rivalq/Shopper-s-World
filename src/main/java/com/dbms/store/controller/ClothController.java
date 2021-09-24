@@ -37,51 +37,6 @@ public class ClothController extends BaseController{
     @Autowired
     ClothRepository clothRepository;   
 
-    @Value("${API_CONTEXT_ROOT}")
-    private String context;
-
-    
-    @GetMapping("/create")
-    public String createClothInterface(Model model,HttpSession session){
-        if(!isAuthenticated(session)){
-            return "redirect:/login";
-        }
-        return "/dashboard/ClothBuilder";
-    }
-
-    @PostMapping("/create/submit")
-    @ResponseBody
-    public ResponseEntity<Integer> Submit(@RequestParam("name") String name,
-                                      @RequestParam("short_description") String short_description,       
-                                      @RequestParam("category") String category,
-                                      @RequestParam("brand") String brand,
-                                      @RequestParam("long_description") String long_description ){
-        
-        Integer id = clothRepository.createCloth(name, brand, category, short_description, long_description);                           
-        return new ResponseEntity<Integer>(id,HttpStatus.OK);                            
-    }
-
-    @PostMapping("/create/upload")
-    @ResponseBody
-    public ResponseEntity<String> imageUpload(@RequestParam("image_file") MultipartFile image,
-                                              @RequestParam("id") int id                     ){
-        if(image.getOriginalFilename() == ""){
-            return new ResponseEntity<String>("Failed",HttpStatus.BAD_GATEWAY);
-        }
-        try{  
-              String extension = FilenameUtils.getExtension(image.getOriginalFilename());
-              String name = String.valueOf(id) + "_1." + extension;
-              String path = context + "/resources/static/images/" + name;
-              File File = new File(path);
-              image.transferTo(File);  
-              clothRepository.addImage(name,id);
-            
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<String>("Failed",HttpStatus.BAD_GATEWAY);
-        }
-        return new ResponseEntity<String>("Passed",HttpStatus.OK);
-    }
     
     @GetMapping("/dashboard/clothes/{id}")
     public String clothInterface(@PathVariable("id") int id, Model model, HttpSession session){

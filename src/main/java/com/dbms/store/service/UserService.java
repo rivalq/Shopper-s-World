@@ -14,7 +14,7 @@ public class UserService {
 
     public String getRole(String username) {
         User user = users.getUser(username);
-        if (user.getIsAdmin()) {
+        if (user.isIsAdmin()) {
             return "admin";
         }
         return "user";

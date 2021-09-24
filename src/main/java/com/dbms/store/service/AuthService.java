@@ -40,7 +40,8 @@ public class AuthService {
 
     public String getRole(HttpSession session){
         User user = users.getUser(getCurrentUser(session));
-        if(user.getIsAdmin())return "admin";
+        if(user.isIsAdmin())return "admin";
+        else if(user.isIsSeller())return "seller";
         return "customer";
     }
 }    

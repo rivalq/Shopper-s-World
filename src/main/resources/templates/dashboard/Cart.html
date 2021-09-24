@@ -5,24 +5,24 @@
 
 <body>
     <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
-    <div class="container px-5">
+    <div class="container mb-5 px-5">
         <div class="row mt-5">
             <div class="col" style="text-align: center;"><h2>Shopping Cart</h2></div>
         </div>
-        <div class="row mt-5 pt-5 px-5 bg-warning">
-            <div id = "cart-body" class="col-sm-8">
-                <div class="row">
-                    <div class="col-sm-auto bg-primary p-2">
+        <div class="row mt-5 pt-5 px-5">
+            <div id = "cart-body" class="col-sm-8 shadow-sm">
+                <div class="row border-bottom">
+                    <div class="col-sm-auto  p-2">
                             <img id = "cloth-image" src = "/images/1_1.jpg" alt = "Not found" width = "200" height = "200">
                     </div>
-                    <div class="col bg-info">
+                    <div class="col">
                            <div class="row">
-                               <div class="col bg-primary">
+                               <div class="col">
                                     <div class="row">
                                         <div class="col-sm-auto pt-3 fs-4 fw-bold text-warp ">Cloth name</div>
                                     </div>
                                </div>
-                               <div class="col-sm-auto offset-sm-3 bg-white">Button</div>
+                               <div class="col-sm-auto offset-sm-3">Button</div>
                            </div>
                            <div class="row mt-2">
                                 <div id = "cloth-brand" class="col-sm-auto text-wrap">Brand</div>
@@ -44,10 +44,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col bg-danger"></div>
+            <div class="col"></div>
         </div>
     </div>
 
-    <script type = "text/javascript" th:inline = "javascript" th:src = "@{/js/Cart.js}" ></script>
-    <script type = "text/javascript" th:inline = "javascript" th:src = "@{/js/apiCloth.js}" ></script>
+    <script type = "text/javascript" th:inline = "javascript" th:src = "@{/js/Cart.js}"></script>
 </body>

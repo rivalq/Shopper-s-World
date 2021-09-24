@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="dashboard/layout/header :: header"></head>
+<body>
+
+    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
+     <div class="container mt-5">
+            <div class="row shadow">
+                <div class="col-md-3 p-4" style= "width:auto">
+                    <img id = "cloth-main-image" src = "/images/cloth-upload.svg" alt = "Not found" width = "200" height = "200">
+                </div>
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div id = "cloth-heading" class="col-md-auto pt-3 text-start text-wrap fs-3 fw-bold"></div>
+                            </div>
+                            <div class="row ">
+                                <div id = "cloth-brand" class="col-sm-auto text-wrap"></div>
+                                <div id = "cloth-category" class="col-sm-auto text-wrap"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pt-3">
+                        <div id = "cloth-short-description" class="col-sm-auto text-wrap"></div>
+                    </div>
+                    
+                </div>
+                <div class="col-md-2">
+                            <div class="row">
+                                <div id = "cloth-price" class="col-sm-auto pt-3 fs-4 fw-bold text-wrap">Price</div>
+                            </div>
+                            <div class="row pt-3 mb-3">
+                                <div class="col-md-auto">
+                                    <button type="button" class="btn" style="background-color: rgb(0,103,184); color:aliceblue; width:200px" >Add to Cart</button>
+                                </div>
+                            </div>
+                </div>
+               
+            </div>
+
+            <div class="row" style="margin-top:140px;">
+                <div class="col">
+                    <div class="row">
+                        <div class="col"><h2>About Product</h2></div>
+                    </div>
+                    <div class="row mt-2">
+                        <div id = "cloth-long-description" class="col-md-6 text-wrap"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col">
+                    <button onclick = changeHeading() class = "btn btn-primary"> Edit Cloth</button>
+                </div>
+            </div>
+
+
+
+
+
+
+
+            <div id = "changeHeading" class="modal fade">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header fs-5 fw-bold">
+                             Edit Cloth
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Cloth Heading</label>
+                                        <input type="text" id = "new-heading" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label class="form-label">Category</label>
+                                        <input type="text" id = "new-category" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label class="form-label">Brand</label>
+                                        <input type="text" id = "new-brand" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label class="form-label">Description</label>
+                                        <textarea type="text" id = "new-short_description" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label class="form-label">About Product</label>
+                                        <textarea type="text" id = "new-long_description" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                                <button class = "btn btn-primary" onclick = closeHeading()> Cancel </button>
+                                <button class = "btn btn-primary" onclick = saveHeading()> Save </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+     </div>
+
+
+    <script  type="text/javascript" th:inline="javascript" th:src="@{/js/SellerclothInterface.js}"></script> 
+</body>

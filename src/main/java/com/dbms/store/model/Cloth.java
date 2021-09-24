@@ -7,6 +7,7 @@ public class Cloth {
     private String long_description;
     private String category;
     private String brand;
+    private String Seller;
    
    
     /**
@@ -91,6 +92,21 @@ public class Cloth {
      */
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+
+    /**
+     * @return String return the Seller
+     */
+    public String getSeller() {
+        return Seller;
+    }
+
+    /**
+     * @param Seller the Seller to set
+     */
+    public void setSeller(String Seller) {
+        this.Seller = Seller;
     }
 
 }

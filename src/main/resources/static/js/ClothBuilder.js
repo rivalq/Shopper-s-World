@@ -52,7 +52,7 @@ $("#form-submit").submit(function(event){
             image_data.append("id",data);
             upload_image(image_data);
             displaySuccess("Cloth Added Successfully");
-            window.location.href = `/dashboard/clothes/${data}`;
+            window.location.href = `/seller/clothes/${data}`;
         },
         error: function(data){
             displayError("Some Error Occured");

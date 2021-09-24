@@ -46,10 +46,25 @@ Create table if not exists cart(
 
 
 
+Create table if not exists seller_cloth(
+	cloth_id INT AUTO_INCREMENT,
+	name varchar(100) not null,
+	short_description varchar(1000),
+	long_description text(65535),
+	brand varchar(100) not null,
+	category varchar(100) not null,			
+	Primary KEY(cloth_id)
+);
 
 
-
+Create table if not exists seller_cloth_images(
+		url varchar(100),
+		cloth_id int,
+		FOREIGN KEY(cloth_id) REFERENCES seller_cloth(cloth_id)
+);
 
 									  
 		
 		
+
+

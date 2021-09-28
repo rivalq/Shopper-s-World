@@ -26,4 +26,14 @@ abstract class BaseController {
             model.addAttribute("username", currentUser);
         }
     }
+    public int SellerAuthentication (HttpSession session){
+        if(!isAuthenticated(session)){
+                return 0;
+        }
+        if(authService.getRole(session) == "customer"){
+                // Error
+                return -1;
+        }
+        return 1;
+    }
 }

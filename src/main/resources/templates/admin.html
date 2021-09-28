@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="dashboard/layout/header :: header"></head>
+
+<style>
+
+</style>
+
+<body>
+    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
+    <script type = "text/javascript" th:inline = "javascript" th:src = "@{/js/admin.js}"></script>
+    <div class="container">
+            <div class="row mt-5">
+                <div class="col" style="text-align: center;">
+                    <h3>Welcome to admin panel</h3>
+                </div>
+            </div>
+            <div class="row mt-4">
+                    <div class="col">
+                        <h5>Cloth Requests</h5>
+                        <table class="table" id = "request-table" >
+                            <thead>
+                                <tr>
+                                  <th scope="col">#</th>
+                                  <th scope="col">Seller Name</th>
+                                  <th scope="col">Cloth Name</th>
+                                  <th scope="col">Size</th>
+                                  <th scope="col">Quantity</th>
+                                  <th scope="col">Price</th>
+                                  <th scope="col">Action</th>
+                                </tr>
+                              </thead>
+                            <tbody>
+
+                             </tbody>
+                        </table> 
+                           
+                    </div>
+            </div>
+    </div>
+
+    <div id = "review-cloth" class="modal fade">
+        <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <model class="modal-body">
+                        <iframe src="..." width="100%" height="1000">
+                    </model>
+                </div>
+        </div>
+    </div>
+
+</body>

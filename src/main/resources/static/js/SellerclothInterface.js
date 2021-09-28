@@ -1,3 +1,11 @@
+window.onload = () =>{
+    if(window.location != window.parent.location){
+        document.getElementsByClassName("navbar")[0].remove();
+        document.getElementById("edit-heading").remove();
+    }
+}
+
+
 var id = window.location.href.split("/").at(-1);
 var cached_cloth = null;
 var stock = null;

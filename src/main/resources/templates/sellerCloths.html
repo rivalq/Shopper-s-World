@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="dashboard/layout/header :: header"></head>
+
+
+<style>
+       .sellerCloths-dots{          
+            background: none repeat scroll 0 0 rgb(81,88,92);
+            height: 7px;
+            width: 7px;
+            line-height: 0;
+            list-style: none outside none;
+            margin-right: 15px;
+            margin-top: 3px;
+            vertical-align: top;
+            border-radius:50%;
+            pointer-events: none;
+       }     
+       .sellerCloths-dots{
+           border-radius: 50%;
+       }
+       .sellerCloths-drpdwn{
+            cursor: pointer;
+       }     
+       .sellerCloths-dwnmenu{
+           cursor: pointer;
+       }  
+       .sellerCloths-dwnmenu:hover{
+           background-color: rgb(242,242,242);
+       }
+       .sellerCloths-menu{
+           position: absolute;
+       }
+       .show{
+           display: block;
+       }
+       .hide{
+           display: none;
+       }
+</style>
+
+<body style="background-color: rgb(242,242,242);">
+    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
+    <div class="container px-5">
+        <div class="row mt-5">
+            <div class="col" style="text-align: center;"><h3>Your Cloths</h3></div>
+        </div>
+        <div class="row justify-content-center mt-5 pt-5">
+                <div id = "list-body" class="col-sm-8">
+                    <div class="row mb-4 shadow rounded" style = "background-color:white">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-sm-auto  p-2">
+                                        <img src = "/images/1_1.jpg" alt = "Not found" width = "200" height = "200">
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-sm-auto">
+                                                <div class="row">
+                                                    <div class="col-sm-auto pt-3 fs-4 fw-bold text-warp ">${cloth.name}</div>
+                                                </div>
+                                        </div>
+                                        <div class="col">
+                                                    <div class="row mt-4 float-end">
+                                                        <div class="col">
+                                                            <ul id = "test" class = "sellerCloths-drpdwn">
+                                                                <li class = "sellerCloths-dots"></li>
+                                                                <li class = "sellerCloths-dots"></li>
+                                                                <li class = "sellerCloths-dots"></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row float-end mt-5 pt-3" style="position: relative;width: 170px;">
+                                                            <div id = "test2" class="col border rounded shadow-lg bg-white py-2 sellerCloths-menu hide">
+                                                                <div class="row p-2 sellerCloths-dwnmenu">
+                                                                    <div class="col">Open Cloth</div>
+                                                                </div>
+                                                                <div class="row p-2 sellerCloths-dwnmenu">
+                                                                    <div class="col">Sell it to Market</div>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                    
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                            <div id = "cloth-brand" class="col-sm-auto text-wrap">${cloth.brand}</div>
+                                            <div id = "cloth-category" class="col-sm-auto text-wrap">${cloth.category}</div>
+                                    </div>
+                                    <div class="row mt-4 mb-4">
+                                            <div class="col-sm-auto text-wrap">
+                                                ${cloth.short_description}
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+        </div>
+    </div>
+    <div id = "send-request" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header fs-5 fw-bold">
+                    Send Request
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Size</label>
+                                <input type="text" id = "request-size" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label class="form-label">Quantity</label>
+                                <input type= "number" id = "request-quantity" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label class="form-label">Price Per Item</label>
+                                <input type="number" id = "request-price" class="form-control"/>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button class = "btn btn-primary" onclick = closemodal()> Cancel </button>
+                    <button class = "btn btn-primary" onclick = sendRequest()> Send </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type = "text/javascript" th:inline = "javascript" th:src = "@{/js/sellerCloths.js}"></script>
+
+
+</body>

@@ -3,7 +3,6 @@
 
 
 function changeHeading(){
-    console.log(1);
     var modal = $("#changeHeading");
     modal.modal("show");
     document.getElementById("new-heading").value = cached_cloth["name"];

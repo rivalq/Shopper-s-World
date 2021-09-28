@@ -47,6 +47,16 @@ public class SellerRepository {
              return template.queryForObject(sql, new BeanPropertyRowMapper<>(Cloth.class), new Object[]{cloth_id});   
         }
 
+        public List<Integer> listCloth(String user){
+            String sql = "SELECT cloth_id FROM seller_cloth where seller = ?";
+            return template.query(sql,new RowMapper<Integer>(){
+                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException{
+
+                        return rs.getObject("cloth_id",Integer.class);
+                }
+            },new Object [] {user}) ;
+        }
+
         public List<String> getClothImages(int cloth_id){
             String sql = "SELECT url FROM seller_cloth_images where cloth_id = ?";
             return template.query(sql, new RowMapper<String>() {
@@ -60,4 +70,9 @@ public class SellerRepository {
             String sql = "UPDATE seller_cloth SET name = ?, category = ?, brand = ?, short_description = ?, long_description = ? where cloth_id = ?";
             template.update(sql, name, category, brand, short_description, long_description,cloth_id);
         }
+
+        public void deleteCloth(int cloth_id){
+            // Pending;
+        }
+
 }

@@ -50,6 +50,7 @@ $("#form-submit").submit(function(event){
         cache: false,
         success: function(data){
             image_data.append("id",data);
+            image_data.append("name","profile");
             upload_image(image_data);
             displaySuccess("Cloth Added Successfully");
             window.location.href = `/seller/clothes/${data}`;

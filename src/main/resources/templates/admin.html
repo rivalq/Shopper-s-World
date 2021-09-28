@@ -4,7 +4,17 @@
 <head th:replace="dashboard/layout/header :: header"></head>
 
 <style>
-
+.MuiSvgIcon-root {
+    fill: currentColor;
+    width: 1.5em;
+    height: 1.5em;
+    display: inline-block;
+    font-size: 1.5rem;
+    transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    flex-shrink: 0;
+    user-select: none;
+    color: #4caf50;
+}
 </style>
 
 <body>
@@ -28,7 +38,9 @@
                                   <th scope="col">Size</th>
                                   <th scope="col">Quantity</th>
                                   <th scope="col">Price</th>
-                                  <th scope="col">Action</th>
+                                  <th scope="col">Action
+                                    <svg class="MuiSvgIcon-root jss312" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg>
+                                  </th>
                                 </tr>
                               </thead>
                             <tbody>
@@ -40,14 +52,59 @@
             </div>
     </div>
 
-    <div id = "review-cloth" class="modal fade">
-        <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <model class="modal-body">
-                        <iframe src="..." width="100%" height="1000">
-                    </model>
-                </div>
+
+    <div class="container">
+        <div id = "accept-cloth" class="modal fade">
+            <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header fs-5 fw-bold">
+                             Set Price and Discount
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Set MRP</label>
+                                        <input type="number" id = "accept-mrp" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label class="form-label">Optional Discount</label>
+                                        <input type= "number" id = "accept-discount" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>    
+                                
+                        </div>
+                        <div class="modal-footer">
+                            <button class = "btn btn-primary" onclick = closeacceptModal()> Cancel </button>
+                            <button class = "btn btn-primary" onclick = acceptRequest()> Accept </button>
+                        </div>
+                    </div>
+            </div>
         </div>
     </div>
+
+    <div class="container">
+        <div id = "review-cloth" class="modal fade">
+            <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header fs-5 fw-bold">
+                             Review Cloth
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <iframe src="..." width="100%" height="1000">
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    
+  
+
+   
 
 </body>

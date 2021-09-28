@@ -46,6 +46,10 @@ public class RequestRepository {
                         }
                 },new Object[]{});    
         }
-    
+        
+        public void acceptRequest(int request_id){
+                String sql = "UPDATE requests SET request_status = 1, request_result = 1 where request_id = ?";
+                template.update(sql,request_id);
+        }
 
 }

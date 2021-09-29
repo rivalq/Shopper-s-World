@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpSession;
 
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Request;
+import com.dbms.store.repository.RequestRepository;
 import com.dbms.store.repository.SellerRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +39,14 @@ public class SellerController extends BaseController {
         private SellerRepository sellerRepository;
 
 
+        @Autowired
+        private RequestRepository requestRepository;
         
 
 
         @GetMapping("/seller")
         public String SellerPanel(HttpSession session, Model model){
-                        if(!isAuthenticated(session)){
+                        if(SellerAuthentication(session) != 1){
                                 return "redirect:/login";
                         }
                         return "/seller";
@@ -53,6 +57,9 @@ public class SellerController extends BaseController {
         public String createClothInterface(Model model,HttpSession session){
                 if(!isAuthenticated(session)){
                         return "redirect:/login";
+                }
+                if(SellerAuthentication(session) != 1){
+                        return "/accessDenied";
                 }
                 return "/dashboard/ClothBuilder";
         }
@@ -70,7 +77,7 @@ public class SellerController extends BaseController {
                 String user = authService.getCurrentUser(session);
                 Cloth cloth = sellerRepository.getCloth(cloth_id);
                 
-                if(user.equals(cloth.getSeller()) == false){
+                if((user.equals(cloth.getSeller()) == false) && (authService.getRole(session) != "admin")){
                         // Error
                         return "/accessDenied";
                 }
@@ -194,7 +201,7 @@ public class SellerController extends BaseController {
                 }
                 Cloth cloth = sellerRepository.getCloth(cloth_id);
                 String user = authService.getCurrentUser(session);
-                if(user.equals(cloth.getSeller()) == false){
+                if((user.equals(cloth.getSeller()) == false) && (authService.getRole(session) != "admin")){
                         // Error
                         return new Cloth();
                 }
@@ -211,7 +218,7 @@ public class SellerController extends BaseController {
                 Cloth cloth = sellerRepository.getCloth(cloth_id);
                 String user = authService.getCurrentUser(session);
 
-                if(user.equals(cloth.getSeller()) == false){
+                if((user.equals(cloth.getSeller()) == false) && (authService.getRole(session) != "admin")){
                         // Error
                         return new ArrayList<String>();
                 }
@@ -241,5 +248,19 @@ public class SellerController extends BaseController {
                                     
             sellerRepository.changeHeading(cloth_id, heading, category, brand, short_description,long_description);   
             return new ResponseEntity<String>("Success",HttpStatus.OK);               
+        }
+
+        @GetMapping("/api/seller/requests")
+        @ResponseBody
+        public List<Request> getSellerRequest(HttpSession session){
+                int auth = SellerAuthentication(session);
+                if(auth != 1){
+                        return new ArrayList<Request>();
+                }
+                String user = authService.getCurrentUser(session);
+
+                return requestRepository.getRequestsBySeller(user);
+
+                
         }
 }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="dashboard/layout/header :: header"></head>
+
+<style>
+    .MuiSvgIcon-root {
+        fill: currentColor;
+        width: 1.5em;
+        height: 1.5em;
+        display: inline-block;
+        font-size: 1.5rem;
+        transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        flex-shrink: 0;
+        user-select: none;
+        color: #4caf50;
+    }
+</style>
+
+<body>
+    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
+    <script type = "text/javascript" th:inline = "javascript" th:src = "@{/js/sellerRequests.js}"></script>
+    <div class="container">
+            
+            <div class="row mt-4">
+                    <div class="col">
+                        <h5>Pending Cloth Requests</h5>
+                        <table class="table" id = "pending-table" >
+                            <thead>
+                                <tr>
+                                  <th scope="col">Cloth Name</th>
+                                  <th scope="col">Size</th>
+                                  <th scope="col">Quantity</th>
+                                  <th scope="col">Price</th>
+                                  </th>
+                                </tr>
+                              </thead>
+                            <tbody>
+
+                             </tbody>
+                        </table> 
+                           
+                    </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col">
+                    <h5>Older Cloth Requests</h5>
+                    <table class="table" id = "older-table" >
+                        <thead>
+                            <tr>
+                              <th scope="col">Cloth Name</th>
+                              <th scope="col">Size</th>
+                              <th scope="col">Quantity</th>
+                              <th scope="col">Price</th>
+                              <th scope="col">Action Taken
+                              </th>
+                            </tr>
+                          </thead>
+                        <tbody>
+
+                         </tbody>
+                    </table> 
+                       
+                </div>
+        </div>
+    </div>
+
+   
+
+</body>

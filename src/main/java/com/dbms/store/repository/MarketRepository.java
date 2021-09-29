@@ -26,21 +26,20 @@ public class MarketRepository {
 
 
     public void addCloth(Cloth cloth,int request_id){
-        String sql = "INSERT INTO marketplace (cloth_id,name, brand, category, short_description,long_description,seller,request_id) VALUES (?, ?, ?, ?, ?, ?, ?,?) ON DUPLICATE KEY UPDATE cloth_id = cloth_id;";
+        String sql = "INSERT INTO marketplace (cloth_id,name, brand, category, short_description,long_description,seller) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE cloth_id = cloth_id;";
         template.update(sql,cloth.getId(),
                             cloth.getName(),
                             cloth.getBrand(),
                             cloth.getCategory(),
                             cloth.getShort_description(),
                             cloth.getLong_description(),
-                            cloth.getSeller(),
-                            request_id);    
+                            cloth.getSeller());    
     }
 
 
     public void updateStock(Request request){
-        String sql = "INSERT INTO stock (cloth_id,price,size,quantity) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + ?";
-        template.update(sql, request.getCloth_id(),request.getPrice(),request.getSize(),request.getQuantity(),request.getQuantity());
+        String sql = "INSERT INTO stock (cloth_id,price,size,quantity) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + ?, price = ?";
+        template.update(sql, request.getCloth_id(),request.getPrice(),request.getSize(),request.getQuantity(),request.getQuantity(),request.getPrice());
     }
 
     public void addImage(int cloth_id,String url){

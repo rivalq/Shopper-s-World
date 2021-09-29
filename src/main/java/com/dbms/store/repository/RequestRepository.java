@@ -42,13 +42,24 @@ public class RequestRepository {
                                         request.setResult(false);
                                 }                       
                                 
+                                try{
+                                        request.setMp_cloth(rs.getInt("mp_cloth"));
+                                }catch(Exception e){
+
+                                }
+
                                 return request;
                         }
                 },new Object[]{});    
         }
         
-        public void acceptRequest(int request_id){
-                String sql = "UPDATE requests SET request_status = 1, request_result = 1 where request_id = ?";
+        public void acceptRequest(int request_id,int cloth_id){
+                String sql = "UPDATE requests SET request_status = 1, request_result = 1, mp_cloth = ? where request_id = ?";
+                template.update(sql,cloth_id,request_id);
+        }
+
+        public void rejectRequest(int request_id){
+                String sql = "UPDATE requests SET request_status = 1, request_result = 0 where request_id = ?";
                 template.update(sql,request_id);
         }
 

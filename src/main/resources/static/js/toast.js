@@ -12,3 +12,10 @@ function displaySuccess(message){
         message: message,
     });
 }
+
+function displayInfo(message){
+    iziToast.info({
+        title: 'Info',
+        message: message,
+    });
+}

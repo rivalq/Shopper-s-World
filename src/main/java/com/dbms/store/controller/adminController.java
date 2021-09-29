@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -95,8 +96,10 @@ public class adminController extends BaseController{
 
         int cloth_id = request.getCloth_id();
         Cloth cloth = sellerRepository.getCloth(cloth_id);
+        // This will add cloth into marketplace table (if not exists)
         marketRepository.addCloth(cloth, request.getRequest_id());
         
+        // stock update
         marketRepository.updateStock(request);
 
         String path = context + "/resources/static/images/marketplace/" + Integer.toString(cloth_id);
@@ -113,15 +116,29 @@ public class adminController extends BaseController{
             File src = new File(old_path);
             File des = new File(new_path);
             try{
+                // Copying Images and updating them on database
                 FileUtils.copyFile(src, des);
                 marketRepository.addImage(cloth_id, url);
             }catch(Exception e){
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
-        requestRepository.acceptRequest(request.getRequest_id());
+        // Finally request is accepeted
+        requestRepository.acceptRequest(request.getRequest_id(),cloth_id);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
+    @PostMapping("/api/admin/reject_request/{id}")
+    @ResponseBody
+    public void rejectRequest(@PathVariable("id") int request_id, HttpSession session){
+        if(!isAuthenticated(session)){
+            return;
+        }
+        if(authService.getRole(session) != "admin")return;
+
+        requestRepository.rejectRequest(request_id);
+        return;
+
+    } 
     
 
 }

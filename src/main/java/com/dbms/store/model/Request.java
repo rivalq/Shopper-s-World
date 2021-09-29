@@ -30,6 +30,7 @@ public class Request {
        @JsonProperty("result")
        private boolean result;
        
+       private int mp_cloth;
 
 
     /**
@@ -142,6 +143,21 @@ public class Request {
      */
     public void setResult(boolean result) {
         this.result = result;
+    }
+
+
+    /**
+     * @return int return the mp_cloth
+     */
+    public int getMp_cloth() {
+        return mp_cloth;
+    }
+
+    /**
+     * @param mp_cloth the mp_cloth to set
+     */
+    public void setMp_cloth(int mp_cloth) {
+        this.mp_cloth = mp_cloth;
     }
 
 }

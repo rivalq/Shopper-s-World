@@ -28,18 +28,16 @@
             </div>
             <div class="row mt-4">
                     <div class="col">
-                        <h5>Cloth Requests</h5>
+                        <h5>Pending Cloth Requests</h5>
                         <table class="table" id = "request-table" >
                             <thead>
                                 <tr>
-                                  <th scope="col">#</th>
                                   <th scope="col">Seller Name</th>
                                   <th scope="col">Cloth Name</th>
                                   <th scope="col">Size</th>
                                   <th scope="col">Quantity</th>
                                   <th scope="col">Price</th>
                                   <th scope="col">Action
-                                    <svg class="MuiSvgIcon-root jss312" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg>
                                   </th>
                                 </tr>
                               </thead>
@@ -50,10 +48,50 @@
                            
                     </div>
             </div>
+            <div class="row mt-4">
+                <div class="col">
+                    <h5>Older Cloth Requests</h5>
+                    <table class="table" id = "static-request-table" >
+                        <thead>
+                            <tr>
+                              <th scope="col">Seller Name</th>
+                              <th scope="col">Cloth Name</th>
+                              <th scope="col">Size</th>
+                              <th scope="col">Quantity</th>
+                              <th scope="col">Price</th>
+                              <th scope="col">Action Taken
+                              </th>
+                            </tr>
+                          </thead>
+                        <tbody>
+
+                         </tbody>
+                    </table> 
+                       
+                </div>
+        </div>
     </div>
 
 
     <div class="container">
+        <div id = "reject-request" class="modal fade">
+            <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header fs-5 fw-bold">
+                             Reject Request
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are You Sure?
+                        </div>
+                        <div class="modal-footer">
+                            <button class = "btn btn-primary" onclick = closerejectModal()> No </button>
+                            <button class = "btn btn-primary" onclick = rejectRequest()> Yes </button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
         <div id = "accept-cloth" class="modal fade">
             <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">

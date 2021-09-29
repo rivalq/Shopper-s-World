@@ -83,7 +83,18 @@ public class SellerController extends BaseController {
                 }else if(authService.getRole(session) == "cutsomer" ){
                         return "/accessDenied";
                 }else{
-                        return "/sellerCloths.html";
+                        return "/sellerCloths";
+                }
+        }
+
+        @GetMapping("/seller/requests")
+        public String sellerRequests(HttpSession session, Model model){
+                if(!isAuthenticated(session)){
+                        return "redirect:/login";
+                }else if(authService.getRole(session) == "cutsomer" ){
+                        return "/accessDenied";
+                }else{
+                        return "/sellerRequests";
                 }
         }
 

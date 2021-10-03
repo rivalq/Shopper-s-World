@@ -2,22 +2,23 @@ package com.dbms.store.model;
 
 public class MarketPlace extends Cloth{
     
-    private int request_id;
+    private String seller;
+
     
 
 
     /**
-     * @return int return the request_id
+     * @return String return the seller
      */
-    public int getRequest_id() {
-        return request_id;
+    public String getSeller() {
+        return seller;
     }
 
     /**
-     * @param request_id the request_id to set
+     * @param seller the seller to set
      */
-    public void setRequest_id(int request_id) {
-        this.request_id = request_id;
+    public void setSeller(String seller) {
+        this.seller = seller;
     }
 
 }

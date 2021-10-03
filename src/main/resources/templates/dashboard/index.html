@@ -3,6 +3,13 @@
 
 <head th:replace="dashboard/layout/header :: header"></head>
 <body>
-        <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
-        <H1>Welcome To dashboard</H1>
+
+
+        <div id="root">
+                
+        </div>
+
+
+        <script src="https://unpkg.com/vue@next"></script>
+        <script type = "text/javascript" th:inline = "javascript"  th:src = "@{/js/dashboard/app.js}" > </script>
 </body>

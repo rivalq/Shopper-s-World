@@ -1,6 +1,8 @@
 package com.dbms.store.repository;
 
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import org.springframework.jdbc.core.RowMapper;
 
 @Repository
 public class ClothRepository {
@@ -46,17 +50,12 @@ public class ClothRepository {
             return cloth;
     }
     public List<String> getImages(int id){
-        List<String> urls = new ArrayList<String>();
-        String sql = "SELECT url FROM images where id = %s";
-        sql = String.format(sql,id);
-        try{
-            urls = template.queryForList(sql,String.class);   
-        }catch(Exception e){
-            e.printStackTrace();
-            System.out.println(e);
-            urls.add("NULL");
-        }
-        return urls;
+        String sql = "SELECT url FROM images where id = ?";
+        return template.query(sql, new RowMapper<String>(){
+            public String mapRow(ResultSet rs,int rownum) throws SQLException{
+                return rs.getString("url");
+            }
+        }, new Object[] {id});
     }
     public List<Cloth> getAllClothes(){
         List<Cloth> clothes = new ArrayList<Cloth>();

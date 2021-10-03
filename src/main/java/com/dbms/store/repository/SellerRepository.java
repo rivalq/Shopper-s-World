@@ -47,7 +47,7 @@ public class SellerRepository {
              return template.queryForObject(sql, new RowMapper<Cloth>(){
                  public Cloth mapRow(ResultSet rs, int rowNum) throws SQLException {
                      Cloth cloth = new Cloth();
-                     cloth.setId(rs.getInt("cloth_id"));
+                     cloth.setCloth_id(cloth_id);
                      cloth.setName(rs.getString("name"));
                      cloth.setBrand(rs.getString("brand"));
                      cloth.setCategory(rs.getString("category"));
@@ -64,7 +64,7 @@ public class SellerRepository {
             return template.query(sql,new RowMapper<Integer>(){
                 public Integer mapRow(ResultSet rs, int rowNum) throws SQLException{
 
-                        return rs.getObject("cloth_id",Integer.class);
+                        return rs.getInt("cloth_id");
                 }
             },new Object [] {user}) ;
         }

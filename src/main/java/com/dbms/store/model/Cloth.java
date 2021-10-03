@@ -1,7 +1,7 @@
 package com.dbms.store.model;
 
 public class Cloth {
-    private int id;
+    private int cloth_id;
     private String name;
     private String short_description;
     private String long_description;
@@ -10,20 +10,7 @@ public class Cloth {
     private String Seller;
    
    
-    /**
-     * @return int return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
+  
     /**
      * @return String return the name
      */
@@ -107,6 +94,21 @@ public class Cloth {
      */
     public void setSeller(String Seller) {
         this.Seller = Seller;
+    }
+
+
+    /**
+     * @return int return the cloth_id
+     */
+    public int getCloth_id() {
+        return cloth_id;
+    }
+
+    /**
+     * @param cloth_id the cloth_id to set
+     */
+    public void setCloth_id(int cloth_id) {
+        this.cloth_id = cloth_id;
     }
 
 }

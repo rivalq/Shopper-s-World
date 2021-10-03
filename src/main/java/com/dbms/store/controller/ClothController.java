@@ -47,6 +47,14 @@ public class ClothController extends BaseController{
             return "/clothWithEdit";
     }
 
+    @GetMapping("/dashboard/clothes")
+    public String marketArea(HttpSession session, Model model){
+        if (!isAuthenticated(session)) {
+            return "redirect:/login";
+        }
+        return "/market";
+    }
+
 
     /* 
     * Api endpoints to access database from js

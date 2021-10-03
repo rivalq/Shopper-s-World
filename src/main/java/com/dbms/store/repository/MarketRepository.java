@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.print.DocFlavor.STRING;
 
+import com.dbms.store.Mapper.MarketPlaceMapper;
+import com.dbms.store.Mapper.StockMapper;
 import com.dbms.store.model.*;
 
 import java.sql.ResultSet;
@@ -27,7 +29,7 @@ public class MarketRepository {
 
     public void addCloth(Cloth cloth,int request_id){
         String sql = "INSERT INTO marketplace (cloth_id,name, brand, category, short_description,long_description,seller) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE cloth_id = cloth_id;";
-        template.update(sql,cloth.getId(),
+        template.update(sql,cloth.getCloth_id(),
                             cloth.getName(),
                             cloth.getBrand(),
                             cloth.getCategory(),
@@ -36,6 +38,23 @@ public class MarketRepository {
                             cloth.getSeller());    
     }
 
+
+    public List<MarketPlace> getMarketClothes(){
+        String sql = "SELECT * FROM marketplace";
+        return template.query(sql, new MarketPlaceMapper());
+
+    }
+    public MarketPlace getMarketClothes(int cloth_id){
+        String sql = "SELECT * FROM marketplace where cloth_id = ?" ;
+        return template.query(sql, new MarketPlaceMapper(),new Object[] {cloth_id}).get(0);
+
+    }
+    
+
+    public List<Stock> getStock(int cloth_id){
+        String sql = "SELECT * FROM stock where cloth_id = ?";
+        return template.query(sql, new StockMapper(), new Object[]{cloth_id});
+    }
 
     public void updateStock(Request request){
         String sql = "INSERT INTO stock (cloth_id,price,size,quantity) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + ?, price = ?";

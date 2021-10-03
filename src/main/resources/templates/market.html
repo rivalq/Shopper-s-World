@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="dashboard/layout/header :: header"></head>
+
+
+<style>
+    
+    .buynow-btn{
+        cursor: pointer;
+    }
+
+
+</style>
+    
+<body>
+
+    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
+
+    <div id="app">
+        
+        <div class="container">
+                <List></List>
+        </div>
+    </div>
+
+    
+    <script src="https://unpkg.com/vue@next"></script>
+    <script type = "text/javascript" th:inline = "javascript"  th:src = "@{/js/market.js}" > </script>
+
+
+
+</body>

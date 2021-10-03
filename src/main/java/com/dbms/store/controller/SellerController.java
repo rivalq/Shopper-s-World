@@ -173,7 +173,6 @@ public class SellerController extends BaseController {
                 return sellerRepository.listCloth(user);
                 
         }
-
         @DeleteMapping("/api/seller/clothes/{cloth_id}")
         @ResponseBody
         public ResponseEntity<String> deleteCloth(@PathVariable("cloth_id") int cloth_id, HttpSession session){

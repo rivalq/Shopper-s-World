@@ -1,5 +1,6 @@
 
 
+
 const Cloth = {
     data(){
         return{
@@ -10,12 +11,14 @@ const Cloth = {
             stock_by_size: {}
         }
     },
+    
     props: ['id'],
-    template: `<div class="col-sm-3 shadow mx-3 my-4 cloth-card" style="text-align: center;">
+    template: /*html*/`<div class="col-sm-3 shadow mx-3 my-4 cloth-card" style="text-align: center;">
                     <div class="row">
                         <div class="col-sm-auto">
                             <img :src = cloth.url width = "300" height = "300">
                         </div>
+    			
                     </div>
                     <div class="row mt-2">
                         <div class = "col-sm-12" ><h5 style = "text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"  >{{cloth.name}}</h5></div>
@@ -29,6 +32,7 @@ const Cloth = {
                             <div class="btn-group" role="group">
                                       <button  v-for = "stock in cloth.stock" :key = "stock"  @click=changeSize  :class="{btn:1,'shadow-none':0,'btn-outline-primary': selected != stock.size, 'btn-primary': selected == stock.size }" > {{stock.size}}</button>
                             </div>
+			    
                         </div>
                         <div class = "col fs-5 float-end fw-bold text-wrap" style="text-align: right;" >{{'Rs '+price}}</div>
                     </div>
@@ -36,6 +40,7 @@ const Cloth = {
                         <div @click = buynow class = "col bg-primary fs-4 rounded-bottom buynow-btn py-2" style="color: white;">
                                 Buy Now
                         </div>
+                        
                     </div>
                 </div>`,
        methods: {
@@ -130,14 +135,14 @@ $(window).resize(function(){
             for(var i = 0; i < elems.length; i++){
                 var cur = elems[i];
                 cur.classList.remove("col-sm-5");
-                cur.classList.add("col-sm-8");
+                cur.classList.add("col-sm-7");
             }
         }
         if($(window).width() > 1054 && $(window).width() <= 1423){
             var elems = document.getElementsByClassName("cloth-card");
             for(var i = 0; i < elems.length; i++){
                 var cur = elems[i];
-                cur.classList.remove("col-sm-8");
+                cur.classList.remove("col-sm-7");
                 cur.classList.add("col-sm-5");
             }
         }
@@ -151,3 +156,5 @@ $(window).resize(function(){
             }
         }
 });
+
+

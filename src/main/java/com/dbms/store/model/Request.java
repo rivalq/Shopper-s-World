@@ -1,33 +1,24 @@
 
 package com.dbms.store.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Request {
 
 
-       @JsonProperty("cloth_id") 
        private int cloth_id;
        
-       @JsonProperty("request_id")
        private int request_id;
 
-       @JsonProperty("seller")
        private String seller;
 
-       @JsonProperty("size")
        private String size;
 
-       @JsonProperty("quantity")
        private int quantity;
 
-       @JsonProperty("price")
        private int price;
 
-       @JsonProperty("status")
        private boolean status;
 
-       @JsonProperty("result")
        private boolean result;
        
        private int mp_cloth;

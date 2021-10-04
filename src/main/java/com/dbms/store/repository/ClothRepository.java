@@ -6,10 +6,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dbms.store.Mapper.ClothMapper;
+import com.dbms.store.Mapper.StockMapper;
 import com.dbms.store.model.Cloth;
 import com.dbms.store.model.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -42,7 +43,7 @@ public class ClothRepository {
             Cloth cloth = new Cloth();
             try{
                 String sql = "SELECT * FROM cloth WHERE id = ?";
-                cloth = template.queryForObject(sql, new BeanPropertyRowMapper<>(Cloth.class),new Object[] {id});
+                cloth = template.queryForObject(sql, new ClothMapper(),new Object[] {id});
             }catch(Exception e){
                     e.printStackTrace();
                     System.out.println(e);
@@ -61,7 +62,7 @@ public class ClothRepository {
         List<Cloth> clothes = new ArrayList<Cloth>();
         String sql = "SELECT * FROM cloth";
         try{
-            clothes = template.query(sql,new BeanPropertyRowMapper<>(Cloth.class));
+            clothes = template.query(sql,new ClothMapper());
         }catch(Exception e){
             e.printStackTrace();
             System.out.println(e);
@@ -78,7 +79,7 @@ public class ClothRepository {
     public List<Stock> getStock(int cloth_id){
         String sql = "SELECT * FROM stock where cloth_id = ?";
         try{
-            return template.query(sql, new BeanPropertyRowMapper<>(Stock.class), new Object[]{cloth_id});
+            return template.query(sql, new StockMapper(), new Object[]{cloth_id});
         }catch(Exception e){
             e.printStackTrace();
             System.out.println(e);

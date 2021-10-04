@@ -1,11 +1,10 @@
 package com.dbms.store.repository;
 
-import java.nio.file.attribute.PosixFileAttributeView;
 
+import com.dbms.store.Mapper.UserMapper;
 import com.dbms.store.model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +22,7 @@ public class UserRepository {
         String sql = "SELECT * FROM user WHERE username = ?";
         User user = new User();
         try{
-            user = template.queryForObject(sql, new BeanPropertyRowMapper<>(User.class),new Object[] {username});
+            user = template.queryForObject(sql, new UserMapper(),new Object[] {username});
         }catch(Exception e){
             e.printStackTrace();
             System.out.println(e);

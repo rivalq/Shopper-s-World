@@ -1,18 +1,16 @@
 package com.dbms.store.repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import com.dbms.store.Mapper.ClothMapper;
+import com.dbms.store.model.Cloth;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
-import com.dbms.store.model.Cloth;
-
-import java.sql.ResultSet;
-
-import java.sql.SQLException;
 
 @Repository
 public class SellerRepository {
@@ -44,26 +42,13 @@ public class SellerRepository {
         
         public Cloth getCloth(int cloth_id){
             String sql = "SELECT * FROM seller_cloth where cloth_id = ?";
-             return template.queryForObject(sql, new RowMapper<Cloth>(){
-                 public Cloth mapRow(ResultSet rs, int rowNum) throws SQLException {
-                     Cloth cloth = new Cloth();
-                     cloth.setCloth_id(cloth_id);
-                     cloth.setName(rs.getString("name"));
-                     cloth.setBrand(rs.getString("brand"));
-                     cloth.setCategory(rs.getString("category"));
-                     cloth.setShort_description(rs.getString("short_description"));
-                     cloth.setLong_description(rs.getString("long_description"));
-                     cloth.setSeller(rs.getString("seller"));
-                     return cloth;
-                 }
-             }, new Object[]{cloth_id});   
+             return template.queryForObject(sql, new ClothMapper(), new Object[]{cloth_id});   
         }
 
         public List<Integer> listCloth(String user){
             String sql = "SELECT cloth_id FROM seller_cloth where seller = ?";
             return template.query(sql,new RowMapper<Integer>(){
                 public Integer mapRow(ResultSet rs, int rowNum) throws SQLException{
-
                         return rs.getInt("cloth_id");
                 }
             },new Object [] {user}) ;

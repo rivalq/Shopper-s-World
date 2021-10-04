@@ -25,6 +25,10 @@ public class marketController extends BaseController{
         private MarketRepository marketRepository;
 
 
+
+        
+
+
         @GetMapping("/api/marketplace/clothes")
         @ResponseBody
         public List<MarketPlace> getMarketClothes(HttpSession session){
@@ -53,13 +57,6 @@ public class marketController extends BaseController{
                 return marketRepository.getStock(cloth_id);
         }
 
-        /**@GetMapping("/api/marketplace/cloth_profile_image/{cloth_id}")
-        @ResponseBody
-        public String getClothProfileImage(@PathVariable("cloth_id") int cloth_id,HttpSession session){
-                if(!isAuthenticated(session)){
-                    return "";
-                }
-                return marketRepository.getClothProfileImage(cloth_id);
-        }**/
+        
 
 }

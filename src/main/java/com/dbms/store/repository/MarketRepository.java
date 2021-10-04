@@ -1,23 +1,18 @@
 package com.dbms.store.repository;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
-
-import javax.print.DocFlavor.STRING;
 
 import com.dbms.store.Mapper.MarketPlaceMapper;
 import com.dbms.store.Mapper.StockMapper;
-import com.dbms.store.model.*;
+import com.dbms.store.model.Cloth;
+import com.dbms.store.model.MarketPlace;
+import com.dbms.store.model.Request;
+import com.dbms.store.model.Stock;
 
-import java.sql.ResultSet;
-
-import java.sql.SQLException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 
 @Repository

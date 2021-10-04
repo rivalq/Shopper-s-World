@@ -2,25 +2,80 @@
 
 
 
+const mapGetters = Vuex.mapGetters;
 
 
 
-
-
+/** 
+ * Vuex Store 
+ *
+ */
 
 const store = Vuex.createStore({
     state(){
         return{
-            cart:0
+            cart:0,
+            cloth:{},
+            images:[],
+            selected_size:'',
+            price:0,
+            stock_by_size:{},
+            quantity:0,
         }
     },
     mutations:{
-        increment (state) {
-            state.cart++;
-        }      
+        setCart(state,payload){
+            state.cart = payload;
+        },
+        changeSize(state,payload){
+            state.selected_size = payload;
+            state.price = stock_by_size[payload]["price"];
+            state.quantity = stock_by_size[payload]["quantity"];
+        },  
+        setCloth(state,payload){
+            state.cloth = payload;
+        },
+        setStockBysize(state,payload){
+            state.stock_by_size = payload;
+        }
+    },
+    actions:{
+        async setCloth(state,payload){
+            axios.get("/api/marketplace/clothes/" + payload)
+            .then(response => {
+                var cloth = new Object();
+                cloth = response.data;
+                cloth["url"] = "/images/marketplace/" + payload + "/profile";
+                axios.get('/api/marketplace/stock/' + payload)
+                    .then(response => {
+                        cloth["stock"] = response.data;
+                        stock_by_size = new Object();
+                        for (var i = 0; i < response.data.length; i++) {
+                            stock_by_size[response.data[i]["size"]] = response.data[i];
+                        }
+                        const anystock = response.data[0];
+                        state.commit("setCloth",cloth);
+                        state.commit("setStockBysize",stock_by_size);
+                        state.commit("changeSize",anystock["size"]);
+                    })                     
+            })
+        }
+    },
+    getters:{
+         getCart: state => state.cart,
+         getCloth: state => state.cloth,
+         getImages: state => state.images,
+         getPrice: state => state.price,
+         getStockBySize: state => state.stock_by_size,
+         getQuantity: state => state.quantity,   
+         getSelectedSize: state => state.selected_size,
     }
 })
 
+
+/**
+ * Vue Components
+ */
 
 
 const fab = {
@@ -54,16 +109,9 @@ const fab = {
 const CHead = {
     data() {
         return {
-            price: 0,
-            selected: '',
-            quantity: 0,
-            cloth: {},
-            stock_by_size: {},
-            images: [],
             wish1: 'Add to WishList',
             wish2: 'Remove from WishList',
             wish: 0,
-            cart: 0,
         }
     },
     props: ['id'],
@@ -99,7 +147,7 @@ const CHead = {
                     <div class="row mt-4">
                         <div class="col">
                             <div class="btn-group" role="group">
-                                      <button  v-for = "stock in cloth.stock" :key = "stock"  @click=changeSize  :class="{btn:1,'shadow-none':0,'btn-outline-primary': selected != stock.size, 'btn-primary': selected == stock.size }" > {{stock.size}}</button>
+                                      <button  v-for = "stock in cloth.stock" :key = "stock"  @click=changeSize  :class="{btn:1,'shadow-none':0,'btn-outline-primary': selected_size != stock.size, 'btn-primary': selected_size == stock.size }" > {{stock.size}}</button>
                             </div>
                         </div>
                     </div>
@@ -126,45 +174,38 @@ const CHead = {
     methods: {
         changeSize(event) {
             let size = event.target.innerHTML;
-            this.selected = size;
-            this.price = this.stock_by_size[size]["price"];
-            this.quantity = this.stock_by_size[size]["quantity"];
+            this.$store.commit("changeSize",size);
         },
         changeWish(event) {
             this.wish = 1 - this.wish;
             [this.wish1, this.wish2] = [this.wish2, this.wish1];
         },
         increase(event) {
-            this.cart++;
+            this.$store.commit("setCart",this.cart + 1);
         },
         decrease(event) {
-            this.cart--;
+            this.$store.commit("setCart",this.cart - 1);
         }
     },
 
 
     created: function () {
-        axios.get('/api/marketplace/clothes/' + this.$props.id)
-            .then(response => {
-                this.cloth = response.data;
-                this.cloth["url"] = "/images/marketplace/" + this.$props.id + "/profile";
-                axios.get('/api/marketplace/stock/' + this.$props.id)
-                    .then(response => {
-                        this.cloth["stock"] = response.data;
-                        for (var i = 0; i < response.data.length; i++) {
-                            this.stock_by_size[response.data[i]["size"]] = response.data[i];
-                        }
+            this.$store.dispatch('setCloth',this.$props.id);
+    },
 
-                        const anystock = response.data[0];
-                        this.price = anystock["price"];
-                        this.quantity = anystock["quantity"];
-                        this.selected = anystock["size"];
-                    })
-
-            })
-            .catch(error => {
-                console.log(error);
-            })
+    computed: {
+        ...mapGetters({cloth:"getCloth"}),
+        ...mapGetters({price:"getPrice"}),
+        ...mapGetters({quantity:"getQuantity"}),
+        ...mapGetters({selected_size:"getSelectedSize"}),
+        cart:{
+            get(){
+                return this.$store.getters.getCart;
+            },
+            set(value){
+                this.$store.commit("setCart",value);
+            }
+        }
     }
 
 }
@@ -266,10 +307,15 @@ const dfr = {
     }
 }
 
-
+/**
+ * Creating Vue App
+ */
 
 const app = Vue.createApp({})
+
 app.use(store);
+
+
 app.component("Cloth", CHead);
 app.component("slider", slider);
 app.component("Description", Description);
@@ -278,7 +324,8 @@ app.component("Reviews", Reviews);
 app.component("dfr",dfr);
 app.component("mycomp", Main);
 app.component("fab",fab);
+
+
 app.mount("#app");
 
-store.commit('increment');
-console.log(store.state.count);
+

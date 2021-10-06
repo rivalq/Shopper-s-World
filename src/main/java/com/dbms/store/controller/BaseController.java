@@ -36,4 +36,8 @@ abstract class BaseController {
         }
         return 1;
     }
+    public int checkAdmin(HttpSession session){
+        if(!isAuthenticated(session) || authService.getRole(session) != "admin")return 0;
+        return 1;
+    }
 }

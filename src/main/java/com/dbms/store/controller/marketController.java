@@ -12,9 +12,13 @@ import com.dbms.store.model.MarketPlace;
 import com.dbms.store.model.Stock;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -58,5 +62,13 @@ public class marketController extends BaseController{
         }
 
         
-
+        @PutMapping("/api/marketplace/clothes/{cloth_id}")
+        @ResponseBody
+        public ResponseEntity<String> updateCloth(HttpSession session,@RequestBody MarketPlace mp) {
+               ResponseEntity<String> err = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+               ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
+               if(checkAdmin(session) == 0)return err;
+               marketRepository.updateCloth(mp);
+               return ok; 
+        }
 }

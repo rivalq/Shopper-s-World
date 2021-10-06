@@ -51,6 +51,11 @@ public class MarketRepository {
         return template.query(sql, new StockMapper(), new Object[]{cloth_id});
     }
 
+    public void updateCloth(MarketPlace mp){
+        String sql = "UPDATE marketplace set name = ?, brand = ?, category = ?, short_description = ?,long_description = ?";
+        template.update(sql, mp.getName(),mp.getBrand(),mp.getCategory(),mp.getShort_description(),mp.getLong_description());
+    }
+
     public void updateStock(Request request){
         String sql = "INSERT INTO stock (cloth_id,price,size,quantity) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + ?, price = ?";
         template.update(sql, request.getCloth_id(),request.getPrice(),request.getSize(),request.getQuantity(),request.getQuantity(),request.getPrice());

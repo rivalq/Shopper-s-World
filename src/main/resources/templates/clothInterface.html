@@ -5,7 +5,7 @@
 
 <style>
     body{
-        font-family: Roboto;
+        font-family: Roboto, "Noto Sans", Arial, sans-serif;
     }
     .cursor{
         cursor: pointer;
@@ -26,6 +26,35 @@
         font-weight: 600;
         border-bottom: 2px solid #0067b8;
     }
+    #sidebar{
+        width: 200px;
+        height: 400px;
+        background-color: white;
+    }
+    #menu{
+        height: 400px;
+        overflow: auto;
+    }
+    .sidebar-item{
+        font-size: 14px;
+        color: rgb(32,33,36);
+        cursor: pointer;
+        border-top-right-radius: 16px;
+        border-bottom-right-radius: 16px;
+    }
+    .sidebar-item-hover{
+        background-color: #e0e0e0;
+    }
+    .crud-modal-body{
+        border-radius: 10px;
+    }
+    .sidebar-item-selected{
+        color: rgb(25, 103, 210);
+        background-color:  rgb( 198, 218, 252);
+    }
+    .sidebar-icon-selected{
+        filter: invert(23%) sepia(100%) saturate(1763%) hue-rotate(209deg) brightness(98%) contrast(96%);
+    }
 
 
 </style>
@@ -38,10 +67,11 @@
                 <mycomp></mycomp>
                 <dfr></dfr>
             </div>
-           <fab style = "position:fixed; bottom: 40px;"></fab>
-            
+           <fab style = "position:fixed; bottom: 40px; right:40px"></fab>
+           <crud-modal></crud-modal> 
     </div>
     <link rel = "stylesheet" th:href = "@{/css/fab.css}">
+    <script type = "text/javascript" th:inline = "javascript" th:src = "@{/js/Components/DFR.js}"></script>
     <script type = "text/javascript" th:inline = "javascript"  th:src = "@{/js/clothInterface.js}" > </script>
     <script src = "https://use.fontawesome.com/0206006232.js"></script>
 </body>

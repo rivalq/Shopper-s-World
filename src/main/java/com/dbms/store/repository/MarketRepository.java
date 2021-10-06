@@ -52,8 +52,8 @@ public class MarketRepository {
     }
 
     public void updateCloth(MarketPlace mp){
-        String sql = "UPDATE marketplace set name = ?, brand = ?, category = ?, short_description = ?,long_description = ?";
-        template.update(sql, mp.getName(),mp.getBrand(),mp.getCategory(),mp.getShort_description(),mp.getLong_description());
+        String sql = "UPDATE marketplace set name = ?, brand = ?, category = ?, short_description = ?,long_description = ? where cloth_id = ?";
+        template.update(sql, mp.getName(),mp.getBrand(),mp.getCategory(),mp.getShort_description(),mp.getLong_description(),mp.getCloth_id());
     }
 
     public void updateStock(Request request){

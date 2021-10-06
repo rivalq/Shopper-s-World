@@ -25,5 +25,10 @@ public class CartRepository {
                 List<Cart> cart = template.query(sql,new CartMapper(),new Object[]{username});
                 return cart;
         }
+
+        public void updateCart(Cart cart){
+                String sql  = "INSERT INTO cart (username,cloth_id,quantity,size) VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + ?";
+                template.update(sql, cart.getUsername(),cart.getCloth_id(),cart.getQuantity(),cart.getSize(),cart.getQuantity());
+        }
   
 }

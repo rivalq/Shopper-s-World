@@ -5,7 +5,6 @@ public class Cart {
        private String username;
        private String size;
        private int Quantity; 
-       private int price;
 
     /**
      * @return int return the cloth_id
@@ -64,18 +63,5 @@ public class Cart {
     }
 
 
-    /**
-     * @return int return the price
-     */
-    public int getPrice() {
-        return price;
-    }
-
-    /**
-     * @param price the price to set
-     */
-    public void setPrice(int price) {
-        this.price = price;
-    }
 
 }

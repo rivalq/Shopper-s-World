@@ -71,8 +71,28 @@ const store = Vuex.createStore({
             }).catch(error => {
                 displayError("Some error Occurred");
             })
+        },
+        async updateCart(state,payload){
+            let cloth = state.getters.getCloth;
+            let id = cloth["cloth_id"];
+            console.log(state.getters.getCart);
+            const data = {
+                quantity:state.getters.getCart,
+                size:state.getters.getSelectedSize,
+            }
+            $.ajax({
+                url: '/api/marketplace/cart/' + id,
+                type: 'POST',
+                data:data,
+                success: function(data){
+                    displaySuccess("Cart Updated");
+                },
+                error: function(data){
+                    displayError("Some error Occured");
+                }
+            })
         }
-        
+
     },
     getters: {
         getCart: state => state.cart,
@@ -153,7 +173,7 @@ const CHead = {
                     
                     <div class="row mt-4">
                         <div class="col-sm-6" style="color: white;">
-                               <button class = "btn btn-primary col-sm-9">Add to Cart</button> 
+                               <button @click = addCart  class = "btn btn-primary col-sm-9">Add to Cart</button> 
                         </div>
                     </div>
                 </div>
@@ -174,6 +194,13 @@ const CHead = {
         },
         decrease(event) {
             this.$store.commit("setCart", this.cart - 1);
+        },
+        addCart(){
+            if(this.cart <= 0){
+                displayError("Quantity should be greater than 0");
+            }else{
+                this.$store.dispatch("updateCart");
+            }
         }
     },
 

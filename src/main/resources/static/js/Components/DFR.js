@@ -2,7 +2,6 @@
 
 const mapGetters = Vuex.mapGetters;
 
-
 const slider = {
     data() {
         return {
@@ -76,20 +75,19 @@ const Reviews = {
 const dfr = {
     data() {
         return {
-            selected:0,
+            
         }
     },
     template: /*html*/ `
-        <slider @slider = sliderChange ></slider>
+        <slider></slider>
         <div class="row mt-4">
             <Description v-show = "selected == 0"></Description>
             <Features  v-show = "selected == 2"></Features>
             <Reviews   v-show = "selected == 1"></Reviews>
         </div>
     `,
-    methods:{
-        sliderChange(selected){
-            this.selected = selected;
-        }
+    computed:{
+        ...mapGetters({selected:"getSelectedMenu"})
     }
+    
 }

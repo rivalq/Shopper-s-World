@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -31,25 +30,17 @@ public class CartController extends BaseController {
         if(!isAuthenticated(session)){
             return "redirect:/login";
         }
-        String username = authService.getCurrentUser(session);
-        String url = "redirect:/dashboard/cart/" + username;
-        return url;
+        return "cart";
     }
 
-    @GetMapping("/dashboard/cart/{username}")
-    public String userCart(@PathVariable("username") String username,HttpSession session, Model model){
-        if(!isAuthenticated(session)){
-            return "redirect:/login";
-        }
-        return "/dashboard/Cart";
-    }
 
-    @GetMapping("/api/cart/{username}")
+    @GetMapping("/api/cart")
     @ResponseBody
-    public List<Cart> getCart(@PathVariable("username") String username, HttpSession session){
+    public List<Cart> getCart(HttpSession session){
         if(!isAuthenticated(session)){
             return new ArrayList<Cart>();
         }else{
+              String username = authService.getCurrentUser(session);
               List<Cart> cart = cartRepository.getUserCart(username);
               return cart;  
         }

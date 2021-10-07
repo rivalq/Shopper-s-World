@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="dashboard/layout/header :: header"></head>
+
+
+<style>
+    body{
+        font-family: Roboto, "Noto Sans", Arial, sans-serif;
+        background-color: rgb(251,251,251);
+
+    }
+    .grey-1{
+        color: rgb(79,79,79);
+        font-weight: 500;
+    }
+    .grey-2{
+        color:rgb(108, 117, 125);
+        font-weight: 400;
+        font-size: 15px;
+    }
+
+</style>
+
+<body>
+    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>        
+    <div id="app" style="height: 1000px;">
+        <mycomp></mycomp>
+    </div>
+    
+    <script type = "text/javascript" th:inline = "javascript"  th:src = "@{/js/cart.js}" > </script>
+
+</body>

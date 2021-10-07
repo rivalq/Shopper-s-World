@@ -62,7 +62,7 @@
 
 
 <body>
-    <nav   th:replace="dashboard/layout/navbar :: navbar"></nav>
+    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
     <div id="app">
             <div class="container" style="height: 1200px;">
                 <mycomp></mycomp>
@@ -71,6 +71,7 @@
            <fab style = "position:fixed; bottom: 40px; right:40px"></fab>
            <crud-modal></crud-modal> 
     </div>
+    
     <link rel = "stylesheet" th:href = "@{/css/fab.css}">
     <script type = "text/javascript" th:inline = "javascript" th:src = "@{/js/Components/DFR.js}"></script>
     <script type = "text/javascript" th:inline = "javascript"  th:src = "@{/js/clothInterface.js}" > </script>

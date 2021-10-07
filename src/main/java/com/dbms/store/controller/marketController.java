@@ -60,6 +60,12 @@ public class marketController extends BaseController{
                 }
                 return marketRepository.getStock(cloth_id);
         }
+        @GetMapping("/api/marketplace/stock/{cloth_id}/{size}")
+        @ResponseBody
+        public int getPrice(@PathVariable("cloth_id") int cloth_id,@PathVariable("size") String size,HttpSession session){
+                if(!isAuthenticated(session))return -1;
+                return marketRepository.getPrice(cloth_id,size);
+        }
 
         
         @PutMapping("/api/marketplace/clothes/{cloth_id}")

@@ -1,6 +1,8 @@
 package com.dbms.store.repository;
 
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.dbms.store.Mapper.MarketPlaceMapper;
@@ -12,6 +14,7 @@ import com.dbms.store.model.Stock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 
@@ -49,6 +52,15 @@ public class MarketRepository {
     public List<Stock> getStock(int cloth_id){
         String sql = "SELECT * FROM stock where cloth_id = ?";
         return template.query(sql, new StockMapper(), new Object[]{cloth_id});
+    }
+
+    public int getPrice(int cloth_id, String size){
+        String sql = "SELECT price from stock where cloth_id = ? and size = ?";
+        return template.query(sql, new RowMapper<Integer>(){
+            public Integer mapRow(ResultSet rs,int rownum) throws SQLException{
+                return rs.getInt("price");
+            }
+        },new Object[] {cloth_id,size}).get(0);
     }
 
     public void updateCloth(MarketPlace mp){

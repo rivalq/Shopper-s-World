@@ -77,4 +77,6 @@ public class marketController extends BaseController{
                marketRepository.updateCloth(mp);
                return ok; 
         }
+
+        
 }

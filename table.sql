@@ -14,17 +14,7 @@ Create table if not exists images(
 		FOREIGN KEY(id) REFERENCES cloth(id)
 );
 
-Create table if not exists user_details(
-		username varchar(100),
-		first_name varchar(100),
-		last_name varchar(100),
-		pincode int,
-		city varchar(100),
-		street varchar(100),
-		phone varchar(100),
-		profile_image varchar(100),
-		FOREIGN KEY(username) REFERENCES user(username)
-);
+
 
 Create table if not exists stock(
 		cloth_id int,
@@ -104,3 +94,14 @@ Create table if not exists marketplace(
 		
 
 
+Create table if not exists order_details(
+	order_id INT AUTO_INCREMENT,
+	cloth_id INT, 
+	size varchar(10), 
+	quantity INT, 
+	price INT,
+	username varchar(100),
+	PRIMARY KEY(order_id),
+	FOREIGN KEY(cloth_id) REFERENCES marketplace(cloth_id),
+	FOREIGN KEY(username) REFERENCES user(username)
+);

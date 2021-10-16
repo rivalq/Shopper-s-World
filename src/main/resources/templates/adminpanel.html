@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="dashboard/layout/header :: header"></head>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+*{
+    font-family: "Poppins" , sans-serif;
+}
+
+.MuiSvgIcon-root {
+    fill: currentColor;
+    width: 1.5em;
+    height: 1.5em;
+    display: inline-block;
+    font-size: 1.5rem;
+    transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    flex-shrink: 0;
+    user-select: none;
+    color: #4caf50;
+}  
+
+
+
+.menu-item {
+    width: 220px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    margin-top: 10px;
+    font-size: 18px;
+    margin-left: 20px;
+    cursor: pointer;
+    color: white;
+    border-radius: 10px;
+}
+.menu-item:hover{
+    background-color: white;
+    color: #11101D;
+}
+
+.menu-item-selected{
+    background-color: white;
+    color: #11101D;
+}
+
+
+</style>
+
+<body>
+
+    <div id="app">
+            <panel></panel>
+    </div>
+
+    <script type = "text/javascript" th:inline = "javascript"  th:src = "@{/js/adminpanel.js}" > </script>
+
+
+</body>

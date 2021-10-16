@@ -6,7 +6,7 @@
 
 <style>
     body{
-        font-family: Roboto, "Noto Sans", Arial, sans-serif;
+        font-family: Roboto,sans-serif;
         background-color: rgb(251,251,251);
 
     }
@@ -19,12 +19,33 @@
         font-weight: 400;
         font-size: 15px;
     }
+    .grey-3{
+        color: rgb(79,79,79);
+        font-weight: 100;
+    }
+    .remove-item{
+        cursor: pointer;
+        color: rgb(108, 117, 125);
+    }
+    .remove-item:hover{
+        color: rgb(79,79,79);
+    }
+    .list-complete-item {
+        transition: all 0.8s ease;
+    }
+
+    .list-complete-enter-from,
+    .list-complete-leave-to {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
 
 </style>
 
 <body>
     <nav th:replace="dashboard/layout/navbar :: navbar"></nav>        
-    <div id="app" style="height: 1000px;">
+    <div id="app" style="height: 1300px;">
         <mycomp></mycomp>
     </div>
     

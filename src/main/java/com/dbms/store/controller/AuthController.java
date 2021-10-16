@@ -46,6 +46,7 @@ public class AuthController {
         
         String errorMessage = null;
         
+        
         try {
             if (authService.checkCredentials(username, password)) {
                 authService.loginUser(session, username);

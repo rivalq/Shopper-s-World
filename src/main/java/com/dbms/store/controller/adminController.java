@@ -11,10 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Images;
 import com.dbms.store.model.Request;
-
+import com.dbms.store.model.Stock;
 import com.dbms.store.repository.RequestRepository;
 import com.dbms.store.repository.SellerRepository;
+import com.dbms.store.repository.StockRepository;
 import com.dbms.store.repository.MarketRepository;
 
 import org.apache.commons.io.FileUtils;
@@ -43,6 +45,9 @@ public class adminController extends BaseController{
     @Autowired
     MarketRepository marketRepository;
 
+    @Autowired
+    StockRepository stockRepository;
+
     @Value("${API_CONTEXT_ROOT}")
     String context;
 
@@ -66,14 +71,24 @@ public class adminController extends BaseController{
            }
     }    
     
-    @GetMapping("/admin")
-    public String adminPanel(HttpSession session){
+    @GetMapping("/admin/requests")
+    public String ClothRequests(HttpSession session){
             if(!isAuthenticated(session)){
                 return "redirect:/login";
             }
             if(authService.getRole(session) != "admin")return "/accessDenied";
             return "/admin";
     }
+
+
+    @GetMapping("/admin")
+    public String adminPanel(HttpSession session){
+        if(!isAuthenticated(session)){
+            return "redirect:/login";
+        }
+        if(authService.getRole(session) != "admin")return "/accessDenied";
+        return "/adminpanel";
+    } 
 
     @GetMapping("/api/admin/requests")
     @ResponseBody
@@ -140,5 +155,46 @@ public class adminController extends BaseController{
 
     } 
     
+    @GetMapping("/api/admin/images")
+    @ResponseBody
+    public List<Images> getImages(HttpSession session){
+        if(!isAuthenticated(session)){
+            return new ArrayList<>();
+        }
+        if(authService.getRole(session) != "admin")return new ArrayList<>();
 
+        return marketRepository.getImages();
+    }
+
+    @GetMapping("/api/admin/stock")
+    @ResponseBody
+    public List<Stock> getStocks(HttpSession session){
+        if(!isAuthenticated(session)){
+            return new ArrayList<>();
+        }
+        if(authService.getRole(session) != "admin")return new ArrayList<>();
+
+        return stockRepository.getStocks();
+    }
+
+    @GetMapping("/api/admin/seller_clothes/images")
+    @ResponseBody
+    public List<Images> getSellerClothImages(HttpSession session){
+        if(!isAuthenticated(session)){
+            return new ArrayList<>();
+        }
+        if(authService.getRole(session) != "admin")return new ArrayList<>();
+
+        return sellerRepository.getClothImages();
+    }
+    @GetMapping("/api/admin/seller_clothes")
+    @ResponseBody
+    public List<Cloth> getSellerClothes(HttpSession session){
+        if(!isAuthenticated(session)){
+            return new ArrayList<>();
+        }
+        if(authService.getRole(session) != "admin")return new ArrayList<>();
+
+        return sellerRepository.getSellerClothes();
+    }
 }

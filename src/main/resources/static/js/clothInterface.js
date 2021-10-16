@@ -75,7 +75,6 @@ const store = Vuex.createStore({
         async updateCart(state,payload){
             let cloth = state.getters.getCloth;
             let id = cloth["cloth_id"];
-            console.log(state.getters.getCart);
             const data = {
                 quantity:state.getters.getCart,
                 size:state.getters.getSelectedSize,

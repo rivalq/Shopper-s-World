@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.dbms.store.Mapper.ClothMapper;
+import com.dbms.store.Mapper.ImagesMapper;
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Images;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -66,6 +68,15 @@ public class SellerRepository {
         public void changeHeading(int cloth_id,String name, String category, String brand,String short_description, String long_description){
             String sql = "UPDATE seller_cloth SET name = ?, category = ?, brand = ?, short_description = ?, long_description = ? where cloth_id = ?";
             template.update(sql, name, category, brand, short_description, long_description,cloth_id);
+        }
+
+
+        public List<Images> getClothImages(){
+            return template.query("SELECT * FROM seller_cloth_images", new ImagesMapper());
+        }
+
+        public List<Cloth> getSellerClothes(){
+            return template.query("SELECT * FROM seller_cloth", new ClothMapper());
         }
 
         public void deleteCloth(int cloth_id){

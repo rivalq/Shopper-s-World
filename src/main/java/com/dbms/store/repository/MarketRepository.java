@@ -5,9 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.dbms.store.Mapper.ImagesMapper;
 import com.dbms.store.Mapper.MarketPlaceMapper;
 import com.dbms.store.Mapper.StockMapper;
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Images;
 import com.dbms.store.model.MarketPlace;
 import com.dbms.store.model.Request;
 import com.dbms.store.model.Stock;
@@ -78,4 +80,11 @@ public class MarketRepository {
         template.update(sql,cloth_id,url); 
     }    
 
+    public List<Images> getImages(){
+        
+        return template.query("SELECT * FROM images",new ImagesMapper());
+    }
+
 }
+
+

@@ -155,149 +155,6 @@ const Cloth = {
 }
 
 
-const catalog = {
-
-    data(){
-        return{
-
-        }
-    },
-
-    template: /*html*/ `
-                <div class="row mt-3">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th scope = "col">Cloth id</th>
-                                <th scope = "col">Cloth Name</th>
-                                <th scope = "col">Brand</th>
-                                <th scope = "col">Category</th>
-                                <th scope = "col">Status</th>
-                                <th scope = "col">Visible</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                                <tr v-for = "cloth in clothes" :key = "cloth"  >
-                                    <th scope = "row">{{cloth.cloth_id}}</th>
-                                    <td style = "cursor:pointer" @click = showCloth >{{cloth.name}}</td>
-                                    <td>{{cloth.brand}}</td>
-                                    <td>{{cloth.category}}</td>
-                                    <td>In stock</td>
-                                    <td>Yes</td>
-                                </tr>
-                        </tbody>
-                    </table>
-                </div>
-    `,
-    methods: {
-        showCloth(e){
-            var id = e.target.parentNode.childNodes[0].innerHTML;
-            window.location.href = "/dashboard/clothes/" + id;
-        }
-    },
-    computed:{
-        ...mapGetters({clothes:"getClothes"}),
-    }
-
-};
-
-
-const request_menu = {
-
-    data(){
-        return{
-            
-        }
-    },
-    template: /*html*/  `
-            <div class="row mt-3">
-                <h3>Pending Requests</h3>
-                <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th scope = "col">Request id</th>
-                                <th scope = "col">Seller Name</th>
-                                <th scope = "col">Cloth Name</th>
-                                <th scope = "col">Quantity</th>
-                                <th scope = "col">Size</th>
-                                <th scope = "col">Price</th>
-
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                                <tr v-for = "(request,index) in pending" :key = "request" >
-                                    <th scope = "row">{{request.request_id}}</th>
-                                    <td>{{request.seller}}</td>
-                                    <td>cloth name</td>
-                                    <td>{{request.quantity}}</td>
-                                    <td>{{request.size}}</td>
-                                    <td>{{request.price}}</td>
-                                </tr>
-                        </tbody>
-                </table>
-
-                 <h3>Old Requests</h3>    
-                 <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th scope = "col">Request id</th>
-                                <th scope = "col">Seller Name</th>
-                                <th scope = "col">Cloth Name</th>
-                                <th scope = "col">Quantity</th>
-                                <th scope = "col">Size</th>
-                                <th scope = "col">Price</th>
-                                <th scope = "col">Action Taken</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                                <tr v-for = "(request,index) in older" :key = "request"  >
-                                    <th scope = "row">{{request.request_id}}</th>
-                                    <td>{{request.seller}}</td>
-                                    <td>{{clothes[request.cloth_id]}}</td>
-                                    <td>{{request.quantity}}</td>
-                                    <td>{{request.size}}</td>
-                                    <td>{{'Rs '  + request.price}}</td>
-                                    <td v-if = "request.result == 1" > Accepted
-                                        <svg class="MuiSvgIcon-root jss312" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg>
-                                    </td>
-                                    <td v-if = "request.result == 0" > Rejected
-                                        <svg  class="MuiSvgIcon-root" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" focusable="false" viewBox="0 0 24 24">
-                                            <line x1="6" y1="6" x2="20" y2="20" stroke="red" stroke-width="2" />
-                                            <line x1="20" y1="6" x2="6" y2="20" stroke="red" stroke-width="2" />
-                                        </svg>
-                                    </td>
-                                </tr>
-                        </tbody>
-                </table>
-
-            </div>
-    `,
-    computed:{
-
-        pending(){
-            
-            return this.$store.getters.getRequests.filter(request => request["status"] == 0);
-
-        },
-        older(){
-            return this.$store.getters.getRequests.filter(request => request["status"] == 1);
-        },
-
-        clothes(){
-            var cloth = this.$store.getters.getSellerClothes;
-
-            var obj = new Object();
-
-            for(let i = 0; i < cloth.length; i++){
-                obj[cloth[i]["cloth_id"]] = cloth[i]["name"];
-            }
-            return obj;
-        }
-    }
-
-};
 
 const side_menu = {
     data(){
@@ -359,7 +216,7 @@ const panel = {
                     <div class="row">
                         <side-menu></side-menu>
                         
-                        <div class="col ms-5" style = "height:100vh;overflow:auto">
+                        <div class="col" style = "height:100vh;overflow:auto">
                                 <catalog v-show = "selected_menu == 0" ></catalog>
                                 <request-menu  v-show = "selected_menu == 5"></request-menu>
                         </div>
@@ -384,14 +241,18 @@ const panel = {
 
 
 
+const components = [
+        ["catalog",'/js/Components/Admin/Catalog.vue'],
+        ["request-menu",'/js/Components/Admin/RequestMenu.vue']
+]
+
+
+
+
 const app = Vue.createApp({});
 app.use(store);
-
 app.component("side-menu",side_menu);
-app.component("request-menu",request_menu);
 app.component("cloth-card",Cloth);
-app.component("catalog",catalog);
 app.component("panel",panel);
+addComponents(components).then(data =>  app.mount("#app")  );
 
-
-app.mount("#app");

@@ -9,7 +9,7 @@ const store = Vuex.createStore({
             orders:[],
             requests:[],
             seller_clothes:[],
-            selected_menu:0,
+            selected_menu:1,
         }
     },
     mutations:{
@@ -218,6 +218,7 @@ const panel = {
                         
                         <div class="col" style = "height:100vh;overflow:auto">
                                 <catalog v-show = "selected_menu == 0" ></catalog>
+                                <stock-menu v-show = "selected_menu == 1" ></stock-menu>
                                 <request-menu  v-show = "selected_menu == 5"></request-menu>
                         </div>
                     </div>
@@ -238,12 +239,13 @@ const panel = {
 
 
 
-
+const Component_Path = '/js/Components/Admin/';
 
 
 const components = [
-        ["catalog",'/js/Components/Admin/Catalog.vue'],
-        ["request-menu",'/js/Components/Admin/RequestMenu.vue']
+        ["catalog",Component_Path + 'Catalog.vue'],
+        ["request-menu",Component_Path + 'RequestMenu.vue'],
+        ["stock-menu",Component_Path + 'Stock.vue']
 ]
 
 

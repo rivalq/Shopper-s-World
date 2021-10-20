@@ -1,8 +1,5 @@
-
-
-
-/** 
- * Vuex Store 
+/**
+ * Vuex Store
  *
  */
 
@@ -12,13 +9,13 @@ const store = Vuex.createStore({
             cart: 0,
             cloth: {},
             images: [],
-            selected_size: '',
+            selected_size: "",
             price: 0,
             stock_by_size: {},
             quantity: 0,
             selected_menu: 0,
             selected_crud_menu: 0,
-        }
+        };
     },
     mutations: {
         setCart(state, payload) {
@@ -40,89 +37,85 @@ const store = Vuex.createStore({
         },
         setSelectedCrudMenu(state, payload) {
             state.selected_crud_menu = payload;
-        }
+        },
     },
     actions: {
         async setCloth(state, payload) {
-            axios.get("/api/marketplace/clothes/" + payload)
-                .then(response => {
-                    var cloth = new Object();
-                    cloth = response.data;
-                    cloth["url"] = "/images/marketplace/" + payload + "/profile";
-                    axios.get('/api/marketplace/stock/' + payload)
-                        .then(response => {
-                            cloth["stock"] = response.data;
-                            stock_by_size = new Object();
-                            for (var i = 0; i < response.data.length; i++) {
-                                stock_by_size[response.data[i]["size"]] = response.data[i];
-                            }
-                            const anystock = response.data[0];
-                            state.commit("setCloth", cloth);
-                            state.commit("setStockBysize", stock_by_size);
-                            state.commit("changeSize", anystock["size"]);
-                        })
-                })
+            axios.get("/api/marketplace/clothes/" + payload).then((response) => {
+                var cloth = new Object();
+                cloth = response.data;
+                cloth["url"] = "/images/marketplace/" + payload + "/profile";
+                axios.get("/api/marketplace/stock/" + payload).then((response) => {
+                    cloth["stock"] = response.data;
+                    stock_by_size = new Object();
+                    for (var i = 0; i < response.data.length; i++) {
+                        stock_by_size[response.data[i]["size"]] = response.data[i];
+                    }
+                    const anystock = response.data[0];
+                    state.commit("setCloth", cloth);
+                    state.commit("setStockBysize", stock_by_size);
+                    state.commit("changeSize", anystock["size"]);
+                });
+            });
         },
-        async updateClothdb(state,payload){
+        async updateClothdb(state, payload) {
             let cloth = state.getters.getCloth;
             let id = cloth["cloth_id"];
-            axios.put("/api/marketplace/clothes/" + id,cloth).then(response =>{
-                displaySuccess("Cloth Updated");
-            }).catch(error => {
-                displayError("Some error Occurred");
-            })
+            axios
+                .put("/api/marketplace/clothes/" + id, cloth)
+                .then((response) => {
+                    displaySuccess("Cloth Updated");
+                })
+                .catch((error) => {
+                    displayError("Some error Occurred");
+                });
         },
-        async updateCart(state,payload){
+        async updateCart(state, payload) {
             let cloth = state.getters.getCloth;
             let id = cloth["cloth_id"];
             const data = {
-                quantity:state.getters.getCart,
-                size:state.getters.getSelectedSize,
-            }
+                quantity: state.getters.getCart,
+                size: state.getters.getSelectedSize,
+            };
             $.ajax({
-                url: '/api/marketplace/cart/' + id,
-                type: 'POST',
-                data:data,
-                success: function(data){
+                url: "/api/marketplace/cart/" + id,
+                type: "POST",
+                data: data,
+                success: function (data) {
                     displaySuccess("Cart Updated");
                 },
-                error: function(data){
+                error: function (data) {
                     displayError("Some error Occured");
-                }
-            })
-        }
-
+                },
+            });
+        },
     },
     getters: {
-        getCart: state => state.cart,
-        getCloth: state => state.cloth,
-        getImages: state => state.images,
-        getPrice: state => state.price,
-        getStockBySize: state => state.stock_by_size,
-        getQuantity: state => state.quantity,
-        getSelectedSize: state => state.selected_size,
-        getSelectedMenu: state => state.selected_menu,
-        getSelectedCrudMenu: state => state.selected_crud_menu,
-    }
-})
-
+        getCart: (state) => state.cart,
+        getCloth: (state) => state.cloth,
+        getImages: (state) => state.images,
+        getPrice: (state) => state.price,
+        getStockBySize: (state) => state.stock_by_size,
+        getQuantity: (state) => state.quantity,
+        getSelectedSize: (state) => state.selected_size,
+        getSelectedMenu: (state) => state.selected_menu,
+        getSelectedCrudMenu: (state) => state.selected_crud_menu,
+    },
+});
 
 /**
  * Vue Components
  */
 
-
-
-
 const CHead = {
     data() {
         return {
-            wish1: 'Add to WishList',
-            wish2: 'Remove from WishList',
+            wish1: "Add to WishList",
+            wish2: "Remove from WishList",
             wish: 0,
-        }
+        };
     },
-    props: ['id'],
+    props: ["id"],
     template: /*html*/ `
         <div class="row mt-5">
                 <div class="col-lg-5">
@@ -194,18 +187,17 @@ const CHead = {
         decrease(event) {
             this.$store.commit("setCart", this.cart - 1);
         },
-        addCart(){
-            if(this.cart <= 0){
+        addCart() {
+            if (this.cart <= 0) {
                 displayError("Quantity should be greater than 0");
-            }else{
+            } else {
                 this.$store.dispatch("updateCart");
             }
-        }
+        },
     },
 
-
     created: function () {
-        this.$store.dispatch('setCloth', this.$props.id).then(() => {
+        this.$store.dispatch("setCloth", this.$props.id).then(() => {
             this.$emit("clothLoaded");
         });
     },
@@ -221,40 +213,34 @@ const CHead = {
             },
             set(value) {
                 this.$store.commit("setCart", value);
-            }
-        }
-    }
-
-}
+            },
+        },
+    },
+};
 
 const fab = {
     data() {
-        return {
-
-        }
+        return {};
     },
     template: /*html*/ `
             <div class = "fab btn-ripple" @click = openCrudModal>
                 <div>
                     <img src = "/images/icon_pencil.svg" id="customizeIcon">
                 </div>
-                <div id="customizeText" style = "margin-top:4px; margin-left:4px">Customize Cloth</div>
+                <div id="customizeText" style = "margin-top:6px;font-size:14px">Customize Cloth</div>
             </div>
     `,
     methods: {
         openCrudModal() {
             var modal = $("#crud_modal");
             modal.modal("show");
-        }
-    }
-}
-
-
+        },
+    },
+};
 
 const basic_settings = {
     data() {
-        return {
-        }
+        return {};
     },
     template: /*html*/ `
                     
@@ -288,53 +274,45 @@ const basic_settings = {
                     </div>
 
     `,
-    computed:{
-        ...mapGetters({cloth:"getCloth"}),
+    computed: {
+        ...mapGetters({ cloth: "getCloth" }),
     },
-    methods:{
-        saveChanges(){
-            if(this.cloth.name == "" || this.cloth.brand == "" || this.cloth.category == "" || this.cloth.short_description == ""){
+    methods: {
+        saveChanges() {
+            if (this.cloth.name == "" || this.cloth.brand == "" || this.cloth.category == "" || this.cloth.short_description == "") {
                 displayError("All the fields should be non empty");
-            }else{
+            } else {
                 this.$store.dispatch("updateClothdb");
             }
         },
-        
     },
-}
-
+};
 
 const cloth_images = {
     data() {
-        return {
-
-        }
+        return {};
     },
     template: /*html*/ `
             images section
     `,
-}
-
+};
 
 const about_product = {
     data() {
-        return {
-
-        }
+        return {};
     },
     template: /*html*/ `
             about product
     `,
-}
-
+};
 
 const crud_sidebar = {
     data() {
         return {
-            hover:-1,
-        }
+            hover: -1,
+        };
     },
-    
+
     template: /*html*/ `
     <div  data-id = "par" @click = "selectCrudMenu"  @mouseover = "upHover"  @mouseleave = "noHover"  :class = "{row:1,'py-1':1,'sidebar-item':1,'sidebar-item-hover':hover == 0 && selected != 0,'sidebar-item-selected':selected == 0}">
         <div class="col-sm-auto">
@@ -356,42 +334,39 @@ const crud_sidebar = {
     </div>
     `,
     methods: {
-        identify(elem){
-            while(true){
-                if(elem.getAttribute("data-id") != undefined)break;
+        identify(elem) {
+            while (true) {
+                if (elem.getAttribute("data-id") != undefined) break;
                 elem = elem.parentNode;
             }
             let str = elem.childNodes[1].innerHTML;
-            if(str[0] == 'B')return 0;
-            else if(str[0] == 'I')return 1;
+            if (str[0] == "B") return 0;
+            else if (str[0] == "I") return 1;
             else return 2;
         },
-        upHover(event){
+        upHover(event) {
             var elem = event.target;
-            this.hover = this.identify(elem); 
+            this.hover = this.identify(elem);
         },
         noHover() {
             this.hover = -1;
         },
-        selectCrudMenu(event){
+        selectCrudMenu(event) {
             var elem = event.target;
-            this.$store.commit("setSelectedCrudMenu",this.identify(elem));
-            
-        }
+            this.$store.commit("setSelectedCrudMenu", this.identify(elem));
+        },
     },
-    
+
     computed: {
         ...mapGetters({ selected: "getSelectedCrudMenu" }),
-    }
-}
+    },
+};
 
 const crud_modal = {
     data() {
-        return {
-            
-        }
+        return {};
     },
-    template: /*html*/`
+    template: /*html*/ `
                 <div class="modal fade" id  = "crud_modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content" style = "width:auto;margin-top:100px">
@@ -423,38 +398,35 @@ const crud_modal = {
                     </div>
                 </div>
       `,
-    
+
     computed: {
         ...mapGetters({ selected: "getSelectedCrudMenu" }),
-    }
-}
-
-
-
+    },
+};
 
 const Main = {
     data() {
         return {
             id: 0,
-        }
+        };
     },
     template: /*html*/ `<Cloth :id = id></Cloth>
     `,
     created: function () {
         this.id = window.location.href.split("/").at(-1);
         console.log(this.id);
-    }
-}
-
+    },
+};
 
 /**
  * Creating Vue App
  */
 
-const app = Vue.createApp({})
+const app = Vue.createApp({});
 
 app.use(store);
 
+const components = [["nav-bar", NavBar]];
 
 app.component("Cloth", CHead);
 app.component("slider", slider);
@@ -468,9 +440,6 @@ app.component("basic-settings", basic_settings);
 app.component("cloth-images", cloth_images);
 app.component("about-product", about_product);
 app.component("crud-modal", crud_modal);
-app.component("crud-sidebar",crud_sidebar);
+app.component("crud-sidebar", crud_sidebar);
 
-
-app.mount("#app");
-
-
+addComponents(components).then((response) => app.mount("#app"));

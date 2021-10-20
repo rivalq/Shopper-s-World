@@ -1,10 +1,10 @@
 package com.dbms.store.model;
 
 public class Cart {
-       private int cloth_id;
-       private String username;
-       private String size;
-       private int Quantity; 
+    private int cloth_id;
+    private String username;
+    private String size;
+    private int Quantity;
 
     /**
      * @return int return the cloth_id
@@ -61,7 +61,4 @@ public class Cart {
     public void setQuantity(int Quantity) {
         this.Quantity = Quantity;
     }
-
-
-
 }

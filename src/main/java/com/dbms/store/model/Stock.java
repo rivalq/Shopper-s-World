@@ -1,12 +1,10 @@
 package com.dbms.store.model;
 
 public class Stock {
-    
     private int cloth_id;
     private String Size;
     private int Quantity;
     private int price;
-    
 
     /**
      * @return int return the cloth_id
@@ -63,5 +61,4 @@ public class Stock {
     public void setPrice(int price) {
         this.price = price;
     }
-
 }

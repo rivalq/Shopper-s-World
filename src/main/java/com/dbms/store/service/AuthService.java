@@ -2,15 +2,15 @@ package com.dbms.store.service;
 
 import com.dbms.store.model.User;
 import com.dbms.store.repository.UserRepository;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpSession;
 
 @Service
 public class AuthService {
     @Autowired
     private UserRepository users;
+
     private String SESSION_AUTH_KEY = "AUTH_USER";
 
     public Boolean checkCredentials(String username, String password) {
@@ -38,10 +38,9 @@ public class AuthService {
         return getCurrentUser(session) != null;
     }
 
-    public String getRole(HttpSession session){
+    public String getRole(HttpSession session) {
         User user = users.getUser(getCurrentUser(session));
-        if(user.isIsAdmin())return "admin";
-        else if(user.isIsSeller())return "seller";
+        if (user.isIsAdmin()) return "admin"; else if (user.isIsSeller()) return "seller";
         return "customer";
     }
-}    
+}

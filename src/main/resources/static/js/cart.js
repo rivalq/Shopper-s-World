@@ -1,130 +1,117 @@
-
-
-const mapGetters = Vuex.mapGetters;
-
 const store = Vuex.createStore({
-    state(){
-        return{
-              cart : [],  
-             
-        }
+    state() {
+        return {
+            cart: [],
+        };
     },
-    mutations:{
-        setCart(state,payload){
+    mutations: {
+        setCart(state, payload) {
             state.cart = payload;
             console.log(state.cart);
         },
-        removeCart(state,payload){
-            state.cart.splice(payload,1);
-        }
+        removeCart(state, payload) {
+            state.cart.splice(payload, 1);
+        },
     },
 
-    
-    actions:{
-        
-        async getCloth(state,payload){
-            const resp =  await axios.get("/api/marketplace/clothes/" + payload);
+    actions: {
+        async getCloth(state, payload) {
+            const resp = await axios.get("/api/marketplace/clothes/" + payload);
             return resp.data;
         },
-        async getPrice(state,payload){
-            const resp =  await axios.get("/api/marketplace/stock/" + payload);
+        async getPrice(state, payload) {
+            const resp = await axios.get("/api/marketplace/stock/" + payload);
             return resp.data;
         },
 
-        async setCart(state,payload){
-            axios.get("/api/cart")
-            .then(async response => {
+        async setCart(state, payload) {
+            axios.get("/api/cart").then(async (response) => {
                 let cart = response.data;
                 let cnt = 0;
-                let n = 2*response.data.length;
-                for(let i = 0; i < response.data.length; i++){
+                let n = 2 * response.data.length;
+                for (let i = 0; i < response.data.length; i++) {
                     var id = response.data[i]["cloth_id"];
                     var size = response.data[i]["size"];
-                    cart[i]["cloth"] = await state.dispatch("getCloth",id);
-                    cart[i]["price"] = await state.dispatch("getPrice",`${id}/${size}`);
+                    cart[i]["cloth"] = await state.dispatch("getCloth", id);
+                    cart[i]["price"] = await state.dispatch("getPrice", `${id}/${size}`);
                     cart[i]["url"] = "/images/marketplace/" + id + "/profile";
                 }
-                state.commit("setCart",cart);
-            })
+                state.commit("setCart", cart);
+            });
         },
-        async updateCart(state,payload){
+        async updateCart(state, payload) {
             let id = state.getters.getCart[payload]["cloth_id"];
             const data = {
                 quantity: state.getters.getCart[payload]["quantity"],
                 size: state.getters.getCart[payload]["size"],
             };
-            if(data["quantity"] == "")return;
+            if (data["quantity"] == "") return;
             $.ajax({
                 url: "/api/marketplace/cart/" + id,
                 type: "POST",
-                data:data,
-                success: function(data){
+                data: data,
+                success: function (data) {
                     displaySuccess("Cart Updated");
                 },
-                error: function(data){
+                error: function (data) {
                     displayError("Some error Occured");
-                }
-            })
+                },
+            });
         },
 
-        async removeCart(state,payload){
-             let id = state.getters.getCart[payload]["cloth_id"];
-             const data = {
-                    quantity: state.getters.getCart[payload]["quantity"],
-                    size: state.getters.getCart[payload]["size"],
-              };
-              $.ajax({
-                  url : '/api/marketplace/cart/' + id,
-                  type: "DELETE",
-                  data: data,
-                  success: function(data){
-                      displaySuccess("Cart updated");
-                      state.commit("removeCart",payload);
-                  },
-                  error: function(data){
-                      displayError("Some error Occurred");
-                  }
-              })
+        async removeCart(state, payload) {
+            let id = state.getters.getCart[payload]["cloth_id"];
+            const data = {
+                quantity: state.getters.getCart[payload]["quantity"],
+                size: state.getters.getCart[payload]["size"],
+            };
+            $.ajax({
+                url: "/api/marketplace/cart/" + id,
+                type: "DELETE",
+                data: data,
+                success: function (data) {
+                    displaySuccess("Cart updated");
+                    state.commit("removeCart", payload);
+                },
+                error: function (data) {
+                    displayError("Some error Occurred");
+                },
+            });
         },
-        async checkout(state,payload){
-             let prices = [];
-             let cart = state.getters.getCart;
-             for(var i = 0; i < cart.length; i++){
-                    prices.push(cart[i]["price"]);
-             }
-             const data = {
-                 prices: prices,
-             };
-             $.ajax({
-                 url: '/api/marketplace/checkout',
-                 type: 'POST',
-                 data: data,
-                 success: function(data){
-                     displaySuccess("Order Successful");
-                     window.location.href = "/dashboard/clothes";
-                 },
-                 error: function(data){
-                     displayError("Some error occured");
-                 }
-             })
-
-        }
-        
+        async checkout(state, payload) {
+            let prices = [];
+            let cart = state.getters.getCart;
+            for (var i = 0; i < cart.length; i++) {
+                prices.push(cart[i]["price"]);
+            }
+            const data = {
+                prices: prices,
+            };
+            $.ajax({
+                url: "/api/marketplace/checkout",
+                type: "POST",
+                data: data,
+                success: function (data) {
+                    displaySuccess("Order Successful");
+                    window.location.href = "/dashboard/clothes";
+                },
+                error: function (data) {
+                    displayError("Some error occured");
+                },
+            });
+        },
     },
-    getters:{
-        getCartLength: state => state.cart.length,
-        getCart: state => state.cart,
+    getters: {
+        getCartLength: (state) => state.cart.length,
+        getCart: (state) => state.cart,
     },
 });
 
-
 const cart_card = {
-    data(){
-        return{
-
-        }
+    data() {
+        return {};
     },
-    props:['id'],
+    props: ["id"],
     template: /*html*/ `
                 <div class="row py-2 mt-2 border-bottom">
                     <div class="col-sm-auto">
@@ -159,37 +146,34 @@ const cart_card = {
                     </div>
                 </div>
     `,
-    computed:{
-        cart:{
-            get(){
+    computed: {
+        cart: {
+            get() {
                 return this.$store.getters.getCart[this.$props.id - 1];
-            }
-        }
+            },
+        },
     },
-    methods:{
-        increase(){
+    methods: {
+        increase() {
             this.cart["quantity"]++;
-            this.$store.dispatch("updateCart",this.$props.id - 1);
+            this.$store.dispatch("updateCart", this.$props.id - 1);
         },
-        decrease(){
+        decrease() {
             this.cart["quantity"]--;
-            this.$store.dispatch("updateCart",this.$props.id - 1);
+            this.$store.dispatch("updateCart", this.$props.id - 1);
         },
-        changeCart(){
-            this.$store.dispatch("updateCart",this.$props.id - 1);
+        changeCart() {
+            this.$store.dispatch("updateCart", this.$props.id - 1);
         },
-        removeItem(){
-            this.$store.dispatch("removeCart",this.$props.id - 1);
-        }
-    }
+        removeItem() {
+            this.$store.dispatch("removeCart", this.$props.id - 1);
+        },
+    },
 };
 
-
 const main = {
-    data(){
-        return{
-
-        }
+    data() {
+        return {};
     },
     template: /*html*/ `
         <div class="container">
@@ -244,34 +228,31 @@ const main = {
                 
         </div>
     `,
-    created:function(){
+    created: function () {
         this.$store.dispatch("setCart");
     },
-    methods:{
-        checkout(){
-            this.$store.dispatch("checkout")
-        }
-        
+    methods: {
+        checkout() {
+            this.$store.dispatch("checkout");
+        },
     },
-    computed:{
-        ...mapGetters({cartLen:"getCartLength"}),
-        ...mapGetters({cart:"getCart"}),
-        total(){
+    computed: {
+        ...mapGetters({ cartLen: "getCartLength" }),
+        ...mapGetters({ cart: "getCart" }),
+        total() {
             let val = 0;
-            for(let i = 0; i < this.cartLen; i++){
-                val += this.cart[i]["price"]*this.cart[i]["quantity"];
+            for (let i = 0; i < this.cartLen; i++) {
+                val += this.cart[i]["price"] * this.cart[i]["quantity"];
             }
             return val;
-        }
-    }
+        },
+    },
 };
-
 
 const app = Vue.createApp({});
 app.use(store);
-app.component("mycomp",main);
-app.component("cart-card",cart_card);
+app.component("mycomp", main);
+app.component("cart-card", cart_card);
+const components = [["nav-bar", NavBar]];
 
-
-app.mount("#app");
-
+addComponents(components).then((data) => app.mount("#app"));

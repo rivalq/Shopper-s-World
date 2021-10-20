@@ -8,9 +8,7 @@ public class Cloth {
     private String category;
     private String brand;
     private String Seller;
-   
-   
-  
+
     /**
      * @return String return the name
      */
@@ -81,7 +79,6 @@ public class Cloth {
         this.brand = brand;
     }
 
-
     /**
      * @return String return the Seller
      */
@@ -96,7 +93,6 @@ public class Cloth {
         this.Seller = Seller;
     }
 
-
     /**
      * @return int return the cloth_id
      */
@@ -110,5 +106,4 @@ public class Cloth {
     public void setCloth_id(int cloth_id) {
         this.cloth_id = cloth_id;
     }
-
 }

@@ -1,13 +1,10 @@
 package com.dbms.store.controller;
 
-
-import com.dbms.store.service.UserService;
 import com.dbms.store.service.AuthService;
+import com.dbms.store.service.UserService;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-
-import javax.servlet.http.HttpSession;
-
 
 abstract class BaseController {
     @Autowired
@@ -26,18 +23,20 @@ abstract class BaseController {
             model.addAttribute("username", currentUser);
         }
     }
-    public int SellerAuthentication (HttpSession session){
-        if(!isAuthenticated(session)){
-                return 0;
+
+    public int SellerAuthentication(HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return 0;
         }
-        if(authService.getRole(session) == "customer"){
-                // Error
-                return -1;
+        if (authService.getRole(session) == "customer") {
+            // Error
+            return -1;
         }
         return 1;
     }
-    public int checkAdmin(HttpSession session){
-        if(!isAuthenticated(session) || authService.getRole(session) != "admin")return 0;
+
+    public int checkAdmin(HttpSession session) {
+        if (!isAuthenticated(session) || authService.getRole(session) != "admin") return 0;
         return 1;
     }
 }

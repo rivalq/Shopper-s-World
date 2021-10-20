@@ -45,7 +45,7 @@
                 <div class="modal-content">
                     <div class="modal-header fs-5 fw-bold">
                         Edit Stock
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="undo"></button>
                     </div>
                     <div class="modal-body">
                         <div class="container" v-if="clothes.length > 0">
@@ -78,8 +78,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
-                        <button class="btn btn-primary" @click="reject_request">Save</button>
+                        <button class="btn btn-outline-primary" data-bs-dismiss="modal" @click="undo">Cancel</button>
+                        <button class="btn btn-primary" @click="updateStock">Save</button>
                     </div>
                 </div>
             </div>
@@ -99,6 +99,7 @@ export default {
             new_size: "",
         };
     },
+    backup: {},
     methods: {
         showCloth(e) {
             var elem = e.target;
@@ -111,6 +112,7 @@ export default {
         },
         openModel(index) {
             this.index = index;
+            this.$options.backup = JSON.parse(JSON.stringify(this.selected_cloth));
             $("#stock-modal").modal("show");
         },
         addSize() {
@@ -128,6 +130,47 @@ export default {
             });
             this.new_size = "";
         },
+        undo() {
+            this.selected_cloth = this.$options.backup;
+        },
+        updateStock() {
+            let stock = this.selected_cloth["stock"];
+            for (let i = 0; i < stock.length; i++) {
+                if (stock[i]["price"] <= 0) {
+                    displayError(`Price for Size ${stock[i]["size"]} is invalid`);
+                    return;
+                } else if (stock[i]["quantity"] < 0) {
+                    displayError(`Quantity for Size ${stock[i]["size"]} is invalid`);
+                    return;
+                }
+            }
+            const data = {
+                stock: stock,
+            };
+
+            axios
+                .put("/api/admin/stock", stock)
+                .then((response) => {
+                    $("#stock-modal").modal("hide");
+                    displaySuccess("Stock Updated Successfully");
+                })
+                .catch((response) => {
+                    displayError("Some Error Occurred");
+                });
+
+            /*$.ajax({
+                url: "/api/admin/stock",
+                type: "PUT",
+                data: data,
+                success: function (data) {
+                    $("#stock-modal").modal("hide");
+                    displaySuccess("Stock Updated Successfully");
+                },
+                error: function (data) {
+                    displayError("Some Error Occurred");
+                },
+            });*/
+        },
     },
     computed: {
         clothes() {
@@ -138,10 +181,20 @@ export default {
             }
             return arr;
         },
-        selected_cloth() {
-            if (this.clothes.length == 0) return new Object();
-            return this.clothes[this.index];
+        selected_cloth: {
+            get() {
+                if (this.clothes.length == 0) return new Object();
+                return this.clothes[this.index];
+            },
+            set(value) {
+                let temp = this.clothes;
+                temp[this.index] = value;
+                this.$store.commit("setClothes", temp);
+            },
         },
+    },
+    created() {
+        this.$options.backup = new Object();
     },
 };
 </script>

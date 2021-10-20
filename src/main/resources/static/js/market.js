@@ -1,19 +1,16 @@
-
-
-
 const Cloth = {
-    data(){
-        return{
+    data() {
+        return {
             price: 0,
-            selected: '',
-            quantity:0,
+            selected: "",
+            quantity: 0,
             cloth: {},
-            stock_by_size: {}
-        }
+            stock_by_size: {},
+        };
     },
-    
-    props: ['id'],
-    template: /*html*/`<div class="col-sm-3 shadow mx-3 my-4 cloth-card" style="text-align: center;">
+
+    props: ["id"],
+    template: /*html*/ `<div class="col-sm-3 shadow mx-3 my-4 cloth-card" style="text-align: center;">
                     <div class="row">
                         <div class="col-sm-auto">
                             <img :src = cloth.url width = "300" height = "300">
@@ -23,8 +20,8 @@ const Cloth = {
                     <div class="row mt-2">
                         <div class = "col-sm-12" ><h5 style = "text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"  >{{cloth.name}}</h5></div>
                     </div>
-                    <div class="row px-2 mt-2">
-                        <div class = "col-sm-auto" style="text-align: left;">{{cloth.brand + ' | ' + cloth.category}}</div>
+                    <div class="row  mt-2">
+                        <div class = "col-sm-6" style="text-align: left;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{cloth.brand + ' | ' + cloth.category}}</div>
                         <div class = "col float-end" style="text-align: right;" >Rating</div>
                     </div>
                     <div class="row px-2 mt-3">
@@ -43,118 +40,105 @@ const Cloth = {
                         
                     </div>
                 </div>`,
-       methods: {
-            buynow(){
-                window.location.href = "/dashboard/clothes/" + this.$props.id;
-            },
-            changeSize(event){
-                let size = event.target.innerHTML;
-                this.selected = size;
-                this.price = this.stock_by_size[size]["price"];
-                this.quantity = this.stock_by_size[size]["quantity"];
-            }
-       },
-       
-       created: function(){
-            axios.get('/api/marketplace/clothes/' + this.$props.id)
-            .then(response => {
+    methods: {
+        buynow() {
+            window.location.href = "/dashboard/clothes/" + this.$props.id;
+        },
+        changeSize(event) {
+            let size = event.target.innerHTML;
+            this.selected = size;
+            this.price = this.stock_by_size[size]["price"];
+            this.quantity = this.stock_by_size[size]["quantity"];
+        },
+    },
+
+    created: function () {
+        axios
+            .get("/api/marketplace/clothes/" + this.$props.id)
+            .then((response) => {
                 this.cloth = response.data;
                 this.cloth["url"] = "/images/marketplace/" + this.$props.id + "/profile";
-                axios.get('/api/marketplace/stock/' + this.$props.id)
-                .then(response => {
+                axios.get("/api/marketplace/stock/" + this.$props.id).then((response) => {
                     this.cloth["stock"] = response.data;
-                    for(var i = 0; i < response.data.length; i++){
-                            this.stock_by_size[response.data[i]["size"]] = response.data[i]; 
+                    for (var i = 0; i < response.data.length; i++) {
+                        this.stock_by_size[response.data[i]["size"]] = response.data[i];
                     }
 
                     const anystock = response.data[0];
                     this.price = anystock["price"];
                     this.quantity = anystock["quantity"];
                     this.selected = anystock["size"];
-                })
-                
+                });
             })
-            .catch(error =>{
+            .catch((error) => {
                 console.log(error);
-            })
-       }
-       
-}
+            });
+    },
+};
 
+const app = Vue.createApp({});
 
-const app = Vue.createApp({})
-
-app.component('Cloth',Cloth);
+app.component("Cloth", Cloth);
 
 const List = {
-
-    data(){
+    data() {
         return {
-            cloth_ids:[]
-        }
+            cloth_ids: [],
+        };
     },
 
-    template:`<div id = "cloth-body" class="row mt-4 justify-content-sm-center">
+    template: `<div id = "cloth-body" class="row mt-4 justify-content-sm-center">
                     <Cloth v-for= "id in cloth_ids"  :id="id" ></Cloth>
               </div>`,
 
-             
-    created:function(){
-
-        axios.get('/api/marketplace/clothes')
-        .then(respone =>{
+    created: function () {
+        axios.get("/api/marketplace/clothes").then((respone) => {
             var clothes = respone.data;
-            for(let i = 0; i < clothes.length; i++){
+            for (let i = 0; i < clothes.length; i++) {
                 this.cloth_ids.push(clothes[i]["cloth_id"]);
             }
-        })
+        });
+    },
+};
+
+const components = [["nav-bar", "/js/Components/NavBar.vue"]];
+
+app.component("List", List);
+
+addComponents(components).then((data) => app.mount("#app"));
+
+$(window).resize(function () {
+    if ($(window).width() <= 1423) {
+        var elems = document.getElementsByClassName("cloth-card");
+        for (var i = 0; i < elems.length; i++) {
+            var cur = elems[i];
+            cur.classList.remove("col-sm-3");
+            cur.classList.add("col-sm-5");
+        }
     }
-    
-
-}
-
-
-
-app.component('List',List);
-
-app.mount("#app");
-
-
-
-$(window).resize(function(){
-        if($(window).width() <= 1423){
-            var elems = document.getElementsByClassName("cloth-card");
-            for(var i = 0; i < elems.length; i++){
-                var cur = elems[i];
-                cur.classList.remove("col-sm-3");
-                cur.classList.add("col-sm-5");
-            }
-        }  
-        if($(window).width() <= 1054){
-            var elems = document.getElementsByClassName("cloth-card");
-            for(var i = 0; i < elems.length; i++){
-                var cur = elems[i];
-                cur.classList.remove("col-sm-5");
-                cur.classList.add("col-sm-7");
-            }
+    if ($(window).width() <= 1054) {
+        var elems = document.getElementsByClassName("cloth-card");
+        for (var i = 0; i < elems.length; i++) {
+            var cur = elems[i];
+            cur.classList.remove("col-sm-5");
+            cur.classList.add("col-sm-7");
         }
-        if($(window).width() > 1054 && $(window).width() <= 1423){
-            var elems = document.getElementsByClassName("cloth-card");
-            for(var i = 0; i < elems.length; i++){
-                var cur = elems[i];
-                cur.classList.remove("col-sm-7");
-                cur.classList.add("col-sm-5");
-            }
+    }
+    if ($(window).width() > 1054 && $(window).width() <= 1423) {
+        var elems = document.getElementsByClassName("cloth-card");
+        for (var i = 0; i < elems.length; i++) {
+            var cur = elems[i];
+            cur.classList.remove("col-sm-7");
+            cur.classList.add("col-sm-5");
         }
-        
-        if($(window).width() > 1423){
-            var elems = document.getElementsByClassName("cloth-card");
-            for(var i = 0; i < elems.length; i++){
-                var cur = elems[i];
-                cur.classList.remove("col-sm-5");
-                cur.classList.add("col-sm-3");
-            }
+    }
+
+    if ($(window).width() > 1423) {
+        var elems = document.getElementsByClassName("cloth-card");
+        for (var i = 0; i < elems.length; i++) {
+            var cur = elems[i];
+            cur.classList.remove("col-sm-5");
+            cur.classList.add("col-sm-3");
         }
+    }
 });
-
-

@@ -1,11 +1,7 @@
 package com.dbms.store.model;
 
-public class MarketPlace extends Cloth{
-    
+public class MarketPlace extends Cloth {
     private String seller;
-
-    
-
 
     /**
      * @return String return the seller
@@ -20,5 +16,4 @@ public class MarketPlace extends Cloth{
     public void setSeller(String seller) {
         this.seller = seller;
     }
-
 }

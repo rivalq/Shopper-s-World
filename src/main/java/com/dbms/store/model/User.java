@@ -1,7 +1,6 @@
 package com.dbms.store.model;
 
 public class User {
-    
     private String username;
     private String password;
     private Boolean isAdmin;
@@ -14,8 +13,6 @@ public class User {
     private String phone;
     private String pincode;
     private String email;
-
-   
 
     /**
      * @return String return the username
@@ -184,5 +181,4 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
 }

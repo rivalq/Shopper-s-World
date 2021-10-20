@@ -1,15 +1,12 @@
 package com.dbms.store.model;
 
 public class Order {
-    
     private int order_id;
     private int cloth_id;
     private int quantity;
     private String size;
     private String username;
     private int price;
-    
-
 
     /**
      * @return int return the order_id
@@ -94,5 +91,4 @@ public class Order {
     public void setPrice(int price) {
         this.price = price;
     }
-
 }

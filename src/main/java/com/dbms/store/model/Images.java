@@ -3,7 +3,6 @@ package com.dbms.store.model;
 public class Images {
     private int cloth_id;
     private String url;
-     
 
     /**
      * @return int return the cloth_id
@@ -32,5 +31,4 @@ public class Images {
     public void setUrl(String url) {
         this.url = url;
     }
-
 }

@@ -1,28 +1,23 @@
-
 package com.dbms.store.model;
 
-
 public class Request {
+    private int cloth_id;
 
+    private int request_id;
 
-       private int cloth_id;
-       
-       private int request_id;
+    private String seller;
 
-       private String seller;
+    private String size;
 
-       private String size;
+    private int quantity;
 
-       private int quantity;
+    private int price;
 
-       private int price;
+    private boolean status;
 
-       private boolean status;
+    private boolean result;
 
-       private boolean result;
-       
-       private int mp_cloth;
-
+    private int mp_cloth;
 
     /**
      * @return int return the cloth_id
@@ -136,7 +131,6 @@ public class Request {
         this.result = result;
     }
 
-
     /**
      * @return int return the mp_cloth
      */
@@ -150,5 +144,4 @@ public class Request {
     public void setMp_cloth(int mp_cloth) {
         this.mp_cloth = mp_cloth;
     }
-
 }

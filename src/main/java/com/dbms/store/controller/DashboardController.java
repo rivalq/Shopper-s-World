@@ -48,4 +48,11 @@ public class DashboardController extends BaseController {
         }
         return "orderInterface";
     }
+    @GetMapping("/dashboard/wishlist")
+    public String wishlist(HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/login";
+        }
+        return "wishlist";
+    }
 }

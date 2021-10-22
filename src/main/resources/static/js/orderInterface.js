@@ -34,8 +34,11 @@ const app = Vue.createApp({
     created: function () {
         this.$store.dispatch("getOrders");
     },
+    template: `<nav-bar></nav-bar>
+    <order-app></order-app>`,
 });
 app.use(store);
+app.component("star-rating", VueStarRating.default);
 const components = [
     ["nav-bar", NavBar],
     ["order-app", "/js/Components/Orders.vue"],

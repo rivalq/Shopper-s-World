@@ -35,7 +35,7 @@
                                     <i class="fa fa-ellipsis-v"></i>
                                 </a>
                                 <ul class="dropdown-menu" :aria-labelledby="getid(index)">
-                                    <li><a class="dropdown-item">Rate Cloth</a></li>
+                                    <li><a class="dropdown-item" @click="rate_modal(index)">Rate Cloth</a></li>
                                     <li><a class="dropdown-item">Give review</a></li>
                                 </ul>
                             </div>
@@ -45,6 +45,26 @@
             </table>
             <pagination ref="page" :data="orders"></pagination>
             <a class="nav-link mt-5" href="/dashboard/clothes"> Continue Shopping here ></a>
+
+            <div id="rate-modal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header fs-5 fw-bold">
+                            Rate The cloth
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <star-rating :ref="getRatingid(index)" :increment="0.01" :rating="5.0"></star-rating>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" @click="sendRating">Rate Cloth</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -54,6 +74,7 @@ export default {
     data() {
         return {
             columns: ["Cloth", "Size", "Quantity", "Total", "Payment Method"],
+            index: 0,
         };
     },
     computed: {
@@ -69,6 +90,50 @@ export default {
         getid(index) {
             return "triggerId" + index;
         },
+        getRatingid(index) {
+            return "rating-" + index;
+        },
+        rate_modal(index) {
+            this.index = index;
+            $("#rate-modal").modal("show");
+        },
+        getRating(index) {
+            return this.$refs[this.getRatingid(index)].selectedRating;
+        },
+        sendRating() {
+            let rating = parseFloat(this.getRating(this.index));
+            const data = {
+                username: "",
+                cloth_id: this.orders[this.index]["cloth_id"],
+                rating: rating,
+            };
+            axios
+                .put("/api/marketplace/sendrating", data)
+                .then((response) => {
+                    displaySuccess("Rating Updated");
+                })
+                .catch((response) => {
+                    displayError("Some error Occured");
+                });
+        },
     },
 };
 </script>
+
+<style scoped>
+.user-info__img img {
+    margin-right: 15px;
+    height: 140px;
+    width: 140px;
+    border-radius: 45px;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.table thead tr th,
+.table thead tr td,
+.table tbody tr th,
+.table tfoot tr td,
+.table tbody tr td {
+    font-size: 18px;
+}
+</style>

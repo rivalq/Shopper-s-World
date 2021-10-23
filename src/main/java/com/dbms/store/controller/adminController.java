@@ -220,11 +220,11 @@ public class adminController extends BaseController {
 
     @PutMapping("/api/admin/rating")
     @ResponseBody
-    public ResponseEntity<String> changeRating(HttpSession session,@RequestBody MarketPlace mp){
+    public ResponseEntity<String> changeRating(HttpSession session, @RequestBody MarketPlace mp) {
         ResponseEntity<String> error = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
-        if(checkAdmin(session) == 0)return error;
-        
+        if (checkAdmin(session) == 0) return error;
+
         ratingRepository.updateRating(mp);
 
         return ok;
@@ -232,14 +232,11 @@ public class adminController extends BaseController {
 
     @GetMapping("/api/admin/purchased")
     @ResponseBody
-    public List<Order> getPurchased(HttpSession session){
-
-        if(checkAdmin(session) == 0){
+    public List<Order> getPurchased(HttpSession session) {
+        if (checkAdmin(session) == 0) {
             return new ArrayList<>();
-        }else{
+        } else {
             return orderRepository.getOrders();
         }
     }
-
-    
 }

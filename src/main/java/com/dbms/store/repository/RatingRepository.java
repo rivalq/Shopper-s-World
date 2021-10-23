@@ -29,8 +29,8 @@ public class RatingRepository {
         return template.query("SELECT rating,custom,cloth_id,admin_rating FROM marketplace", new ClothRatingMapper());
     }
 
-    public void updateRating(MarketPlace mp){
+    public void updateRating(MarketPlace mp) {
         String sql = "UPDATE marketplace set custom = ?, admin_rating = ? where cloth_id = ?";
-        template.update(sql, mp.isCustom(),mp.getAdmin_rating(),mp.getCloth_id());
+        template.update(sql, mp.isCustom(), mp.getAdmin_rating(), mp.getCloth_id());
     }
 }

@@ -73,8 +73,6 @@ public class adminController extends BaseController {
         }
     }
 
-   
-
     @GetMapping("/admin")
     public String adminPanel(HttpSession session) {
         if (!isAuthenticated(session)) {

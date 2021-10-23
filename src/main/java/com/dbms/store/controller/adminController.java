@@ -73,14 +73,7 @@ public class adminController extends BaseController {
         }
     }
 
-    @GetMapping("/admin/requests")
-    public String ClothRequests(HttpSession session) {
-        if (!isAuthenticated(session)) {
-            return "redirect:/login";
-        }
-        if (authService.getRole(session) != "admin") return "/accessDenied";
-        return "/admin";
-    }
+   
 
     @GetMapping("/admin")
     public String adminPanel(HttpSession session) {
@@ -88,7 +81,7 @@ public class adminController extends BaseController {
             return "redirect:/login";
         }
         if (authService.getRole(session) != "admin") return "/accessDenied";
-        return "/adminpanel";
+        return "adminpanel";
     }
 
     @GetMapping("/api/admin/requests")

@@ -13,7 +13,7 @@
 	<name>store</name>
 	<description>Cloth Store</description>
 	<properties>
-		<java.version>16</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

@@ -2,9 +2,13 @@ package com.dbms.store.controller;
 
 import com.dbms.store.model.Cloth;
 import com.dbms.store.model.Images;
+import com.dbms.store.model.MarketPlace;
+import com.dbms.store.model.Order;
 import com.dbms.store.model.Request;
 import com.dbms.store.model.Stock;
 import com.dbms.store.repository.MarketRepository;
+import com.dbms.store.repository.OrderRepository;
+import com.dbms.store.repository.RatingRepository;
 import com.dbms.store.repository.RequestRepository;
 import com.dbms.store.repository.SellerRepository;
 import com.dbms.store.repository.StockRepository;
@@ -43,6 +47,12 @@ public class adminController extends BaseController {
 
     @Autowired
     StockRepository stockRepository;
+
+    @Autowired
+    RatingRepository ratingRepository;
+
+    @Autowired
+    OrderRepository orderRepository;
 
     @Value("${API_CONTEXT_ROOT}")
     String context;
@@ -207,4 +217,29 @@ public class adminController extends BaseController {
 
         return ok;
     }
+
+    @PutMapping("/api/admin/rating")
+    @ResponseBody
+    public ResponseEntity<String> changeRating(HttpSession session,@RequestBody MarketPlace mp){
+        ResponseEntity<String> error = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
+        if(checkAdmin(session) == 0)return error;
+        
+        ratingRepository.updateRating(mp);
+
+        return ok;
+    }
+
+    @GetMapping("/api/admin/purchased")
+    @ResponseBody
+    public List<Order> getPurchased(HttpSession session){
+
+        if(checkAdmin(session) == 0){
+            return new ArrayList<>();
+        }else{
+            return orderRepository.getOrders();
+        }
+    }
+
+    
 }

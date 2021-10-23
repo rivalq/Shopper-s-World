@@ -1,4 +1,3 @@
-
 const store = Vuex.createStore({
     state() {
         return {
@@ -8,6 +7,7 @@ const store = Vuex.createStore({
             requests: [],
             seller_clothes: [],
             selected_menu: 1,
+            wishlist: [],
         };
     },
     mutations: {
@@ -22,6 +22,12 @@ const store = Vuex.createStore({
         },
         setSelectedMenu(state, payload) {
             state.selected_menu = payload;
+        },
+        setWishlist(state, payload) {
+            state.wishlist = payload;
+        },
+        setOrders(state, payload) {
+            state.orders = payload;
         },
     },
     actions: {
@@ -66,12 +72,24 @@ const store = Vuex.createStore({
                 state.commit("setSellerClothes", response.data);
             });
         },
+        async getWishlist(state, payload) {
+            axios.get("/api/admin/wishlist").then((response) => {
+                state.commit("setWishlist", response.data);
+            });
+        },
+        async getOrders(state, payload) {
+            axios.get("/api/admin/purchased").then((response) => {
+                state.commit("setOrders", response.data);
+            });
+        },
     },
     getters: {
         getClothes: (state) => state.clothes,
         getRequests: (state) => state.requests,
         getSellerClothes: (state) => state.seller_clothes,
         getSelectedMenu: (state) => state.selected_menu,
+        getWishlist: (state) => state.wishlist,
+        getOrders: (state) => state.orders,
     },
 });
 
@@ -142,7 +160,9 @@ const Cloth = {
 
 const side_menu = {
     data() {
-        return {};
+        return {
+            columns: ["Catlog", "Stock", "Sellers", "Customers", "Purchased Clothes", "Cloth Requests", "Ratings"],
+        };
     },
     template: /*html*/ `
         <div class="col-2 pt-5" style="background-color: #0067b8;">
@@ -158,12 +178,9 @@ const side_menu = {
             </div>
             <div class="row mt-3">
                 
-                        <div @click = changeMenu :class = "{'menu-item':1,'menu-item-selected':selected_menu == 0}">Catalog</div>
-                        <div @click = changeMenu :class = "{'menu-item':1,'menu-item-selected':selected_menu == 1}">Stock</div>
-                        <div @click = changeMenu :class = "{'menu-item':1,'menu-item-selected':selected_menu == 2}">Sellers</div>
-                        <div @click = changeMenu :class = "{'menu-item':1,'menu-item-selected':selected_menu == 3}">Customers</div>
-                        <div @click = changeMenu :class = "{'menu-item':1,'menu-item-selected':selected_menu == 4}">Orders</div>
-                        <div @click = changeMenu :class = "{'menu-item':1,'menu-item-selected':selected_menu == 5}">Cloth Requests</div>
+                        <div  v-for = "(col,index) in columns" :key = "col" @click = changeMenu :class = "{'menu-item':1,'menu-item-selected':selected_menu == index}">{{col}}</div>
+                        
+
                 
             </div>
         </div>
@@ -175,12 +192,12 @@ const side_menu = {
         changeMenu(event) {
             var txt = event.target.innerHTML;
             let s = 0;
-            if (txt == "Catalog") s = 0;
-            else if (txt == "Stock") s = 1;
-            else if (txt == "Sellers") s = 2;
-            else if (txt == "Customers") s = 3;
-            else if (txt == "Orders") s = 4;
-            else if (txt == "Cloth Requests") s = 5;
+            for (let i = 0; i < this.columns.length; i++) {
+                if (txt == this.columns[i]) {
+                    s = i;
+                    break;
+                }
+            }
             this.$store.commit("setSelectedMenu", s);
         },
     },
@@ -202,7 +219,9 @@ const panel = {
                                
                                 <catalog v-show = "selected_menu == 0" ></catalog>
                                 <stock-menu v-show = "selected_menu == 1" ></stock-menu>
+                                <purchased-cloth v-show = "selected_menu == 4" ></purchased-cloth>
                                 <request-menu  v-show = "selected_menu == 5"></request-menu>
+                                <rating-menu v-show = "selected_menu == 6" ></rating-menu>
                         </div>
                     </div>
             </div>
@@ -212,6 +231,7 @@ const panel = {
         this.$store.dispatch("getClothes");
         this.$store.dispatch("getRequests");
         this.$store.dispatch("getSellerClothes");
+        this.$store.dispatch("getOrders");
     },
 
     computed: {
@@ -226,6 +246,9 @@ const components = [
     ["catalog", Component_Path + "Catalog.vue"],
     ["request-menu", Component_Path + "RequestMenu.vue"],
     ["stock-menu", Component_Path + "Stock.vue"],
+    ["rating-menu", Component_Path + "Rating.vue"],
+    ["pagination", "/js/Components/" + "pagination.vue"],
+    ["purchased-cloth", Component_Path + "Orders.vue"],
 ];
 
 const app = Vue.createApp({});
@@ -235,4 +258,5 @@ app.use(store);
 app.component("side-menu", side_menu);
 app.component("cloth-card", Cloth);
 app.component("panel", panel);
+app.component("star-rating", VueStarRating.default);
 addComponents(components).then((data) => app.mount("#app"));

@@ -21,4 +21,8 @@ public class OrderRepository {
         String sql = "SELECT * from order_details where username = ?";
         return template.query(sql, new OrderMapper(), new Object[] { username });
     }
+    public List<Order> getOrders() {
+        String sql = "SELECT * from order_details";
+        return template.query(sql, new OrderMapper());
+    }
 }

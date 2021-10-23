@@ -6,29 +6,24 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col" class="hide">Cloth id</th>
-                            <th scope="col">Cloth Name</th>
-                            <th scope="col">Brand</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Visible</th>
+                            <th scope="col" v-for="col in columns" :key="col">{{ col }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="cloth in clothes" :key="cloth">
-                            <th scope="row" class="hide">{{ cloth.cloth_id }}</th>
-                            <td style="cursor: pointer" @click="showCloth">
+                            <td style="cursor: pointer" @click="showCloth(cloth.cloth_id)">
                                 <div class="user-info">
                                     <div class="user-info__img">
                                         <img :src="cloth.url" alt="Unavailable" />
                                     </div>
                                     <div class="user-info__basic">
                                         <h5 class="mb-0 text-wrap" style="max-width: 300px">{{ cloth.name }}</h5>
+                                        <p class="mb-0 text-muted">{{ "@" + cloth.brand }}</p>
+                                        <span class="mb-0" v-if="cloth.custom == true"><star-rating :readOnly="true" :starSize="25" :increment="0.01" :rating="cloth.admin_rating"></star-rating></span>
+                                        <span class="mb-0" v-if="cloth.custom == false"><star-rating :readOnly="true" :starSize="25" :increment="0.01" :rating="cloth.rating"></star-rating></span>
                                     </div>
                                 </div>
                             </td>
-                            <td>{{ cloth.brand }}</td>
-                            <td>{{ cloth.category }}</td>
                             <td v-if="outOfStock(cloth.stock)"><i class="fad fa-ban me-2" style="color: red"></i>Out of Stock</td>
                             <td v-else><i class="fad fa-check me-2" style="color: green"></i> In stock</td>
                             <td><span class="active-circle bg-success"></span>Online</td>
@@ -44,14 +39,12 @@
 export default {
     data() {
         return {
+            columns: ["Cloth", "Status", "Visible"],
             value: "",
         };
     },
     methods: {
-        showCloth(e) {
-            var elem = e.target;
-            while (elem.tagName != "TR") elem = elem.parentNode;
-            var id = elem.childNodes[0].innerHTML;
+        showCloth(id) {
             window.location.href = "/dashboard/clothes/" + id;
         },
         outOfStock(stock) {
@@ -74,4 +67,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.user-info__img img {
+    margin-right: 15px;
+    height: 140px;
+    width: 140px;
+    border-radius: 45px;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+</style>

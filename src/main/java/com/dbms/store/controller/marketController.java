@@ -6,12 +6,10 @@ import com.dbms.store.model.Order;
 import com.dbms.store.model.Ratings;
 import com.dbms.store.model.Stock;
 import com.dbms.store.model.Wishlist;
-import com.dbms.store.model.Wishlist;
 import com.dbms.store.repository.MarketRepository;
 import com.dbms.store.repository.OrderRepository;
 import com.dbms.store.repository.RatingRepository;
 import com.dbms.store.repository.WishListRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -22,10 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -108,30 +104,30 @@ public class marketController extends BaseController {
         return ok;
     }
 
-    @GetMapping(value="/api/marketplace/wishlist")
+    @GetMapping(value = "/api/marketplace/wishlist")
     @ResponseBody
     public List<Integer> getWishlist(HttpSession session) {
-         if(!isAuthenticated(session)){
-             return new ArrayList<>();
-         }
-         return wishListRepository.getWishList(authService.getCurrentUser(session));
+        if (!isAuthenticated(session)) {
+            return new ArrayList<>();
+        }
+        return wishListRepository.getWishList(authService.getCurrentUser(session));
     }
 
     @GetMapping("/api/marketplace/ratings/{cloth_id}")
     @ResponseBody
-    public float getRatingCloth(@PathVariable("cloth_id") int cloth_id){
-          ClothRating rt = ratingRepository.getRating(cloth_id); 
-           
-          if(rt.isCustom() == true)return rt.getAdmin_rating();
-          return rt.getRating();
-    }   
+    public float getRatingCloth(@PathVariable("cloth_id") int cloth_id) {
+        ClothRating rt = ratingRepository.getRating(cloth_id);
+
+        if (rt.isCustom() == true) return rt.getAdmin_rating();
+        return rt.getRating();
+    }
 
     @DeleteMapping("/api/marketplace/wishlist/{cloth_id}")
     @ResponseBody
-    public ResponseEntity<String> removeWish(HttpSession session,@PathVariable("cloth_id") int cloth_id){
+    public ResponseEntity<String> removeWish(HttpSession session, @PathVariable("cloth_id") int cloth_id) {
         ResponseEntity<String> err = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
-        if(!isAuthenticated(session)){
+        if (!isAuthenticated(session)) {
             return err;
         }
         Wishlist ws = new Wishlist();
@@ -140,7 +136,4 @@ public class marketController extends BaseController {
         wishListRepository.deleteWishList(ws);
         return ok;
     }
-
-    
-
 }

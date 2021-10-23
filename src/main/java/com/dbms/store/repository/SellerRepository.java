@@ -1,7 +1,7 @@
 package com.dbms.store.repository;
 
-import com.dbms.store.Mapper.ClothMapper;
 import com.dbms.store.Mapper.ImagesMapper;
+import com.dbms.store.Mapper.SellerClothMapper;
 import com.dbms.store.model.Cloth;
 import com.dbms.store.model.Images;
 import java.sql.ResultSet;
@@ -35,7 +35,7 @@ public class SellerRepository {
 
     public Cloth getCloth(int cloth_id) {
         String sql = "SELECT * FROM seller_cloth where cloth_id = ?";
-        return template.queryForObject(sql, new ClothMapper(), new Object[] { cloth_id });
+        return template.queryForObject(sql, new SellerClothMapper(), new Object[] { cloth_id });
     }
 
     public List<Integer> listCloth(String user) {
@@ -76,7 +76,7 @@ public class SellerRepository {
     }
 
     public List<Cloth> getSellerClothes() {
-        return template.query("SELECT * FROM seller_cloth", new ClothMapper());
+        return template.query("SELECT * FROM seller_cloth", new SellerClothMapper());
     }
 
     public void deleteCloth(int cloth_id) {

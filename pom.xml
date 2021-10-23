@@ -16,6 +16,13 @@
 		<java.version>8</java.version>
 	</properties>
 	<dependencies>
+
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client-jre7</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>

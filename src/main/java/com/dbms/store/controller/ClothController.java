@@ -32,7 +32,7 @@ public class ClothController extends BaseController {
             return "redirect:/login";
         }
         model.addAttribute("role", authService.getRole(session));
-        return "/clothInterface";
+        return "clothInterface";
     }
 
     @GetMapping("/dashboard/clothes")
@@ -40,7 +40,7 @@ public class ClothController extends BaseController {
         if (!isAuthenticated(session)) {
             return "redirect:/login";
         }
-        return "/market";
+        return "market";
     }
 
     /*

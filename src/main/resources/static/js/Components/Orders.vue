@@ -36,7 +36,7 @@
                                 </a>
                                 <ul class="dropdown-menu" :aria-labelledby="getid(index)">
                                     <li><a class="dropdown-item" @click="rate_modal(index)">Rate Cloth</a></li>
-                                    <li><a class="dropdown-item">Give review</a></li>
+                                    <li><a class="dropdown-item" @click="review_modal(index)">Give review</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -65,6 +65,44 @@
                     </div>
                 </div>
             </div>
+            <div id="review-modal" class="modal fade">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header fs-5 fw-bold">
+                            Give Review
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>Heading</strong>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col">
+                                        <input type="text" class="form-input" v-model="head" width="500px" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <strong>Review</strong>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col">
+                                        <textarea type="text" class="form-input" v-model="body" rows="4" cols="22"> </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" @click="sendReview">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -75,6 +113,8 @@ export default {
         return {
             columns: ["Cloth", "Size", "Quantity", "Total", "Payment Method"],
             index: 0,
+            head: "",
+            body: "",
         };
     },
     computed: {
@@ -97,6 +137,10 @@ export default {
             this.index = index;
             $("#rate-modal").modal("show");
         },
+        review_modal(index) {
+            this.index = index;
+            $("#review-modal").modal("show");
+        },
         getRating(index) {
             return this.$refs[this.getRatingid(index)].selectedRating;
         },
@@ -111,9 +155,34 @@ export default {
                 .put("/api/marketplace/sendrating", data)
                 .then((response) => {
                     displaySuccess("Rating Updated");
+                    $("#rate-modal").modal("hide");
                 })
                 .catch((response) => {
                     displayError("Some error Occured");
+                });
+        },
+        sendReview() {
+            if (this.head == "" || this.body == "") {
+                displayError("All fields should be filled");
+                return;
+            }
+            const review = {
+                username: "",
+                cloth_id: this.orders[this.index]["cloth_id"],
+                head: this.head,
+                body: this.body,
+                time: new Date(),
+            };
+            axios
+                .post("/api/marketplace/reviews", review)
+                .then((response) => {
+                    displaySuccess("Review Added");
+                    this.head = "";
+                    this.body = "";
+                    $("#review-modal").modal("hide");
+                })
+                .catch((response) => {
+                    displayError("Some Error Occured");
                 });
         },
     },

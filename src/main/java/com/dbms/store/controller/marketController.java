@@ -4,11 +4,13 @@ import com.dbms.store.model.ClothRating;
 import com.dbms.store.model.MarketPlace;
 import com.dbms.store.model.Order;
 import com.dbms.store.model.Ratings;
+import com.dbms.store.model.Reviews;
 import com.dbms.store.model.Stock;
 import com.dbms.store.model.Wishlist;
 import com.dbms.store.repository.MarketRepository;
 import com.dbms.store.repository.OrderRepository;
 import com.dbms.store.repository.RatingRepository;
+import com.dbms.store.repository.ReviewRepository;
 import com.dbms.store.repository.WishListRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,6 +40,9 @@ public class marketController extends BaseController {
 
     @Autowired
     private WishListRepository wishListRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @GetMapping("/api/marketplace/clothes")
     @ResponseBody
@@ -135,5 +141,44 @@ public class marketController extends BaseController {
         ws.setUsername(authService.getCurrentUser(session));
         wishListRepository.deleteWishList(ws);
         return ok;
+    }
+
+    @GetMapping("/api/marketplace/reviews/{cloth_id}")
+    @ResponseBody
+    public List<Reviews> getClothReviews(@PathVariable("cloth_id") int cloth_id){
+        return reviewRepository.getClothReviews(cloth_id);
+    }
+
+    @PostMapping("/api/marketplace/reviews")
+    @ResponseBody
+    public ResponseEntity<String> addReview(HttpSession session,@RequestBody Reviews r){
+        ResponseEntity<String> err = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
+        if(!isAuthenticated(session))return err;
+        r.setUsername(authService.getCurrentUser(session));
+        reviewRepository.addReview(r);
+        return ok;
+    }
+    @GetMapping("/api/marketplace/reviews")
+    @ResponseBody
+    public List<Reviews> getUserReviews(HttpSession session){
+        if(isAuthenticated(session) == false){
+            return new ArrayList<>();
+        }
+        return reviewRepository.getUserReviews(authService.getCurrentUser(session));
+    }
+    @DeleteMapping("/api/marketplace/reviews")
+    @ResponseBody
+    public ResponseEntity<String> deleteReview(HttpSession session,@RequestBody Reviews r){
+        ResponseEntity<String> err = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
+        if(!isAuthenticated(session)){
+            return err;
+        }
+        if((authService.getRole(session) == "admin") || (authService.getCurrentUser(session).equals(r.getUsername()) == true)){
+            reviewRepository.removeReview(r.getUsername(), r.getCloth_id());
+            return ok;
+        }
+        return err;
     }
 }

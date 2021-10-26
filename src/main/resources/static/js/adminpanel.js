@@ -6,8 +6,9 @@ const store = Vuex.createStore({
             orders: [],
             requests: [],
             seller_clothes: [],
-            selected_menu: 1,
+            selected_menu: 8,
             wishlist: [],
+            reviews: [],
         };
     },
     mutations: {
@@ -28,6 +29,9 @@ const store = Vuex.createStore({
         },
         setOrders(state, payload) {
             state.orders = payload;
+        },
+        setReviews(state, payload) {
+            state.reviews = payload;
         },
     },
     actions: {
@@ -82,6 +86,11 @@ const store = Vuex.createStore({
                 state.commit("setOrders", response.data);
             });
         },
+        async getReviews(state, payload) {
+            axios.get("/api/admin/reviews").then((response) => {
+                state.commit("setReviews", response.data);
+            });
+        },
     },
     getters: {
         getClothes: (state) => state.clothes,
@@ -90,82 +99,19 @@ const store = Vuex.createStore({
         getSelectedMenu: (state) => state.selected_menu,
         getWishlist: (state) => state.wishlist,
         getOrders: (state) => state.orders,
+        getReviews: (state) => state.reviews,
     },
 });
-
-const Cloth = {
-    data() {
-        return {
-            price: 0,
-            selected: "",
-            quantity: 0,
-            stock_by_size: {},
-        };
-    },
-
-    props: ["cloth"],
-    template: /*html*/ `<div class="col-sm-3 shadow mx-3 my-4 cloth-card" style="text-align: center;">
-                    <div class="row">
-                        <div class="col-sm-auto">
-                            <img :src = cloth.url width = "300" height = "300">
-                        </div>
-    			
-                    </div>
-                    <div class="row mt-2">
-                        <div class = "col-sm-12" ><h5 style = "text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"  >{{cloth.name}}</h5></div>
-                    </div>
-                    <div class="row px-2 mt-2">
-                        <div class = "col-sm-auto" style="text-align: left;">{{cloth.brand + ' | ' + cloth.category}}</div>
-                        <div class = "col float-end" style="text-align: right;" >Rating</div>
-                    </div>
-                    <div class="row px-2 mt-3">
-                        <div class = "col  fs-5" style="text-align: left;">
-                            <div class="btn-group" role="group">
-                                      <button  v-for = "stock in cloth.stock" :key = "stock"  @click=changeSize  :class="{btn:1,'shadow-none':0,'btn-outline-primary': selected != stock.size, 'btn-primary': selected == stock.size }" > {{stock.size}}</button>
-                            </div>
-			    
-                        </div>
-                        <div class = "col fs-5 float-end fw-bold text-wrap" style="text-align: right;" >{{'Rs '+price}}</div>
-                    </div>
-                    <div class="row mt-4">
-                        <div @click = buynow class = "col bg-primary fs-4 rounded-bottom buynow-btn py-2" style="color: white;">
-                                Buy Now
-                        </div>
-                        
-                    </div>
-                </div>`,
-    methods: {
-        buynow() {
-            window.location.href = "/dashboard/clothes/" + this.$props.cloth["cloth_id"];
-        },
-        changeSize(event) {
-            let size = event.target.innerHTML;
-            this.selected = size;
-            this.price = this.stock_by_size[size]["price"];
-            this.quantity = this.stock_by_size[size]["quantity"];
-        },
-    },
-
-    created: function () {
-        let stocks = this.$props.cloth["stock"];
-        for (var i = 0; i < stocks.length; i++) {
-            this.stock_by_size[stocks[i]["size"]] = stocks[i];
-        }
-        const anystock = stocks[0];
-        this.price = anystock["price"];
-        this.quantity = anystock["quantity"];
-        this.selected = anystock["size"];
-    },
-};
 
 const side_menu = {
     data() {
         return {
-            columns: ["Catlog", "Stock", "Sellers", "Customers", "Purchased Clothes", "Cloth Requests", "Ratings"],
+            columns: ["Catlog", "Stock", "Sellers", "Customers", "Purchased Clothes", "Cloth Requests", "Ratings", "Reviews", "Add New Cloth"],
         };
     },
     template: /*html*/ `
-        <div class="col-2 pt-5" style="background-color: #0067b8;">
+        <div class="col-2 pt-5 admin_sidebar" style="background-color: #0067b8;height:100vh;overflow:auto">
+            
             <div class="row mt-5">
                     <div class="col" style="text-align: center;"> 
                         <img src = "/images/defalult_user_profile.png" width = "120" height = "100" >
@@ -178,7 +124,7 @@ const side_menu = {
             </div>
             <div class="row mt-3">
                 
-                        <div  v-for = "(col,index) in columns" :key = "col" @click = changeMenu :class = "{'menu-item':1,'menu-item-selected':selected_menu == index}">{{col}}</div>
+                        <div  v-for = "(col,index) in columns" :key = "col" @click = changeMenu(index) :class = "{'menu-item':1,'menu-item-selected':selected_menu == index}">{{col}}</div>
                         
 
                 
@@ -189,16 +135,8 @@ const side_menu = {
         ...mapGetters({ selected_menu: "getSelectedMenu" }),
     },
     methods: {
-        changeMenu(event) {
-            var txt = event.target.innerHTML;
-            let s = 0;
-            for (let i = 0; i < this.columns.length; i++) {
-                if (txt == this.columns[i]) {
-                    s = i;
-                    break;
-                }
-            }
-            this.$store.commit("setSelectedMenu", s);
+        changeMenu(index) {
+            this.$store.commit("setSelectedMenu", index);
         },
     },
 };
@@ -222,6 +160,8 @@ const panel = {
                                 <purchased-cloth v-show = "selected_menu == 4" ></purchased-cloth>
                                 <request-menu  v-show = "selected_menu == 5"></request-menu>
                                 <rating-menu v-show = "selected_menu == 6" ></rating-menu>
+                                <review-menu v-show = "selected_menu == 7"></review-menu>
+                                <builder-menu v-show = "selected_menu == 8"> </builder-menu>
                         </div>
                     </div>
             </div>
@@ -232,6 +172,7 @@ const panel = {
         this.$store.dispatch("getRequests");
         this.$store.dispatch("getSellerClothes");
         this.$store.dispatch("getOrders");
+        this.$store.dispatch("getReviews");
     },
 
     computed: {
@@ -249,14 +190,13 @@ const components = [
     ["rating-menu", Component_Path + "Rating.vue"],
     ["pagination", "/js/Components/" + "pagination.vue"],
     ["purchased-cloth", Component_Path + "Orders.vue"],
+    ["review-menu", Component_Path + "Reviews.vue"],
+    ["builder-menu", Component_Path + "Builder.vue"],
 ];
 
 const app = Vue.createApp({});
-//Vue = app;
 app.use(store);
-//app.use(Editor);
 app.component("side-menu", side_menu);
-app.component("cloth-card", Cloth);
 app.component("panel", panel);
 app.component("star-rating", VueStarRating.default);
 addComponents(components).then((data) => app.mount("#app"));

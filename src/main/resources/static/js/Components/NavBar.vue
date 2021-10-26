@@ -36,6 +36,8 @@
                             <li><a class="dropdown-item" href="/dashboard/cart">Your Cart</a></li>
                             <li><a class="dropdown-item" href="/dashboard/orders">Your Orders</a></li>
                             <li><a class="dropdown-item" href="/dashboard/wishlist">Your Wishlist</a></li>
+                            <li><a class="dropdown-item" href="/dashboard/reviews">Your Reviews</a></li>
+
                             <li><hr class="dropdown-divider" /></li>
                             <li><a class="dropdown-item" href="/admin" v-if="user.isAdmin">Admin Panel</a></li>
                             <li><a class="dropdown-item" href="/seller" v-if="user.isSeller">Seller Panel</a></li>

@@ -3,6 +3,15 @@
 * {
     font-family: "Poppins", sans-serif;
 }
+.admin_sidebar::-webkit-scrollbar {
+    width: 10px;
+    background: transparent; /* make scrollbar transparent */
+}
+.admin_sidebar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+
 .profile_body {
     width: 75%;
     height: 1000px;
@@ -173,4 +182,22 @@ nav-bar {
 }
 .red {
     background: red;
+}
+
+.input {
+    background-color: rgb(240, 243, 245);
+    width: 500px;
+    height: 40px;
+    border: none;
+    outline: none;
+}
+.textarea:focus-visible,
+.input:focus-visible {
+    border-bottom: 2px solid rgb(13, 110, 253);
+}
+.textarea {
+    background-color: rgb(240, 243, 245);
+    width: 500px;
+    border: none;
+    outline: none;
 }

@@ -22,22 +22,10 @@ public class DashboardController extends BaseController {
     @Value("${API_CONTEXT_ROOT}")
     private String context;
 
-    public class Pair {
-        public String profile_url;
-        public Cloth cloth;
-
-        Pair(String profile_url, Cloth cloth) {
-            this.profile_url = profile_url;
-            this.cloth = cloth;
-        }
-    }
+  
 
     @RequestMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
-        if (!isAuthenticated(session)) {
-            return "redirect:/login";
-        }
-        addDefaultAttributes(model, session);
         return "dashboard/index";
     }
 
@@ -55,5 +43,12 @@ public class DashboardController extends BaseController {
             return "redirect:/login";
         }
         return "wishlist";
+    }
+    @GetMapping("/dashboard/reviews")
+    public String reviews(HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/login";
+        }
+        return "reviews";
     }
 }

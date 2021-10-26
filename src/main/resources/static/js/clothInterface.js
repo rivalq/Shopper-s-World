@@ -15,6 +15,7 @@ const store = Vuex.createStore({
             quantity: 0,
             selected_menu: 0,
             selected_crud_menu: 0,
+            reviews: [],
         };
     },
     mutations: {
@@ -37,6 +38,9 @@ const store = Vuex.createStore({
         },
         setSelectedCrudMenu(state, payload) {
             state.selected_crud_menu = payload;
+        },
+        setReviews(state, payload) {
+            state.reviews = payload;
         },
     },
     actions: {
@@ -89,6 +93,12 @@ const store = Vuex.createStore({
                 },
             });
         },
+        async getReviews(state, payload) {
+            var id = window.location.href.split("/").at(-1);
+            axios.get("/api/marketplace/reviews/" + id).then((response) => {
+                state.commit("setReviews", response.data);
+            });
+        },
     },
     getters: {
         getCart: (state) => state.cart,
@@ -100,123 +110,13 @@ const store = Vuex.createStore({
         getSelectedSize: (state) => state.selected_size,
         getSelectedMenu: (state) => state.selected_menu,
         getSelectedCrudMenu: (state) => state.selected_crud_menu,
+        getReviews: (state) => state.reviews,
     },
 });
 
 /**
  * Vue Components
  */
-
-const CHead = {
-    data() {
-        return {
-            wish1: "Add to WishList",
-            wish2: "Remove from WishList",
-            wish: 0,
-        };
-    },
-    props: ["id"],
-    template: /*html*/ `
-        <div class="row mt-5">
-                <div class="col-lg-5">
-                    <img  :src = cloth.url class = "width"   height = "500">
-                </div>
-                <div class="col-lg-6 ps-4">
-                    <div class="row mt-3">
-                        <div class="col" style="font-size: 34px;font-weight: 400; color: rgb(0,0,0,0.87);">
-                           {{cloth.name}}
-                        </div>
-                        <div class="col-sm-auto float-end">
-                            <div class = "row mt-3">
-                                <div class="col-sm-auto">{{wish1}}</div>
-                                <div class="col-sm-auto"> <i @click = changeWish  :class="{fa:1,'fa-heart':wish,'fa-heart-o':!wish}" aria-hidden="true" ></i></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-1">
-                        <div class="col-md-auto">{{cloth.brand + ' | ' + cloth.category}}</div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col fw-bold fs-4">{{'Rs '+price}}</div>
-                        <div class="col float-end px-3" style="text-align: end;">Rating</div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col text-muted text-wrap lh-base">
-                           {{cloth.long_description}}
-                        </div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col">
-                            <div class="btn-group" role="group">
-                                      <button  v-for = "stock in cloth.stock" :key = "stock"  @click=changeSize  :class="{btn:1,'shadow-none':0,'btn-outline-primary': selected_size != stock.size, 'btn-primary': selected_size == stock.size }" > {{stock.size}}</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col-md-auto">
-                                <div class="btn-group" role = "group">
-                                        <button @click = "decrease" class = "btn border border-2 border-end-0 shadow-none" style = "color:red;"> - </button>
-                                        <input  class = "form-control input-group-sm border border-2 shadow-none" style = "width:70px" type="number" v-model = "cart">
-                                        <button @click = "increase"  class = "btn border border-2 border-start-0 shadow-none" style = "color:green;"> + </button>
-                                </div>
-                        </div>
-                        
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-sm-6" style="color: white;">
-                               <button @click = addCart  class = "btn btn-primary col-sm-9">Add to Cart</button> 
-                        </div>
-                    </div>
-                </div>
-        </div>
-    `,
-
-    methods: {
-        changeSize(event) {
-            let size = event.target.innerHTML;
-            this.$store.commit("changeSize", size);
-        },
-        changeWish(event) {
-            this.wish = 1 - this.wish;
-            [this.wish1, this.wish2] = [this.wish2, this.wish1];
-        },
-        increase(event) {
-            this.$store.commit("setCart", this.cart + 1);
-        },
-        decrease(event) {
-            this.$store.commit("setCart", this.cart - 1);
-        },
-        addCart() {
-            if (this.cart <= 0) {
-                displayError("Quantity should be greater than 0");
-            } else {
-                this.$store.dispatch("updateCart");
-            }
-        },
-    },
-
-    created: function () {
-        this.$store.dispatch("setCloth", this.$props.id).then(() => {
-            this.$emit("clothLoaded");
-        });
-    },
-
-    computed: {
-        ...mapGetters({ cloth: "getCloth" }),
-        ...mapGetters({ price: "getPrice" }),
-        ...mapGetters({ quantity: "getQuantity" }),
-        ...mapGetters({ selected_size: "getSelectedSize" }),
-        cart: {
-            get() {
-                return this.$store.getters.getCart;
-            },
-            set(value) {
-                this.$store.commit("setCart", value);
-            },
-        },
-    },
-};
 
 const fab = {
     data() {
@@ -418,21 +318,95 @@ const Main = {
     },
 };
 
+const slider = {
+    data() {
+        return {};
+    },
+    template: /*html*/ `
+
+            <div class="row mt-5 justify-content-md-center">
+                   <div @click = changeMenu :class="['col-sm-auto','py-1','cursor', selected_menu == 0 ? 'current_menu': 'text-muted']" style = "font-size:18px">Description</div> 
+                   <div @click = changeMenu :class="['col-sm-auto','py-1','cursor', selected_menu == 1 ? 'current_menu': 'text-muted']" style = "font-size:18px">Features</div>
+                   <div @click = changeMenu :class="['col-sm-auto','py-1','cursor', selected_menu == 2 ? 'current_menu': 'text-muted']" style = "font-size:18px">Reviews</div>
+            </div>
+
+    `,
+    methods: {
+        changeMenu(event) {
+            var text = event.target.innerHTML;
+            var temp;
+            if (text[0] == "D") temp = 0;
+            else if (text[0] == "F") temp = 1;
+            else temp = 2;
+            this.$store.commit("setSelectedMenu", temp);
+        },
+    },
+    computed: {
+        ...mapGetters({ selected_menu: "getSelectedMenu" }),
+    },
+};
+
+const Description = {
+    data() {
+        return {};
+    },
+    template: /*html*/ `
+        <div class="col">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ultricies mi eget mauris pharetra et. Vel pretium lectus quam id leo in vitae turpis massa. Orci dapibus ultrices in iaculis nunc. At auctor urna nunc id cursus metus. Integer feugiat scelerisque varius morbi enim nunc. Aliquam sem et tortor consequat id porta nibh venenatis cras. Pellentesque pulvinar pellentesque habitant morbi tristique senectus et netus. Malesuada nunc vel risus commodo viverra maecenas. Neque volutpat ac tincidunt vitae semper quis.
+        </div>
+    `,
+};
+const Features = {
+    data() {
+        return {};
+    },
+    template: /*html*/ `
+        <div class="col">
+        There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle 
+        </div>
+    `,
+};
+
+const dfr = {
+    data() {
+        return {};
+    },
+    template: /*html*/ `
+        <slider></slider>
+        <div class="row mt-4">
+            <Description v-show = "selected == 0"></Description>
+            <Features  v-show = "selected == 1"></Features>
+            <Reviews   v-show = "selected == 2"></Reviews>
+        </div>
+    `,
+    computed: {
+        ...mapGetters({ selected: "getSelectedMenu" }),
+    },
+};
+
 /**
  * Creating Vue App
  */
 
-const app = Vue.createApp({});
+const app = Vue.createApp({
+    created: function () {
+        this.$store.dispatch("getReviews");
+    },
+});
 
 app.use(store);
+const PATH = "/js/Components/Cloth/";
+const AVATAR = "https://avatars.dicebear.com/api/human/ihojfowhfo.svg";
 
-const components = [["nav-bar", NavBar]];
+const components = [
+    ["nav-bar", NavBar],
+    ["Cloth", PATH + "Cloth.vue"],
+    ["Reviews", PATH + "Reviews.vue"],
+];
 
-app.component("Cloth", CHead);
 app.component("slider", slider);
 app.component("Description", Description);
 app.component("Features", Features);
-app.component("Reviews", Reviews);
 app.component("dfr", dfr);
 app.component("mycomp", Main);
 app.component("fab", fab);

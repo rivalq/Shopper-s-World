@@ -5,11 +5,13 @@ import com.dbms.store.model.Images;
 import com.dbms.store.model.MarketPlace;
 import com.dbms.store.model.Order;
 import com.dbms.store.model.Request;
+import com.dbms.store.model.Reviews;
 import com.dbms.store.model.Stock;
 import com.dbms.store.repository.MarketRepository;
 import com.dbms.store.repository.OrderRepository;
 import com.dbms.store.repository.RatingRepository;
 import com.dbms.store.repository.RequestRepository;
+import com.dbms.store.repository.ReviewRepository;
 import com.dbms.store.repository.SellerRepository;
 import com.dbms.store.repository.StockRepository;
 import java.io.File;
@@ -53,6 +55,9 @@ public class adminController extends BaseController {
 
     @Autowired
     OrderRepository orderRepository;
+
+    @Autowired
+    ReviewRepository reviewRepository;
 
     @Value("${API_CONTEXT_ROOT}")
     String context;
@@ -228,6 +233,16 @@ public class adminController extends BaseController {
             return new ArrayList<>();
         } else {
             return orderRepository.getOrders();
+        }
+    }
+
+    @GetMapping("/api/admin/reviews")
+    @ResponseBody
+    public List<Reviews> getReviews(HttpSession session){
+        if(checkAdmin(session) == 0){
+            return new ArrayList<>();
+        }else{
+            return reviewRepository.getReviews();
         }
     }
 }

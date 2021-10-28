@@ -22,8 +22,6 @@ public class DashboardController extends BaseController {
     @Value("${API_CONTEXT_ROOT}")
     private String context;
 
-  
-
     @RequestMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
         return "dashboard/index";
@@ -44,6 +42,7 @@ public class DashboardController extends BaseController {
         }
         return "wishlist";
     }
+
     @GetMapping("/dashboard/reviews")
     public String reviews(HttpSession session) {
         if (!isAuthenticated(session)) {

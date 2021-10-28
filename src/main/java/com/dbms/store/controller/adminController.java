@@ -238,10 +238,10 @@ public class adminController extends BaseController {
 
     @GetMapping("/api/admin/reviews")
     @ResponseBody
-    public List<Reviews> getReviews(HttpSession session){
-        if(checkAdmin(session) == 0){
+    public List<Reviews> getReviews(HttpSession session) {
+        if (checkAdmin(session) == 0) {
             return new ArrayList<>();
-        }else{
+        } else {
             return reviewRepository.getReviews();
         }
     }

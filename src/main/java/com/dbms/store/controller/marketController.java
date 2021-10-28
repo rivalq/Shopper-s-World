@@ -145,37 +145,39 @@ public class marketController extends BaseController {
 
     @GetMapping("/api/marketplace/reviews/{cloth_id}")
     @ResponseBody
-    public List<Reviews> getClothReviews(@PathVariable("cloth_id") int cloth_id){
+    public List<Reviews> getClothReviews(@PathVariable("cloth_id") int cloth_id) {
         return reviewRepository.getClothReviews(cloth_id);
     }
 
     @PostMapping("/api/marketplace/reviews")
     @ResponseBody
-    public ResponseEntity<String> addReview(HttpSession session,@RequestBody Reviews r){
+    public ResponseEntity<String> addReview(HttpSession session, @RequestBody Reviews r) {
         ResponseEntity<String> err = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
-        if(!isAuthenticated(session))return err;
+        if (!isAuthenticated(session)) return err;
         r.setUsername(authService.getCurrentUser(session));
         reviewRepository.addReview(r);
         return ok;
     }
+
     @GetMapping("/api/marketplace/reviews")
     @ResponseBody
-    public List<Reviews> getUserReviews(HttpSession session){
-        if(isAuthenticated(session) == false){
+    public List<Reviews> getUserReviews(HttpSession session) {
+        if (isAuthenticated(session) == false) {
             return new ArrayList<>();
         }
         return reviewRepository.getUserReviews(authService.getCurrentUser(session));
     }
+
     @DeleteMapping("/api/marketplace/reviews")
     @ResponseBody
-    public ResponseEntity<String> deleteReview(HttpSession session,@RequestBody Reviews r){
+    public ResponseEntity<String> deleteReview(HttpSession session, @RequestBody Reviews r) {
         ResponseEntity<String> err = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
-        if(!isAuthenticated(session)){
+        if (!isAuthenticated(session)) {
             return err;
         }
-        if((authService.getRole(session) == "admin") || (authService.getCurrentUser(session).equals(r.getUsername()) == true)){
+        if ((authService.getRole(session) == "admin") || (authService.getCurrentUser(session).equals(r.getUsername()) == true)) {
             reviewRepository.removeReview(r.getUsername(), r.getCloth_id());
             return ok;
         }

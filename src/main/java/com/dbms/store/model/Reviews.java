@@ -3,16 +3,12 @@ package com.dbms.store.model;
 import java.util.Date;
 
 public class Reviews {
-
     private String username;
     private int cloth_id;
     private String head;
     private String body;
     private boolean hide;
     private Date time;
-
-
-    
 
     /**
      * @return String return the username
@@ -84,7 +80,6 @@ public class Reviews {
         this.hide = hide;
     }
 
-
     /**
      * @return Date return the time
      */
@@ -98,5 +93,4 @@ public class Reviews {
     public void setTime(Date time) {
         this.time = time;
     }
-
 }

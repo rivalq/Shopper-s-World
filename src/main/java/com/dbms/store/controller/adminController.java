@@ -34,7 +34,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class adminController extends BaseController {
@@ -108,35 +110,34 @@ public class adminController extends BaseController {
 
         int cloth_id = request.getCloth_id();
         Cloth cloth = sellerRepository.getCloth(cloth_id);
-        // This will add cloth into marketplace table (if not exists)
-        marketRepository.addCloth(cloth, request.getRequest_id());
+        int x = requestRepository.exists((cloth_id));
+        if (x == 0) {
+            x = marketRepository.addCloth(cloth);
+            String path = context + "/resources/static/images/marketplace/" + Integer.toString(x);
+            Files.createDirectories(Paths.get(path));
+            List<String> Images = sellerRepository.getClothImages(cloth_id);
+            String old = context + "/resources/static";
 
-        // stock update
-        marketRepository.updateStock(request);
-
-        String path = context + "/resources/static/images/marketplace/" + Integer.toString(cloth_id);
-        Files.createDirectories(Paths.get(path));
-        List<String> Images = sellerRepository.getClothImages(cloth_id);
-        String old = context + "/resources/static";
-
-        for (int i = 0; i < Images.size(); i++) {
-            String new_path = path + "/";
-            String old_path = old + Images.get(i);
-            String name = Images.get(i).split("/")[5];
-            String url = "/images/marketplace/" + Integer.toString(cloth_id) + "/" + name;
-            new_path += name;
-            File src = new File(old_path);
-            File des = new File(new_path);
-            try {
-                // Copying Images and updating them on database
-                FileUtils.copyFile(src, des);
-                marketRepository.addImage(cloth_id, url);
-            } catch (Exception e) {
-                //e.printStackTrace();
+            for (int i = 0; i < Images.size(); i++) {
+                String new_path = path + "/";
+                String old_path = old + Images.get(i);
+                String name = Images.get(i).split("/")[5];
+                String url = "/images/marketplace/" + Integer.toString(x) + "/" + name;
+                new_path += name;
+                File src = new File(old_path);
+                File des = new File(new_path);
+                try {
+                    // Copying Images and updating them on database
+                    FileUtils.copyFile(src, des);
+                    marketRepository.addImage(cloth_id, url);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                }
             }
         }
-        // Finally request is accepeted
-        requestRepository.acceptRequest(request.getRequest_id(), cloth_id);
+        marketRepository.updateStock(request);
+        requestRepository.acceptRequest(request.getRequest_id(), x);
+
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
@@ -244,5 +245,47 @@ public class adminController extends BaseController {
         } else {
             return reviewRepository.getReviews();
         }
+    }
+
+    @PostMapping("/api/admin/add/{selected}")
+    @ResponseBody
+    public ResponseEntity<String> addCloth(HttpSession session, @RequestPart MarketPlace cloth, @RequestPart List<Stock> stock, @RequestPart MultipartFile[] images, @PathVariable("selected") int selected) {
+        ResponseEntity<String> error = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
+
+        if (checkAdmin(session) == 0) {
+            return error;
+        }
+        String user = authService.getCurrentUser(session);
+        cloth.setSeller(user);
+        int x = marketRepository.addCloth(cloth);
+        for (int i = 0; i < stock.size(); i++) {
+            stock.get(i).setCloth_id(x);
+            marketRepository.updateStock(stock.get(i));
+        }
+        String path = context + "/resources/static/images/marketplace/" + Integer.toString(x);
+        try {
+            Files.createDirectories(Paths.get(path));
+            int cnt = 0;
+            for (int i = 0; i < images.length; i++) {
+                String name = "";
+                if (i == selected) {
+                    name = "profile";
+                } else {
+                    cnt++;
+                    name = Integer.toString(cnt);
+                }
+                String pth = path + "/" + name;
+                String url = "/images/marketplace/" + Integer.toString(x) + "/" + name;
+                File file = new File(pth);
+                images[i].transferTo(file);
+                marketRepository.addImage(x, url);
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return ok;
     }
 }

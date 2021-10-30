@@ -14,6 +14,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,9 +23,20 @@ public class MarketRepository {
     @Autowired
     private JdbcTemplate template;
 
-    public void addCloth(Cloth cloth, int request_id) {
-        String sql = "INSERT INTO marketplace (cloth_id,name, brand, category, short_description,long_description,seller) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE cloth_id = cloth_id;";
-        template.update(sql, cloth.getCloth_id(), cloth.getName(), cloth.getBrand(), cloth.getCategory(), cloth.getShort_description(), cloth.getLong_description(), cloth.getSeller());
+    public int addCloth(Cloth cloth) {
+        String sql = "INSERT INTO marketplace (name, brand, category, short_description,long_description,seller) VALUES (?, ?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        template.update(connection -> {
+            java.sql.PreparedStatement ps = connection.prepareStatement(sql, new String[] { "ID" });
+            ps.setString(1, cloth.getName());
+            ps.setString(2, cloth.getBrand());
+            ps.setString(3, cloth.getCategory());
+            ps.setString(4,cloth.getShort_description());
+            ps.setString(5, cloth.getLong_description());
+            ps.setString(6, cloth.getSeller());
+            return ps;
+            }, keyHolder);
+        return keyHolder.getKey().intValue();
     }
 
     public List<MarketPlace> getMarketClothes() {

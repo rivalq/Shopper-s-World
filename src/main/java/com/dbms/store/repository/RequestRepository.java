@@ -36,4 +36,9 @@ public class RequestRepository {
         String sql = "SELECT * FROM requests where seller = ?";
         return template.query(sql, new RequestMapper(), new Object[] { seller });
     }
+
+    public int exists(int cloth_id) {
+        String sql = "SELECT MAX(mp_cloth) where cloth_id = ? and status = 1 and result = 1";
+        return template.queryForObject(sql, int.class, cloth_id);
+    }
 }

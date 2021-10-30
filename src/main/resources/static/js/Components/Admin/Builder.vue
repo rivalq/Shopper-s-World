@@ -193,7 +193,94 @@ export default {
         removeStock(index) {
             this.stock.splice(index, 1);
         },
-        save() {},
+        display(x) {
+            displayError(`${x} should be non empty`);
+        },
+        isValid() {
+            if (this.name == "") {
+                this.display("name");
+            } else if (this.brand == "") {
+                this.display("brand");
+            } else if (this.category == "") {
+                this.display("category");
+            } else if (this.images.length == 0) {
+                displayError("Upload atleast 1 image");
+            } else if (this.long_description == "") {
+                this.display("From manufacturer section");
+            } else if (this.stock.length == 0) {
+                displayError("Add at least one stock unit");
+            } else {
+                for (let i = 0; i < this.stock.length; i++) {
+                    if (this.stock[i]["size"] == "") {
+                        displayError("Size should be non empty");
+                        return 0;
+                    }
+                    if (this.stock[i]["price"] <= 0) {
+                        displayError("Price should be greater than 0");
+                        return 0;
+                    }
+                    if (this.stock[i]["quantity" <= 0]) {
+                        displayError("units should be greater than 0");
+                        return 0;
+                    }
+                    for (let j = i + 1; j < this.stock.length; j++) {
+                        if (this.stock[i]["size"] == this.stock[j]["size"]) {
+                            displayError("Size(s) should be unique in stock section");
+                            return 0;
+                        }
+                    }
+                }
+                return 1;
+            }
+            return 0;
+        },
+        save() {
+            if (this.isValid()) {
+                const cloth = {
+                    name: this.name,
+                    brand: this.brand,
+                    category: this.category,
+                    short_description: this.short_description,
+                    long_description: this.long_description,
+                    seller: "",
+                    custom: 1,
+                    admin_rating: 5,
+                    rating: 0,
+                };
+                let stock = [];
+                for (let i = 0; i < this.stock.length; i++) {
+                    const stk = {
+                        size: this.stock[i]["size"],
+                        quantity: this.stock[i]["quantity"],
+                        price: this.stock[i]["price"],
+                    };
+                    stock.push(stk);
+                }
+
+                var data = new FormData();
+
+                for (let i = 0; i < this.images.length; i++) {
+                    data.append("images", this.files[i]);
+                }
+                data.append("cloth", new Blob([JSON.stringify(cloth)], { type: "application/json" }));
+                data.append("stock", new Blob([JSON.stringify(stock)], { type: "application/json" }));
+                axios({
+                    url: "/api/admin/add/" + this.selected,
+                    method: "POST",
+                    data: data,
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                    .then((response) => {
+                        displaySuccess("Cloth Added");
+                        window.location.reload();
+                    })
+                    .catch((response) => {
+                        displayError("Some error Occured");
+                    });
+            }
+        },
     },
     computed: {
         preview() {

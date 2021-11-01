@@ -5,6 +5,8 @@ import com.dbms.store.model.Request;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -12,9 +14,22 @@ public class RequestRepository {
     @Autowired
     private JdbcTemplate template;
 
-    public void sendRequest(int cloth_id, String seller, String size, int quantity, int price) {
+    public int sendRequest(Request request) {
         String sql = "INSERT into requests (cloth_id,seller,quantity,price,size,request_status) VALUES(?,?,?,?,?,0)";
-        template.update(sql, cloth_id, seller, quantity, price, size);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        template.update(
+            connection -> {
+                java.sql.PreparedStatement ps = connection.prepareStatement(sql, new String[] { "ID" });
+                ps.setInt(1, request.getCloth_id());
+                ps.setString(2, request.getSeller());
+                ps.setInt(3, request.getQuantity());
+                ps.setInt(4, request.getPrice());
+                ps.setString(5, request.getSize());
+                return ps;
+            },
+            keyHolder
+        );
+        return keyHolder.getKey().intValue();
     }
 
     public List<Request> getRequests() {

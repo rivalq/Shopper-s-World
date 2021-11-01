@@ -26,16 +26,19 @@ public class MarketRepository {
     public int addCloth(Cloth cloth) {
         String sql = "INSERT INTO marketplace (name, brand, category, short_description,long_description,seller) VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        template.update(connection -> {
-            java.sql.PreparedStatement ps = connection.prepareStatement(sql, new String[] { "ID" });
-            ps.setString(1, cloth.getName());
-            ps.setString(2, cloth.getBrand());
-            ps.setString(3, cloth.getCategory());
-            ps.setString(4,cloth.getShort_description());
-            ps.setString(5, cloth.getLong_description());
-            ps.setString(6, cloth.getSeller());
-            return ps;
-            }, keyHolder);
+        template.update(
+            connection -> {
+                java.sql.PreparedStatement ps = connection.prepareStatement(sql, new String[] { "ID" });
+                ps.setString(1, cloth.getName());
+                ps.setString(2, cloth.getBrand());
+                ps.setString(3, cloth.getCategory());
+                ps.setString(4, cloth.getShort_description());
+                ps.setString(5, cloth.getLong_description());
+                ps.setString(6, cloth.getSeller());
+                return ps;
+            },
+            keyHolder
+        );
         return keyHolder.getKey().intValue();
     }
 

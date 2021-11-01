@@ -2,7 +2,9 @@ package com.dbms.store.repository;
 
 import com.dbms.store.Mapper.ImagesMapper;
 import com.dbms.store.Mapper.SellerClothMapper;
+import com.dbms.store.controller.SellerController;
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Features;
 import com.dbms.store.model.Images;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +12,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,15 +21,24 @@ public class SellerRepository {
     @Autowired
     private JdbcTemplate template;
 
-    public int getLastid() {
-        String sql = "SELECT cloth_id FROM seller_cloth ORDER BY cloth_id desc LIMIT 1";
-        return template.queryForObject(sql, int.class);
-    }
-
-    public int addCloth(String name, String brand, String category, String short_description, String long_description, String seller) {
+   
+    public int addCloth(Cloth cloth) {
         String sql = "INSERT INTO seller_cloth (name, brand, category, short_description,long_description,seller) VALUES (?, ?, ?, ?, ?, ?)";
-        template.update(sql, name, brand, category, short_description, long_description, seller);
-        return getLastid();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        template.update(
+            connection -> {
+                java.sql.PreparedStatement ps = connection.prepareStatement(sql, new String[] { "ID" });
+                ps.setString(1, cloth.getName());
+                ps.setString(2, cloth.getBrand());
+                ps.setString(3, cloth.getCategory());
+                ps.setString(4, cloth.getShort_description());
+                ps.setString(5, cloth.getLong_description());
+                ps.setString(6, cloth.getSeller());
+                return ps;
+            },
+            keyHolder
+        );
+        return keyHolder.getKey().intValue();
     }
 
     public void addImage(String url, int cloth_id) {
@@ -38,18 +51,9 @@ public class SellerRepository {
         return template.queryForObject(sql, new SellerClothMapper(), new Object[] { cloth_id });
     }
 
-    public List<Integer> listCloth(String user) {
-        String sql = "SELECT cloth_id FROM seller_cloth where seller = ?";
-        return template.query(
-            sql,
-            new RowMapper<Integer>() {
-
-                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return rs.getInt("cloth_id");
-                }
-            },
-            new Object[] { user }
-        );
+    public List<Cloth> listCloth(String user) {
+        String sql = "SELECT * FROM seller_cloth where seller = ?";
+        return template.query(sql, new SellerClothMapper(), user);
     }
 
     public List<String> getClothImages(int cloth_id) {
@@ -66,15 +70,14 @@ public class SellerRepository {
         );
     }
 
-    public void changeHeading(int cloth_id, String name, String category, String brand, String short_description, String long_description) {
-        String sql = "UPDATE seller_cloth SET name = ?, category = ?, brand = ?, short_description = ?, long_description = ? where cloth_id = ?";
-        template.update(sql, name, category, brand, short_description, long_description, cloth_id);
-    }
 
-    public List<Images> getClothImages() {
-        return template.query("SELECT * FROM seller_cloth_images", new ImagesMapper());
+    public void addFeature(Features feature){
+        String sql = "INSERT into seller_cloth_features(cloth_id,feature_name,value) VALUES(?,?,?)";
+        template.update(sql, feature.getCloth_id(),feature.getFeature_name(),feature.getValue());
     }
-
+    public List<Images> getClothImages(){
+        return template.query("SELECT * FROM seller_cloth_images",new ImagesMapper());
+    }
     public List<Cloth> getSellerClothes() {
         return template.query("SELECT * FROM seller_cloth", new SellerClothMapper());
     }

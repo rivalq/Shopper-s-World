@@ -1,6 +1,7 @@
 package com.dbms.store.controller;
 
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Features;
 import com.dbms.store.model.Request;
 import com.dbms.store.repository.RequestRepository;
 import com.dbms.store.repository.SellerRepository;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,16 +47,7 @@ public class SellerController extends BaseController {
         return "/seller";
     }
 
-    @GetMapping("/create")
-    public String createClothInterface(Model model, HttpSession session) {
-        if (!isAuthenticated(session)) {
-            return "redirect:/login";
-        }
-        if (SellerAuthentication(session) != 1) {
-            return "/accessDenied";
-        }
-        return "/dashboard/ClothBuilder";
-    }
+   
 
     @GetMapping("/seller/clothes/{cloth_id}")
     public String SellerclothInterface(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
@@ -75,86 +69,63 @@ public class SellerController extends BaseController {
         return "/SellerclothInterface";
     }
 
-    @GetMapping("/seller/mycloths")
-    public String sellerCloths(HttpSession session, Model model) {
-        if (!isAuthenticated(session)) {
-            return "redirect:/login";
-        } else if (authService.getRole(session) == "cutsomer") {
-            return "/accessDenied";
-        } else {
-            return "/sellerCloths";
-        }
-    }
 
-    @GetMapping("/seller/requests")
-    public String sellerRequests(HttpSession session, Model model) {
-        if (!isAuthenticated(session)) {
-            return "redirect:/login";
-        } else if (authService.getRole(session) == "cutsomer") {
-            return "/accessDenied";
-        } else {
-            return "/sellerRequests";
-        }
-    }
+    
+   
+    /**  API ENDPOINTS **/
 
-    @PostMapping("/create/submit")
-    @ResponseBody
-    public ResponseEntity<Integer> Submit(@RequestParam("name") String name, @RequestParam("short_description") String short_description, @RequestParam("category") String category, @RequestParam("brand") String brand, @RequestParam("long_description") String long_description, HttpSession session) {
-        if (!isAuthenticated(session)) {
-            return new ResponseEntity<Integer>(-1, HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-        }
 
-        String seller = authService.getCurrentUser(session);
-        if (authService.getRole(session) == "customer") {
-            return new ResponseEntity<>(-1, HttpStatus.FORBIDDEN);
+    @PostMapping("/api/seller/add/{selected}")
+    public ResponseEntity<String> addCloth(HttpSession session,@RequestPart Cloth cloth,@RequestPart MultipartFile[] images, @PathVariable("selected") int selected,@RequestPart List<Features> features){
+        ResponseEntity<String> error = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        ResponseEntity<String> ok = new ResponseEntity<String>("Success", HttpStatus.OK);
+        int auth = SellerAuthentication(session);
+        if (auth != 1) {
+            return error;
         }
-
-        Integer id = sellerRepository.addCloth(name, brand, category, short_description, long_description, seller);
-        return new ResponseEntity<Integer>(id, HttpStatus.OK);
-    }
-
-    @PostMapping("/create/upload")
-    @ResponseBody
-    public ResponseEntity<String> imageUpload(@RequestParam("image_file") MultipartFile image, @RequestParam("name") String name, @RequestParam("id") int id, HttpSession session) {
-        if (!isAuthenticated(session)) {
-            return new ResponseEntity<String>("Permission Denied", HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        String user = authService.getCurrentUser(session);
+        cloth.setSeller(user);
+        int x = sellerRepository.addCloth(cloth);
+        for(int i = 0; i < features.size(); i++){
+            features.get(i).setCloth_id(x);
+            sellerRepository.addFeature(features.get(i));
         }
-
-        String seller = authService.getCurrentUser(session);
-        if (authService.getRole(session) == "customer") {
-            return new ResponseEntity<String>("Permission Denied", HttpStatus.FORBIDDEN);
-        }
-
-        if (image.getOriginalFilename() == "") {
-            return new ResponseEntity<String>("Failed", HttpStatus.BAD_GATEWAY);
-        }
+        String path = context + "/resources/static/images/" + user + "/created/" + Integer.toString(x);
         try {
-            String path = context + "/resources/static/images/" + seller + "/created/" + Integer.toString(id);
             Files.createDirectories(Paths.get(path));
-            path = path + "/" + name;
-            String url = "/images/" + seller + "/created/" + Integer.toString(id) + "/" + name;
-            File File = new File(path);
-            image.transferTo(File);
-            sellerRepository.addImage(url, id);
+            int cnt = 0;
+            for (int i = 0; i < images.length; i++) {
+                String name = "";
+                if (i == selected) {
+                    name = "profile";
+                } else {
+                    cnt++;
+                    name = Integer.toString(cnt);
+                }
+                String pth = path + "/" + name;
+                String url = "/images/" + user + "/created/" + Integer.toString(x) + "/" + name;
+                File file = new File(pth);
+                images[i].transferTo(file);
+                sellerRepository.addImage(url, x);
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>("Failed", HttpStatus.BAD_GATEWAY);
         }
-        return new ResponseEntity<String>("Passed", HttpStatus.OK);
-    }
 
-    /**  API ENDPOINTS **/
+        return ok;
+    }
 
     @GetMapping("/api/seller/clothes")
     @ResponseBody
-    public List<Integer> listCloth(HttpSession session) {
+    public List<Cloth> listCloth(HttpSession session) {
         int auth = SellerAuthentication(session);
         if (auth != 1) {
-            return new ArrayList<Integer>();
+            return new ArrayList<>();
         }
         String user = authService.getCurrentUser(session);
         return sellerRepository.listCloth(user);
     }
+    
 
     @DeleteMapping("/api/seller/clothes/{cloth_id}")
     @ResponseBody
@@ -208,26 +179,8 @@ public class SellerController extends BaseController {
         return sellerRepository.getClothImages(cloth_id);
     }
 
-    @PutMapping("/api/seller/clothes/heading/{cloth_id}")
-    @ResponseBody
-    public ResponseEntity<String> updateHeading(HttpSession session, @PathVariable("cloth_id") int cloth_id, @RequestParam("heading") String heading, @RequestParam("category") String category, @RequestParam("brand") String brand, @RequestParam("short_description") String short_description, @RequestParam("long_description") String long_description) {
-        int auth = SellerAuthentication(session);
-        if (auth != 1) {
-            return new ResponseEntity<String>("Access Denied", HttpStatus.FORBIDDEN);
-        }
-        Cloth cloth = sellerRepository.getCloth(cloth_id);
-        String user = authService.getCurrentUser(session);
-
-        if (user.equals(cloth.getSeller()) == false) {
-            // Error
-            return new ResponseEntity<String>("Access Denied", HttpStatus.FORBIDDEN);
-        }
-
-        sellerRepository.changeHeading(cloth_id, heading, category, brand, short_description, long_description);
-        return new ResponseEntity<String>("Success", HttpStatus.OK);
-    }
-
-    @GetMapping("/api/seller/requests")
+   
+    @GetMapping("/api/seller/request")
     @ResponseBody
     public List<Request> getSellerRequest(HttpSession session) {
         int auth = SellerAuthentication(session);
@@ -237,5 +190,18 @@ public class SellerController extends BaseController {
         String user = authService.getCurrentUser(session);
 
         return requestRepository.getRequestsBySeller(user);
+    }
+
+    @PostMapping("/api/seller/request")
+    @ResponseBody
+    public Request sendRequest(HttpSession session,@RequestBody Request request){
+        int auth = SellerAuthentication(session);
+        if (auth != 1) {
+            return new Request();
+        }
+        request.setSeller(authService.getCurrentUser(session));
+        int x = requestRepository.sendRequest(request);
+        request.setRequest_id(x);
+        return request;
     }
 }

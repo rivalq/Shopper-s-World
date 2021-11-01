@@ -3,11 +3,11 @@
         <div class="row mt-3 justify-content-md-center">
             <div class="col-11">
                 <h3>Pending Requests</h3>
-				<div v-if = "pendingLen == 0" style="text-align:center">
-					   <i class="fas fa-shopping-cart fa-5x" style="opacity:0.6"></i>
-						<h5 class = "mt-5" >New Cloth Stock Requests will Appear Here<h5>
-				</div>
-                <table class="table table-hover" v-if = "pendingLen > 0">
+                <div v-if="pendingLen == 0" style="text-align: center">
+                    <i class="fas fa-shopping-cart fa-5x" style="opacity: 0.6"></i>
+                    <h5 class="mt-5">New Cloth Stock Requests will Appear Here</h5>
+                </div>
+                <table class="table table-hover" v-if="pendingLen > 0">
                     <thead>
                         <tr>
                             <th scope="col">Seller Name</th>
@@ -41,7 +41,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <table class="table" v-if = "pendingLen > 0" >
+                <table class="table" v-if="pendingLen > 0">
                     <tbody>
                         <tr>
                             <td>
@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-md-center" style = "margin-top:100px" >
+        <div class="row justify-content-md-center" style="margin-top: 100px">
             <div class="col-11">
                 <h3>Old Requests</h3>
                 <table class="table table-hover">
@@ -135,12 +135,6 @@
                                 <div class="col">
                                     <label class="form-label">Set MRP</label>
                                     <input type="number" class="form-control" v-model="price" />
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col">
-                                    <label class="form-label">Optional Discount</label>
-                                    <input type="number" class="form-control" />
                                 </div>
                             </div>
                         </div>
@@ -310,6 +304,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

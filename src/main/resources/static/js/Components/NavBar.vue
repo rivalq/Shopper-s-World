@@ -40,7 +40,7 @@
 
                             <li><hr class="dropdown-divider" /></li>
                             <li><a class="dropdown-item" href="/admin" v-if="user.isAdmin">Admin Panel</a></li>
-                            <li><a class="dropdown-item" href="/seller" v-if="user.isSeller">Seller Panel</a></li>
+                            <li><a class="dropdown-item" href="/seller">Seller Panel</a></li>
                             <li><a class="dropdown-item" href="/logout">Logout</a></li>
                         </ul>
                     </li>

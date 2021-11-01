@@ -1,11 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head th:replace="dashboard/layout/header :: header"></head>
+    <style>
+        .menu-item {
+            width: 220px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 15px;
+            margin-top: 10px;
+            font-size: 18px;
+            margin-left: 20px;
+            cursor: pointer;
+            color: white;
+            border-radius: 10px;
+        }
+        .menu-item:hover {
+            background-color: white;
+            color: #11101d;
+        }
 
-<head th:replace="dashboard/layout/header :: header"></head>
+        .menu-item-selected {
+            background-color: white;
+            color: #11101d;
+        }
+        .MuiSvgIcon-root {
+            fill: currentColor;
+            width: 1.5em;
+            height: 1.5em;
+            display: inline-block;
+            font-size: 1.5rem;
+            transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            flex-shrink: 0;
+            user-select: none;
+            color: #4caf50;
+        }
+    </style>
+    <body>
+        <div id="app">
+            <nav-bar style="position: fixed; top: 0; width: 100%; z-index: 10"></nav-bar>
+            <div class="container-fluid">
+                <div class="row">
+                    <side-menu></side-menu>
+                    <display-menu></display-menu>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/3.0.7/marked.js"></script>
 
-<body>
-    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
-    <H2>Welcome To Seller's Panel</H2>   
-    <a href = "/create" > Create Cloth </a> 
-    <a href = "/seller/mycloths">Your Clothes</a>
-</body>
+        <script type="text/javascript" th:inline="javascript" th:src="@{/js/seller.js}"></script>
+    </body>
+</html>

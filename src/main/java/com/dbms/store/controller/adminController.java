@@ -64,21 +64,7 @@ public class adminController extends BaseController {
     @Value("${API_CONTEXT_ROOT}")
     String context;
 
-    @PostMapping("/api/request")
-    @ResponseBody
-    public ResponseEntity<String> sendRequest(@RequestParam("price") int price, @RequestParam("quantity") int quantity, @RequestParam("size") String size, @RequestParam("cloth_id") int cloth_id, HttpSession session) {
-        int auth = SellerAuthentication(session);
-        ResponseEntity<String> error = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        if (auth != 1) return error;
-        Cloth cloth = sellerRepository.getCloth(cloth_id);
-        String user = authService.getCurrentUser(session);
-        if (!user.equals(cloth.getSeller())) {
-            return error;
-        } else {
-            requestRepository.sendRequest(cloth_id, user, size, quantity, price);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }
+    
 
     @GetMapping("/admin")
     public String adminPanel(HttpSession session) {
@@ -282,7 +268,6 @@ public class adminController extends BaseController {
                 marketRepository.addImage(x, url);
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

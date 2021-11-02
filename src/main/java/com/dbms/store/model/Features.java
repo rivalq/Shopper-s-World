@@ -1,11 +1,9 @@
 package com.dbms.store.model;
 
 public class Features {
- 
-        private int cloth_id;
-        private String feature_name;
-        private String value;
-
+    private int cloth_id;
+    private String feature_name;
+    private String value;
 
     /**
      * @return int return the cloth_id
@@ -48,5 +46,4 @@ public class Features {
     public void setValue(String value) {
         this.value = value;
     }
-
 }

@@ -147,7 +147,6 @@ const panel = {
     },
 
     template: /*html*/ `
-        <nav-bar style = "position:fixed;top:0;width:100%;z-index:10"></nav-bar>
         <div class="container-fluid">
                     
                     <div class="row">

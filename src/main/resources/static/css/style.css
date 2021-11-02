@@ -201,3 +201,12 @@ nav-bar {
     border: none;
     outline: none;
 }
+.muted {
+    color: rgb(183, 183, 183);
+}
+.white {
+    color: white;
+}
+.logo-font {
+    font-family: "Nunito Sans", sans-serif;
+}

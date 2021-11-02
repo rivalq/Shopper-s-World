@@ -47,8 +47,6 @@ public class SellerController extends BaseController {
         return "/seller";
     }
 
-   
-
     @GetMapping("/seller/clothes/{cloth_id}")
     public String SellerclothInterface(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
         if (!isAuthenticated(session)) {
@@ -69,14 +67,10 @@ public class SellerController extends BaseController {
         return "/SellerclothInterface";
     }
 
-
-    
-   
     /**  API ENDPOINTS **/
 
-
     @PostMapping("/api/seller/add/{selected}")
-    public ResponseEntity<String> addCloth(HttpSession session,@RequestPart Cloth cloth,@RequestPart MultipartFile[] images, @PathVariable("selected") int selected,@RequestPart List<Features> features){
+    public ResponseEntity<String> addCloth(HttpSession session, @RequestPart Cloth cloth, @RequestPart MultipartFile[] images, @PathVariable("selected") int selected, @RequestPart List<Features> features) {
         ResponseEntity<String> error = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         ResponseEntity<String> ok = new ResponseEntity<String>("Success", HttpStatus.OK);
         int auth = SellerAuthentication(session);
@@ -86,7 +80,7 @@ public class SellerController extends BaseController {
         String user = authService.getCurrentUser(session);
         cloth.setSeller(user);
         int x = sellerRepository.addCloth(cloth);
-        for(int i = 0; i < features.size(); i++){
+        for (int i = 0; i < features.size(); i++) {
             features.get(i).setCloth_id(x);
             sellerRepository.addFeature(features.get(i));
         }
@@ -125,7 +119,6 @@ public class SellerController extends BaseController {
         String user = authService.getCurrentUser(session);
         return sellerRepository.listCloth(user);
     }
-    
 
     @DeleteMapping("/api/seller/clothes/{cloth_id}")
     @ResponseBody
@@ -179,7 +172,6 @@ public class SellerController extends BaseController {
         return sellerRepository.getClothImages(cloth_id);
     }
 
-   
     @GetMapping("/api/seller/request")
     @ResponseBody
     public List<Request> getSellerRequest(HttpSession session) {
@@ -194,7 +186,7 @@ public class SellerController extends BaseController {
 
     @PostMapping("/api/seller/request")
     @ResponseBody
-    public Request sendRequest(HttpSession session,@RequestBody Request request){
+    public Request sendRequest(HttpSession session, @RequestBody Request request) {
         int auth = SellerAuthentication(session);
         if (auth != 1) {
             return new Request();

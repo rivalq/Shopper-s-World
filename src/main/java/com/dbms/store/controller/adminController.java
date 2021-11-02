@@ -64,8 +64,6 @@ public class adminController extends BaseController {
     @Value("${API_CONTEXT_ROOT}")
     String context;
 
-    
-
     @GetMapping("/admin")
     public String adminPanel(HttpSession session) {
         if (!isAuthenticated(session)) {

@@ -1,55 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head th:replace="dashboard/layout/header :: header"></head>
 
-<head th:replace="dashboard/layout/header :: header"></head>
+    <style>
+        body {
+            font-family: Roboto, sans-serif;
+            background-color: rgb(251, 251, 251);
+        }
+        .grey-1 {
+            color: rgb(79, 79, 79);
+            font-weight: 500;
+        }
+        .grey-2 {
+            color: rgb(108, 117, 125);
+            font-weight: 400;
+            font-size: 15px;
+        }
+        .grey-3 {
+            color: rgb(79, 79, 79);
+            font-weight: 100;
+        }
+        .remove-item {
+            cursor: pointer;
+            color: rgb(108, 117, 125);
+        }
+        .remove-item:hover {
+            color: rgb(79, 79, 79);
+        }
+        .list-complete-item {
+            transition: all 0.8s ease;
+        }
 
+        .list-complete-enter-from,
+        .list-complete-leave-to {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+    </style>
 
-<style>
-    body{
-        font-family: Roboto,sans-serif;
-        background-color: rgb(251,251,251);
+    <body>
+        <div id="app" style="height: 1300px">
+            <nav-bar></nav-bar>
+            <mycomp></mycomp>
+        </div>
 
-    }
-    .grey-1{
-        color: rgb(79,79,79);
-        font-weight: 500;
-    }
-    .grey-2{
-        color:rgb(108, 117, 125);
-        font-weight: 400;
-        font-size: 15px;
-    }
-    .grey-3{
-        color: rgb(79,79,79);
-        font-weight: 100;
-    }
-    .remove-item{
-        cursor: pointer;
-        color: rgb(108, 117, 125);
-    }
-    .remove-item:hover{
-        color: rgb(79,79,79);
-    }
-    .list-complete-item {
-        transition: all 0.8s ease;
-    }
-
-    .list-complete-enter-from,
-    .list-complete-leave-to {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-
-</style>
-
-<body>
-    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>        
-    <div id="app" style="height: 1300px;">
-        <nav-bar style="position: fixed;top: 0;width: 100%;"></nav-bar>
-        <mycomp></mycomp>
-    </div>
-    
-    <script type = "text/javascript" th:inline = "javascript"  th:src = "@{/js/cart.js}" > </script>
-
-</body>
+        <script type="text/javascript" th:inline="javascript" th:src="@{/js/cart.js}"></script>
+    </body>
+</html>

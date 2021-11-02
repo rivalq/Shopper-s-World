@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head th:replace="dashboard/layout/header :: header"></head>
-<body>
-
-
-        <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
-
-
-
-        <script src="https://unpkg.com/vue@next"></script>
-</body>
+    <head th:replace="dashboard/layout/header :: header"></head>
+    <style></style>
+    <body>
+        <div id="app">
+            <nav-bar></nav-bar>
+            <landing-menu></landing-menu>
+            <footer-menu></footer-menu>
+        </div>
+        <script type="text/javascript" th:inline="javascript" th:src="@{/js/index.js}"></script>
+        <script src="https://use.fontawesome.com/0206006232.js"></script>
+    </body>
+</html>

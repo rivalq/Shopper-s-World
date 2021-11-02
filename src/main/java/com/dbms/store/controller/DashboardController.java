@@ -22,6 +22,12 @@ public class DashboardController extends BaseController {
     @Value("${API_CONTEXT_ROOT}")
     private String context;
 
+
+    @GetMapping("/")
+    public String forward_dashboard(){
+        return "redirect:/dashboard";
+    }
+
     @RequestMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
         return "dashboard/index";

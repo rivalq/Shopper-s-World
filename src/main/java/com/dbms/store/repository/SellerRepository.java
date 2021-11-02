@@ -21,7 +21,6 @@ public class SellerRepository {
     @Autowired
     private JdbcTemplate template;
 
-   
     public int addCloth(Cloth cloth) {
         String sql = "INSERT INTO seller_cloth (name, brand, category, short_description,long_description,seller) VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -70,14 +69,15 @@ public class SellerRepository {
         );
     }
 
-
-    public void addFeature(Features feature){
+    public void addFeature(Features feature) {
         String sql = "INSERT into seller_cloth_features(cloth_id,feature_name,value) VALUES(?,?,?)";
-        template.update(sql, feature.getCloth_id(),feature.getFeature_name(),feature.getValue());
+        template.update(sql, feature.getCloth_id(), feature.getFeature_name(), feature.getValue());
     }
-    public List<Images> getClothImages(){
-        return template.query("SELECT * FROM seller_cloth_images",new ImagesMapper());
+
+    public List<Images> getClothImages() {
+        return template.query("SELECT * FROM seller_cloth_images", new ImagesMapper());
     }
+
     public List<Cloth> getSellerClothes() {
         return template.query("SELECT * FROM seller_cloth", new SellerClothMapper());
     }

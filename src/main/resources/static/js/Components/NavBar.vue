@@ -1,53 +1,53 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand ms-2">
-                <img src="/images/s.png" alt="" class="cart-img" />
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <div class="container">
+        <div class="row py-3 logo-font">
+            <div class="col-lg-3 font-l" style="margin-left: 100px"><img src="/images/s.png" width="40" height="40" class="me-3" />Shopper's World</div>
+            <div class="col-lg-5">
+                <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/dashboard">Home</a>
+                        <a class="nav-link font-s" href="/dashboard">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/dashboard/clothes">Shop</a>
+                    <li class="nav-item ms-2">
+                        <a class="nav-link font-s" href="/dashboard/clothes">Shop</a>
                     </li>
-                </ul>
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0" style="margin-right: 80px">
-                    <li class="nav-item">
-                        <a href="/dashboard/cart">
-                            <img src="/images/c.png" alt="" class="cart-img" />
-                        </a>
+                    <li class="nav-item ms-2">
+                        <span class="nav-link font-s">Pages</span>
                     </li>
-                    <li class="nav-item dropdown" style="margin-right: 10px">
-                        <a class="nav-link active dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ user.first_name + " " + user.last_name }}
-                        </a>
-                        <ul class="dropdown-menu navbar-drop" aria-labelledby="navbarDropdown">
-                            <li>
-                                signed in as <strong>{{ user.username }}</strong>
-                            </li>
-                            <li><hr class="dropdown-divider" /></li>
-
-                            <li><a class="dropdown-item" href="/profile">Your Profile</a></li>
-                            <li><a class="dropdown-item" href="/dashboard/cart">Your Cart</a></li>
-                            <li><a class="dropdown-item" href="/dashboard/orders">Your Orders</a></li>
-                            <li><a class="dropdown-item" href="/dashboard/wishlist">Your Wishlist</a></li>
-                            <li><a class="dropdown-item" href="/dashboard/reviews">Your Reviews</a></li>
-
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" href="/admin" v-if="user.isAdmin">Admin Panel</a></li>
-                            <li><a class="dropdown-item" href="/seller">Seller Panel</a></li>
-                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
-                        </ul>
+                    <li class="nav-item ms-2">
+                        <a class="nav-link font-s" href="/contact">Contact us</a>
                     </li>
                 </ul>
             </div>
+
+            <div class="col-lg-2 ms-auto" v-if="user.username == undefined">
+                <button type="button" class="btn btn-outline-danger" style="width: 100px" @click="login">Log in</button>
+            </div>
+            <div class="col-lg-3 ms-auto mt-1" v-if="user.username != undefined">
+                <a href="/dashboard/wishlist">
+                    <img src="/images/heart.png" class="me-4" />
+                </a>
+                <a href="/dashboard/cart">
+                    <img src="/images/cart.png" class="me-4" />
+                </a>
+                <a class="dropdown">
+                    <a class="btn font-s" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"> {{ user.first_name + " " + user.last_name }} </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="/profile">Your Profile</a></li>
+                        <li><a class="dropdown-item" href="/dashboard/cart">Your Cart</a></li>
+                        <li><a class="dropdown-item" href="/dashboard/wishlist">Your Wishlist</a></li>
+                        <li><a class="dropdown-item" href="/dashboard/orders">Purchased Items</a></li>
+                        <li><a class="dropdown-item" href="/dashboard/reviews">Your Reviews</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+
+                        <li><a class="dropdown-item" v-if="user.isAdmin" href="/admin">Admin Panel</a></li>
+                        <li><a class="dropdown-item" href="/seller">Seller Panel</a></li>
+                        <li><a class="dropdown-item" href="/logout">Log Out</a></li>
+                    </ul>
+                </a>
+            </div>
         </div>
-    </nav>
+    </div>
 </template>
 
 <script>
@@ -61,6 +61,11 @@ export default {
         axios.get("/api/user").then((response) => {
             this.user = response.data;
         });
+    },
+    methods: {
+        login() {
+            window.location.href = "/login";
+        },
     },
 };
 </script>
@@ -84,5 +89,18 @@ export default {
     margin-right: 15px;
     height: 35px;
     width: 35px;
+}
+.font-l {
+    font-size: 23px;
+    font-weight: 500;
+    color: rgb(17, 17, 17) !important;
+}
+.font-s {
+    font-size: 18px;
+    font-weight: 400;
+    color: rgb(17, 17, 17) !important;
+}
+.active {
+    border-bottom: 2px solid rgb(229, 54, 55);
 }
 </style>

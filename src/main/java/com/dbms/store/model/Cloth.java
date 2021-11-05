@@ -11,6 +11,8 @@ public class Cloth {
     private float rating;
     private float admin_rating;
     private boolean custom;
+    private String gender;
+    private boolean hide;
 
     /**
      * @return String return the name
@@ -151,4 +153,33 @@ public class Cloth {
     public void setCustom(boolean custom) {
         this.custom = custom;
     }
+
+    /**
+     * @return String return the gender
+     */
+    public String getGender() {
+        return gender;
+    }
+
+    /**
+     * @param gender the gender to set
+     */
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    /**
+     * @return boolean return the hide
+     */
+    public boolean isHide() {
+        return hide;
+    }
+
+    /**
+     * @param hide the hide to set
+     */
+    public void setHide(boolean hide) {
+        this.hide = hide;
+    }
+
 }

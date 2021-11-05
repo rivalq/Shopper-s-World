@@ -11,6 +11,16 @@
                         </div>
                         <input type="text" class="input" v-model="name" />
                     </div>
+
+                    <div class="col mt-3">
+                        <div class="col"><label class="text-muted" for="brand">For(Gender)</label></div>
+                        <select v-model="gender" class="input">
+                            <option value="Men">Men</option>
+                            <option value="Women">Women</option>
+                            <option value="Boy">Boy</option>
+                            <option value="Girl">Girl</option>
+                        </select>
+                    </div>
                     <div class="col mt-3">
                         <div class="col"><label class="text-muted" for="brand">Brand*</label></div>
                         <input type="text" class="input" v-model="brand" />
@@ -121,6 +131,7 @@ export default {
             selected: 0,
             features: [],
             edit_mode: 1,
+            gender: "Men",
         };
     },
     methods: {
@@ -192,6 +203,7 @@ export default {
                     category: this.category,
                     short_description: this.short_description,
                     long_description: this.long_description,
+                    gender: this.gender,
                     seller: "",
                 };
 

@@ -1,113 +1,84 @@
-const Cloth = {
-    data() {
+const components = [
+    ["nav-bar", NavBar],
+    ["footer-menu", Footer],
+    ["cloth-menu", "/js/Components/Cloth.vue"],
+    ["pagination", "/js/Components/pagination.vue"],
+];
+
+const store = Vuex.createStore({
+    state() {
         return {
-            price: 0,
-            selected: "",
-            quantity: 0,
-            cloth: {},
-            stock_by_size: {},
+            clothes: [],
+            loading: true,
         };
     },
-
-    props: ["id"],
-    template: /*html*/ `<div class="col-sm-3 shadow mx-3 my-4 cloth-card" style="text-align: center;">
-                    <div class="row">
-                        <div class="col-sm-auto">
-                            <img :src = cloth.url width = "300" height = "300">
-                        </div>
-    			
-                    </div>
-                    <div class="row mt-2">
-                        <div class = "col-sm-12" ><h5 style = "text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"  >{{cloth.name}}</h5></div>
-                    </div>
-                    <div class="row  mt-2">
-                        <div class = "col-sm-6" style="text-align: left;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{cloth.brand + ' | ' + cloth.category}}</div>
-                        <div class = "col float-end" style="text-align: right;" >Rating</div>
-                    </div>
-                    <div class="row px-2 mt-3">
-                        <div class = "col  fs-5" style="text-align: left;">
-                            <div class="btn-group" role="group">
-                                      <button  v-for = "stock in cloth.stock" :key = "stock"  @click=changeSize  :class="{btn:1,'shadow-none':0,'btn-outline-primary': selected != stock.size, 'btn-primary': selected == stock.size }" > {{stock.size}}</button>
-                            </div>
-			    
-                        </div>
-                        <div class = "col fs-5 float-end fw-bold text-wrap" style="text-align: right;" >{{'Rs '+price}}</div>
-                    </div>
-                    <div class="row mt-4">
-                        <div @click = buynow class = "col bg-primary fs-4 rounded-bottom buynow-btn py-2" style="color: white;">
-                                Buy Now
-                        </div>
-                        
-                    </div>
-                </div>`,
-    methods: {
-        buynow() {
-            window.location.href = "/dashboard/clothes/" + this.$props.id;
+    mutations: {
+        setClothes(state, payload) {
+            state.clothes = payload;
         },
-        changeSize(event) {
-            let size = event.target.innerHTML;
-            this.selected = size;
-            this.price = this.stock_by_size[size]["price"];
-            this.quantity = this.stock_by_size[size]["quantity"];
+        setloading(state, payload) {
+            state.loading = payload;
         },
     },
-
-    created: function () {
-        axios
-            .get("/api/marketplace/clothes/" + this.$props.id)
-            .then((response) => {
-                this.cloth = response.data;
-                this.cloth["url"] = "/images/marketplace/" + this.$props.id + "/profile";
-                axios.get("/api/marketplace/stock/" + this.$props.id).then((response) => {
-                    this.cloth["stock"] = response.data;
-                    for (var i = 0; i < response.data.length; i++) {
-                        this.stock_by_size[response.data[i]["size"]] = response.data[i];
-                    }
-
-                    const anystock = response.data[0];
-                    this.price = anystock["price"];
-                    this.quantity = anystock["quantity"];
-                    this.selected = anystock["size"];
+    actions: {
+        async getClothes(state, payload) {
+            axios.get("/api/marketplace/clothes").then((response) => {
+                let clothes = response.data;
+                const func = async () => {
+                    await axios.get("/api/marketplace/stock").then((response) => {
+                        let map = new Object();
+                        for (let i = 0; i < clothes.length; i++) {
+                            map[clothes[i]["cloth_id"]] = i;
+                            clothes[i]["stock"] = [];
+                            clothes[i]["url"] = "/images/marketplace/" + clothes[i]["cloth_id"] + "/profile";
+                        }
+                        for (let i = 0; i < response.data.length; i++) {
+                            let idx = map[response.data[i]["cloth_id"]];
+                            clothes[idx]["stock"].push(response.data[i]);
+                        }
+                    });
+                };
+                func().then((data) => {
+                    state.commit("setClothes", clothes);
+                    state.commit("setloading", false);
                 });
-            })
-            .catch((error) => {
-                console.log(error);
             });
+        },
     },
-};
+    getters: {
+        getClothes: (state) => state.clothes,
+        loading: (state) => state.loading,
+    },
+});
 
-const app = Vue.createApp({});
-
-app.component("Cloth", Cloth);
-
-const List = {
+const app = Vue.createApp({
     data() {
-        return {
-            cloth_ids: [],
-        };
+        return {};
     },
-
-    template: `<div id = "cloth-body" class="row mt-4 justify-content-sm-center">
-                    <Cloth v-for= "id in cloth_ids"  :id="id" ></Cloth>
-              </div>`,
 
     created: function () {
-        axios.get("/api/marketplace/clothes").then((respone) => {
-            var clothes = respone.data;
-            for (let i = 0; i < clothes.length; i++) {
-                this.cloth_ids.push(clothes[i]["cloth_id"]);
-            }
-        });
+        this.$store.dispatch("getClothes");
     },
-};
+    computed: {
+        ...mapGetters({ clothes: "getClothes" }),
+        ...mapGetters({ loading: "loading" }),
+        filter() {
+            let arr = new Array(this.clothes.length);
+            for (let i = 0; i < arr.length; i++) arr[i] = i;
+            return arr;
+        },
+        page_data() {
+            return this.$refs.page.page_data;
+        },
+    },
+});
+app.use(store);
 
-const components = [["nav-bar", "/js/Components/NavBar.vue"]];
-
-app.component("List", List);
+app.component("star-rating", VueStarRating.default);
 
 addComponents(components).then((data) => app.mount("#app"));
 
-$(window).resize(function () {
+/*$(window).resize(function () {
     if ($(window).width() <= 1423) {
         var elems = document.getElementsByClassName("cloth-card");
         for (var i = 0; i < elems.length; i++) {
@@ -141,4 +112,4 @@ $(window).resize(function () {
             cur.classList.add("col-sm-3");
         }
     }
-});
+});*/

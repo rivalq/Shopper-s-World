@@ -16,6 +16,7 @@ public class SellerClothMapper implements RowMapper<Cloth> {
         cl.setLong_description(rs.getString("long_description"));
         cl.setShort_description(rs.getString("short_description"));
         cl.setSeller(rs.getString("seller"));
+        cl.setGender(rs.getString("gender"));
         return cl;
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,14 +25,6 @@ public class CartController extends BaseController {
 
     @Autowired
     OrderRepository orderRepository;
-
-    @GetMapping("/dashboard/cart")
-    public String userCartRedirect(HttpSession session, Model model) {
-        if (!isAuthenticated(session)) {
-            return "redirect:/login";
-        }
-        return "cart";
-    }
 
     @GetMapping("/api/cart")
     @ResponseBody

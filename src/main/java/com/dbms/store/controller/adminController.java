@@ -1,6 +1,7 @@
 package com.dbms.store.controller;
 
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Features;
 import com.dbms.store.model.Images;
 import com.dbms.store.model.MarketPlace;
 import com.dbms.store.model.Order;
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -94,9 +94,13 @@ public class adminController extends BaseController {
 
         int cloth_id = request.getCloth_id();
         Cloth cloth = sellerRepository.getCloth(cloth_id);
+        List<Features> fr = sellerRepository.getFeatures(cloth_id);
         int x = requestRepository.exists((cloth_id));
         if (x == 0) {
+            cloth.setAdmin_rating(5);
+            cloth.setCustom(true);
             x = marketRepository.addCloth(cloth);
+            request.setCloth_id(x);
             String path = context + "/resources/static/images/marketplace/" + Integer.toString(x);
             Files.createDirectories(Paths.get(path));
             List<String> Images = sellerRepository.getClothImages(cloth_id);
@@ -113,12 +117,17 @@ public class adminController extends BaseController {
                 try {
                     // Copying Images and updating them on database
                     FileUtils.copyFile(src, des);
-                    marketRepository.addImage(cloth_id, url);
+                    marketRepository.addImage(x, url);
                 } catch (Exception e) {
                     //e.printStackTrace();
                 }
             }
+            for (int i = 0; i < fr.size(); i++) {
+                fr.get(i).setCloth_id(x);
+                marketRepository.addFeature(fr.get(i));
+            }
         }
+
         marketRepository.updateStock(request);
         requestRepository.acceptRequest(request.getRequest_id(), x);
 
@@ -233,7 +242,7 @@ public class adminController extends BaseController {
 
     @PostMapping("/api/admin/add/{selected}")
     @ResponseBody
-    public ResponseEntity<String> addCloth(HttpSession session, @RequestPart MarketPlace cloth, @RequestPart List<Stock> stock, @RequestPart MultipartFile[] images, @PathVariable("selected") int selected) {
+    public ResponseEntity<String> addCloth(HttpSession session, @RequestPart MarketPlace cloth, @RequestPart List<Stock> stock, @RequestPart List<Features> fr, @RequestPart MultipartFile[] images, @PathVariable("selected") int selected) {
         ResponseEntity<String> error = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
 
@@ -246,6 +255,10 @@ public class adminController extends BaseController {
         for (int i = 0; i < stock.size(); i++) {
             stock.get(i).setCloth_id(x);
             marketRepository.updateStock(stock.get(i));
+        }
+        for (int i = 0; i < fr.size(); i++) {
+            fr.get(i).setCloth_id(x);
+            marketRepository.addFeature(fr.get(i));
         }
         String path = context + "/resources/static/images/marketplace/" + Integer.toString(x);
         try {

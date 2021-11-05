@@ -1,8 +1,8 @@
 package com.dbms.store.repository;
 
+import com.dbms.store.Mapper.FeatureMapper;
 import com.dbms.store.Mapper.ImagesMapper;
 import com.dbms.store.Mapper.SellerClothMapper;
-import com.dbms.store.controller.SellerController;
 import com.dbms.store.model.Cloth;
 import com.dbms.store.model.Features;
 import com.dbms.store.model.Images;
@@ -22,7 +22,7 @@ public class SellerRepository {
     private JdbcTemplate template;
 
     public int addCloth(Cloth cloth) {
-        String sql = "INSERT INTO seller_cloth (name, brand, category, short_description,long_description,seller) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO seller_cloth (name, brand, category, short_description,long_description,gender,seller) VALUES (?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         template.update(
             connection -> {
@@ -32,12 +32,18 @@ public class SellerRepository {
                 ps.setString(3, cloth.getCategory());
                 ps.setString(4, cloth.getShort_description());
                 ps.setString(5, cloth.getLong_description());
-                ps.setString(6, cloth.getSeller());
+                ps.setString(6, cloth.getGender());
+                ps.setString(7, cloth.getSeller());
                 return ps;
             },
             keyHolder
         );
         return keyHolder.getKey().intValue();
+    }
+
+    public void updateCloth(Cloth mp) {
+        String sql = "UPDATE seller_cloth set name = ?, brand = ?, category = ?, short_description = ?,long_description = ?, gender = ? where cloth_id = ?";
+        template.update(sql, mp.getName(), mp.getBrand(), mp.getCategory(), mp.getShort_description(), mp.getLong_description(), mp.getGender(), mp.getCloth_id());
     }
 
     public void addImage(String url, int cloth_id) {
@@ -72,6 +78,11 @@ public class SellerRepository {
     public void addFeature(Features feature) {
         String sql = "INSERT into seller_cloth_features(cloth_id,feature_name,value) VALUES(?,?,?)";
         template.update(sql, feature.getCloth_id(), feature.getFeature_name(), feature.getValue());
+    }
+
+    public List<Features> getFeatures(int cloth_id) {
+        String sql = "SELECT * from seller_cloth_features where cloth_id = ?";
+        return template.query(sql, new FeatureMapper(), cloth_id);
     }
 
     public List<Images> getClothImages() {

@@ -19,6 +19,8 @@ public class ClothMapper implements RowMapper<Cloth> {
         cl.setAdmin_rating(rs.getFloat("admin_rating"));
         cl.setRating(rs.getFloat("rating"));
         cl.setCustom(rs.getBoolean("custom"));
+        cl.setGender(rs.getString("gender"));
+        cl.setHide(rs.getBoolean("hide"));
         return cl;
     }
 }

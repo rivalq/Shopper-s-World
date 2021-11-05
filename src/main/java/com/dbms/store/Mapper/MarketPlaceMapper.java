@@ -19,6 +19,9 @@ public class MarketPlaceMapper implements RowMapper<MarketPlace> {
         mp.setAdmin_rating(rs.getFloat("admin_rating"));
         mp.setRating(rs.getFloat("rating"));
         mp.setCustom(rs.getBoolean("custom"));
+        mp.setGender(rs.getString("gender"));
+        mp.setHide(rs.getBoolean("hide"));
+
         return mp;
     }
 }

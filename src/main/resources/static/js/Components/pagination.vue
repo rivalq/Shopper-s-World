@@ -4,8 +4,8 @@
             <tr>
                 <td>
                     <div class="row justify-content-md-end">
-                        <div class="col-sm-auto pt-2">Items Per Page</div>
-                        <div class="col-2 me-5 ms-2">
+                        <div class="col-sm-auto pt-2" v-if="read == false">Items Per Page</div>
+                        <div class="col-2 me-5 ms-2" v-if="read == false">
                             <select v-model.number="page_size" class="form-select" @input="changePage">
                                 <option>10</option>
                                 <option>20</option>
@@ -29,7 +29,13 @@ export default {
             page: 0,
         };
     },
-    props: ["data"],
+    props: {
+        data: Array,
+        read: {
+            type: Boolean,
+            default: false,
+        },
+    },
     methods: {
         prev() {
             if (this.leftPos == 0) this.page--;

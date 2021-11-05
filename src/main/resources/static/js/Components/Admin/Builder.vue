@@ -12,6 +12,15 @@
                         <input type="text" class="input" v-model="name" />
                     </div>
                     <div class="col mt-3">
+                        <div class="col"><label class="text-muted" for="brand">For(Gender)</label></div>
+                        <select v-model="gender" class="input">
+                            <option value="Men">Men</option>
+                            <option value="Women">Women</option>
+                            <option value="Boy">Boy</option>
+                            <option value="Girl">Girl</option>
+                        </select>
+                    </div>
+                    <div class="col mt-3">
                         <div class="col"><label class="text-muted" for="brand">Brand*</label></div>
                         <input type="text" class="input" v-model="brand" />
                     </div>
@@ -152,6 +161,7 @@ export default {
             features: [],
             edit_mode: 1,
             stock: [],
+            gender: "Men",
         };
     },
     methods: {
@@ -230,6 +240,16 @@ export default {
                         }
                     }
                 }
+                for (let i = 0; i < this.features.length; i++) {
+                    if (this.features[i].feature_name == "") {
+                        this.display("Feature name");
+                        return 0;
+                    }
+                    if (this.features.value == "") {
+                        this.display("Value of Feature");
+                        return 0;
+                    }
+                }
                 return 1;
             }
             return 0;
@@ -246,8 +266,10 @@ export default {
                     custom: 1,
                     admin_rating: 5,
                     rating: 0,
+                    gender: this.gender,
                 };
                 let stock = [];
+                let fr = [];
                 for (let i = 0; i < this.stock.length; i++) {
                     const stk = {
                         size: this.stock[i]["size"],
@@ -256,6 +278,14 @@ export default {
                     };
                     stock.push(stk);
                 }
+                for (let i = 0; i < this.features.length; i++) {
+                    const f = {
+                        cloth_id: 0,
+                        feature_name: this.features[i][0],
+                        value: this.features[i][1],
+                    };
+                    fr.push(f);
+                }
 
                 var data = new FormData();
 
@@ -263,6 +293,7 @@ export default {
                     data.append("images", this.files[i]);
                 }
                 data.append("cloth", new Blob([JSON.stringify(cloth)], { type: "application/json" }));
+                data.append("fr", new Blob([JSON.stringify(fr)], { type: "application/json" }));
                 data.append("stock", new Blob([JSON.stringify(stock)], { type: "application/json" }));
                 axios({
                     url: "/api/admin/add/" + this.selected,

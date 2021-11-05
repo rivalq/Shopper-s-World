@@ -26,6 +26,10 @@ public class WishListRepository {
         return template.queryForList(sql, Integer.class, username);
     }
 
+    public Integer checkWish(int cloth_id, String user) {
+        return template.queryForObject("SELECT COUNT(*) from wishlist where username = ? and cloth_id = ?", Integer.class, new Object[] { user, cloth_id });
+    }
+
     public int count(int cloth_id) {
         String sql = "SELECT COUNT(*) from wishlist where cloth_id = ?";
         return template.queryForObject(sql, int.class, cloth_id);

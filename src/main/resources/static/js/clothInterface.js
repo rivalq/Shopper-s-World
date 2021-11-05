@@ -16,6 +16,7 @@ const store = Vuex.createStore({
             selected_menu: 0,
             selected_crud_menu: 0,
             reviews: [],
+            user: {},
         };
     },
     mutations: {
@@ -42,6 +43,9 @@ const store = Vuex.createStore({
         setReviews(state, payload) {
             state.reviews = payload;
         },
+        setUser(state, payload) {
+            state.user = payload;
+        },
     },
     actions: {
         async setCloth(state, payload) {
@@ -49,17 +53,25 @@ const store = Vuex.createStore({
                 var cloth = new Object();
                 cloth = response.data;
                 cloth["url"] = "/images/marketplace/" + payload + "/profile";
-                axios.get("/api/marketplace/stock/" + payload).then((response) => {
-                    cloth["stock"] = response.data;
-                    stock_by_size = new Object();
-                    for (var i = 0; i < response.data.length; i++) {
-                        stock_by_size[response.data[i]["size"]] = response.data[i];
-                    }
-                    const anystock = response.data[0];
-                    state.commit("setCloth", cloth);
-                    state.commit("setStockBysize", stock_by_size);
-                    state.commit("changeSize", anystock["size"]);
-                });
+                const func = async () => {
+                    await axios.get("/api/marketplace/stock/" + payload).then((response) => {
+                        cloth["stock"] = response.data;
+                        stock_by_size = new Object();
+                        for (var i = 0; i < response.data.length; i++) {
+                            stock_by_size[response.data[i]["size"]] = response.data[i];
+                        }
+                        const anystock = response.data[0];
+                        state.commit("setStockBysize", stock_by_size);
+                        state.commit("changeSize", anystock["size"]);
+                    });
+                    await axios.get("/api/marketplace/images/" + payload).then((response) => {
+                        cloth["images"] = response.data;
+                    });
+                    await axios.get("/api/marketplace/features/" + payload).then((response) => {
+                        cloth["features"] = response.data;
+                    });
+                };
+                func().then((data) => state.commit("setCloth", cloth));
             });
         },
         async updateClothdb(state, payload) {
@@ -99,6 +111,11 @@ const store = Vuex.createStore({
                 state.commit("setReviews", response.data);
             });
         },
+        async getUser(state, payload) {
+            axios.get("/api/user").then((response) => {
+                state.commit("setUser", response.data);
+            });
+        },
     },
     getters: {
         getCart: (state) => state.cart,
@@ -111,6 +128,7 @@ const store = Vuex.createStore({
         getSelectedMenu: (state) => state.selected_menu,
         getSelectedCrudMenu: (state) => state.selected_crud_menu,
         getReviews: (state) => state.reviews,
+        getUser: (state) => state.user,
     },
 });
 
@@ -314,7 +332,7 @@ const Main = {
     `,
     created: function () {
         this.id = window.location.href.split("/").at(-1);
-        console.log(this.id);
+        this.$store.dispatch("getUser");
     },
 };
 
@@ -346,27 +364,6 @@ const slider = {
     },
 };
 
-const Description = {
-    data() {
-        return {};
-    },
-    template: /*html*/ `
-        <div class="col">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ultricies mi eget mauris pharetra et. Vel pretium lectus quam id leo in vitae turpis massa. Orci dapibus ultrices in iaculis nunc. At auctor urna nunc id cursus metus. Integer feugiat scelerisque varius morbi enim nunc. Aliquam sem et tortor consequat id porta nibh venenatis cras. Pellentesque pulvinar pellentesque habitant morbi tristique senectus et netus. Malesuada nunc vel risus commodo viverra maecenas. Neque volutpat ac tincidunt vitae semper quis.
-        </div>
-    `,
-};
-const Features = {
-    data() {
-        return {};
-    },
-    template: /*html*/ `
-        <div class="col">
-        There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle 
-        </div>
-    `,
-};
-
 const dfr = {
     data() {
         return {};
@@ -375,7 +372,6 @@ const dfr = {
         <slider></slider>
         <div class="row mt-4">
             <Description v-show = "selected == 0"></Description>
-            <Features  v-show = "selected == 1"></Features>
             <Reviews   v-show = "selected == 2"></Reviews>
         </div>
     `,
@@ -392,6 +388,9 @@ const app = Vue.createApp({
     created: function () {
         this.$store.dispatch("getReviews");
     },
+    computed: {
+        ...mapGetters({ user: "getUser" }),
+    },
 });
 
 app.use(store);
@@ -402,13 +401,15 @@ const components = [
     ["nav-bar", NavBar],
     ["Cloth", PATH + "Cloth.vue"],
     ["Reviews", PATH + "Reviews.vue"],
+    ["footer-menu", Footer],
+    ["Description", PATH + "Description.vue"],
 ];
 
+app.component("star-rating", VueStarRating.default);
 app.component("slider", slider);
-app.component("Description", Description);
-app.component("Features", Features);
 app.component("dfr", dfr);
 app.component("mycomp", Main);
+
 app.component("fab", fab);
 app.component("basic-settings", basic_settings);
 app.component("cloth-images", cloth_images);

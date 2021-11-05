@@ -55,15 +55,18 @@
     <body>
         <div id="app">
             <nav-bar></nav-bar>
-            <div class="container" style="height: 1200px">
+            <div class="container-fluid px-5">
                 <mycomp></mycomp>
                 <dfr></dfr>
             </div>
-            <fab style="position: fixed; bottom: 40px; right: 40px"></fab>
-            <crud-modal></crud-modal>
+            <fab style="position: fixed; bottom: 40px; right: 40px" th:if="${role == 'admin'}"></fab>
+            <crud-modal th:if="${role == 'admin'}"></crud-modal>
+            <footer-menu></footer-menu>
         </div>
 
         <link rel="stylesheet" th:href="@{/css/fab.css}" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/3.0.7/marked.js"></script>
+
         <script type="text/javascript" th:inline="javascript" th:src="@{/js/clothInterface.js}"></script>
         <script src="https://use.fontawesome.com/0206006232.js"></script>
     </body>

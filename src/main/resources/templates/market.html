@@ -6,14 +6,41 @@
         .buynow-btn {
             cursor: pointer;
         }
+        details > summary {
+            padding: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        details > p {
+            padding: 5px;
+        }
     </style>
-
     <body>
         <div id="app">
             <nav-bar></nav-bar>
-            <div class="container mt-5">
-                <List></List>
+            <div class="container-fluid mt-5">
+                <div id="cloth-body" class="row mt-4 justify-content-md-center" v-if="loading == false">
+                    <div class="col-auto ms-3" style="width: 350px">
+                        <input type="text" placeholder="Search..." class="input" style="width: 300px; padding-left: 5px" />
+                        <details class="mt-3">
+                            <summary>Gender</summary>
+                            <p>
+                                <input type="checkbox" name="Men" id="Men" />
+                                <label for="Men"> Men</label>
+                            </p>
+                        </details>
+                    </div>
+                    <div class="col-9">
+                        <div class="row justify-content-md-center">
+                            <cloth-menu v-for="index in page_data" :key="index" :index="index"></cloth-menu>
+                        </div>
+                    </div>
+                </div>
+                <pagination ref="page" :data="filter" :read="true"></pagination>
             </div>
+            <footer-menu></footer-menu>
         </div>
 
         <script type="text/javascript" th:inline="javascript" th:src="@{/js/market.js}"></script>

@@ -2,9 +2,12 @@ package com.dbms.store.repository;
 
 import com.dbms.store.Mapper.RequestMapper;
 import com.dbms.store.model.Request;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -53,7 +56,21 @@ public class RequestRepository {
     }
 
     public int exists(int cloth_id) {
-        String sql = "SELECT MAX(mp_cloth) where cloth_id = ? and status = 1 and result = 1";
-        return template.queryForObject(sql, int.class, cloth_id);
+        String sql = "SELECT MAX(mp_cloth) from requests where cloth_id = ? and request_status = 1 and request_result = 1";
+        List<Integer> ls = template.query(
+            sql,
+            new RowMapper<Integer>() {
+
+                public Integer mapRow(ResultSet rs, int rownum) throws SQLException {
+                    return rs.getInt(1);
+                }
+            },
+            cloth_id
+        );
+        if (ls.size() == 0) {
+            return 0;
+        } else {
+            return ls.get(0);
+        }
     }
 }

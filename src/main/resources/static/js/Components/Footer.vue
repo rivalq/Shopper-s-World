@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid" style="background-color: rgb(17, 17, 17); margin-top: 100px">
+    <div class="container-fluid" style="background-color: rgb(17, 17, 17); margin-top: 40px">
         <div class="row p-5">
             <div class="col-lg-4 p-4">
                 <img src="/images/s.png" width="70" height="70" />

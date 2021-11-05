@@ -1,9 +1,11 @@
 package com.dbms.store.repository;
 
+import com.dbms.store.Mapper.FeatureMapper;
 import com.dbms.store.Mapper.ImagesMapper;
 import com.dbms.store.Mapper.MarketPlaceMapper;
 import com.dbms.store.Mapper.StockMapper;
 import com.dbms.store.model.Cloth;
+import com.dbms.store.model.Features;
 import com.dbms.store.model.Images;
 import com.dbms.store.model.MarketPlace;
 import com.dbms.store.model.Request;
@@ -24,7 +26,7 @@ public class MarketRepository {
     private JdbcTemplate template;
 
     public int addCloth(Cloth cloth) {
-        String sql = "INSERT INTO marketplace (name, brand, category, short_description,long_description,seller) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO marketplace (name, brand, category, short_description,long_description,gender,seller) VALUES (?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         template.update(
             connection -> {
@@ -34,7 +36,8 @@ public class MarketRepository {
                 ps.setString(3, cloth.getCategory());
                 ps.setString(4, cloth.getShort_description());
                 ps.setString(5, cloth.getLong_description());
-                ps.setString(6, cloth.getSeller());
+                ps.setString(6, cloth.getGender());
+                ps.setString(7, cloth.getSeller());
                 return ps;
             },
             keyHolder
@@ -42,14 +45,50 @@ public class MarketRepository {
         return keyHolder.getKey().intValue();
     }
 
+    public Integer existsCloth(int cloth_id) {
+        return template.queryForObject("SELECT COUNT(*) FROM marketplace where cloth_id = ?", Integer.class, cloth_id);
+    }
+
     public List<MarketPlace> getMarketClothes() {
         String sql = "SELECT * FROM marketplace";
         return template.query(sql, new MarketPlaceMapper());
     }
+    public List<MarketPlace> getVisibleClothes(int autoHide){
+        String sql = "";
+        if(autoHide == 1){
+            sql = "SELECT * FROM marketplace where hide = 0 and (SELECT COUNT(*) FROM stock where stock.cloth_id = marketplace.cloth_id and stock.quantity) > 0";
+        }else{
+            sql = "SELECT * FROM marketplace where hide = 0";
+        }
+        return template.query(sql,new MarketPlaceMapper());
+    }
+    public MarketPlace getVisibleCloth(int cloth_id,int autoHide){
+        String sql = "";
+        if(autoHide == 1){
+            sql = "SELECT * FROM marketplace where hide = 0 and cloth_id = ? and (SELECT COUNT(*) FROM stock where stock.cloth_id = marketplace.cloth_id and stock.quantity) > 0";
+        }else{
+            sql = "SELECT * FROM marketplace where hide = 0 and cloth_id = ?";
+        }
+        return template.queryForObject(sql, new MarketPlaceMapper(), cloth_id);
+    }
 
     public MarketPlace getMarketClothes(int cloth_id) {
         String sql = "SELECT * FROM marketplace where cloth_id = ?";
-        return template.query(sql, new MarketPlaceMapper(), new Object[] { cloth_id }).get(0);
+        try{
+            return template.query(sql, new MarketPlaceMapper(), new Object[] { cloth_id }).get(0);
+        } catch (Exception e){
+            return new MarketPlace();
+        }
+    }
+
+    public List<Stock> getStocks(int flag){
+        String sql = "";
+        if(flag == 0){
+            sql = "SELECT * FROM stock where quantity > 0";
+        }else{
+            sql = "SELECT * FROM stock";
+        }
+        return template.query(sql,new StockMapper());
     }
 
     public List<Stock> getStock(int cloth_id) {
@@ -74,8 +113,8 @@ public class MarketRepository {
     }
 
     public void updateCloth(MarketPlace mp) {
-        String sql = "UPDATE marketplace set name = ?, brand = ?, category = ?, short_description = ?,long_description = ? where cloth_id = ?";
-        template.update(sql, mp.getName(), mp.getBrand(), mp.getCategory(), mp.getShort_description(), mp.getLong_description(), mp.getCloth_id());
+        String sql = "UPDATE marketplace set name = ?, brand = ?, category = ?, short_description = ?,long_description = ?, gender = ? where cloth_id = ?";
+        template.update(sql, mp.getName(), mp.getBrand(), mp.getCategory(), mp.getShort_description(), mp.getLong_description(), mp.getGender(), mp.getCloth_id());
     }
 
     public void updateStock(Request request) {
@@ -95,5 +134,19 @@ public class MarketRepository {
 
     public List<Images> getImages() {
         return template.query("SELECT * FROM images", new ImagesMapper());
+    }
+
+    public List<Images> getImages(int cloth_id) {
+        return template.query("SELECT * FROM images where cloth_id = ?", new ImagesMapper(), cloth_id);
+    }
+
+    public void addFeature(Features feature) {
+        String sql = "INSERT into features(cloth_id,feature_name,value) VALUES(?,?,?)";
+        template.update(sql, feature.getCloth_id(), feature.getFeature_name(), feature.getValue());
+    }
+
+    public List<Features> getFeatures(int cloth_id) {
+        String sql = "SELECT * from features where cloth_id = ?";
+        return template.query(sql, new FeatureMapper(), cloth_id);
     }
 }

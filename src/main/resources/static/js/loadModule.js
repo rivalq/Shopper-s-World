@@ -28,4 +28,5 @@ async function addComponents(components) {
     return 0;
 }
 const NavBar = "/js/Components/NavBar.vue";
+const Footer = "/js/Components/Footer.vue";
 const mapGetters = Vuex.mapGetters;

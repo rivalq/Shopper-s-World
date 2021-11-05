@@ -1,6 +1,8 @@
 package com.dbms.store.controller;
 
 import com.dbms.store.model.ClothRating;
+import com.dbms.store.model.Features;
+import com.dbms.store.model.Images;
 import com.dbms.store.model.MarketPlace;
 import com.dbms.store.model.Order;
 import com.dbms.store.model.Ratings;
@@ -12,6 +14,8 @@ import com.dbms.store.repository.OrderRepository;
 import com.dbms.store.repository.RatingRepository;
 import com.dbms.store.repository.ReviewRepository;
 import com.dbms.store.repository.WishListRepository;
+import com.dbms.store.repository.variableRepository;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -44,37 +48,59 @@ public class marketController extends BaseController {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    
+    @Autowired
+    private variableRepository variableRepository;
+
     @GetMapping("/api/marketplace/clothes")
     @ResponseBody
     public List<MarketPlace> getMarketClothes(HttpSession session) {
-        if (!isAuthenticated(session)) {
-            return new ArrayList<MarketPlace>();
+        String role = authService.getRole(session);
+        if(role != "admin"){
+            int autoHide = variableRepository.getVariable("Hide out of Stock");
+            return marketRepository.getVisibleClothes(autoHide);
+        }else{
+            return marketRepository.getMarketClothes();
         }
-        return marketRepository.getMarketClothes();
     }
 
     @GetMapping("/api/marketplace/clothes/{cloth_id}")
     @ResponseBody
     public MarketPlace getMarketClothes(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
-        if (!isAuthenticated(session)) {
-            return new MarketPlace();
+        String role = authService.getRole(session);
+        if(role != "admin"){
+            int autoHide = variableRepository.getVariable("Hide out of Stock");
+            return marketRepository.getVisibleCloth(cloth_id, autoHide);
+        }else{
+            return marketRepository.getMarketClothes(cloth_id);
         }
-        return marketRepository.getMarketClothes(cloth_id);
+    }
+
+    @GetMapping("/api/marketplace/images/{cloth_id}")
+    @ResponseBody
+    public List<Images> getImages(@PathVariable("cloth_id") int cloth_id) {
+        return marketRepository.getImages(cloth_id);
+    }
+    @GetMapping("/api/marketplace/stock")
+    @ResponseBody
+    public List<Stock> getStock(HttpSession session) {
+        String role = authService.getRole(session);
+        if(role != "admin"){
+            return marketRepository.getStocks(0);
+        }else{
+            return marketRepository.getStocks(1);
+        }
     }
 
     @GetMapping("/api/marketplace/stock/{cloth_id}")
     @ResponseBody
     public List<Stock> getMarketStock(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
-        if (!isAuthenticated(session)) {
-            return new ArrayList<Stock>();
-        }
-        return marketRepository.getStock(cloth_id);
+           return marketRepository.getStock(cloth_id);
     }
 
     @GetMapping("/api/marketplace/stock/{cloth_id}/{size}")
     @ResponseBody
     public int getPrice(@PathVariable("cloth_id") int cloth_id, @PathVariable("size") String size, HttpSession session) {
-        if (!isAuthenticated(session)) return -1;
         return marketRepository.getPrice(cloth_id, size);
     }
 
@@ -143,6 +169,28 @@ public class marketController extends BaseController {
         return ok;
     }
 
+    @PostMapping("/api/marketplace/wishlist/{cloth_id}")
+    @ResponseBody
+    public ResponseEntity<String> addWish(HttpSession session, @PathVariable("cloth_id") int cloth_id) {
+        ResponseEntity<String> err = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
+        if (!isAuthenticated(session)) {
+            return err;
+        }
+        Wishlist ws = new Wishlist();
+        ws.setCloth_id(cloth_id);
+        ws.setUsername(authService.getCurrentUser(session));
+        wishListRepository.setWishList(ws);
+        return ok;
+    }
+
+    @GetMapping("/api/marketplace/wishlist/{cloth_id}")
+    @ResponseBody
+    public Integer checkWish(HttpSession session, @PathVariable("cloth_id") int cloth_id) {
+        if (!isAuthenticated(session)) return 0;
+        return wishListRepository.checkWish(cloth_id, authService.getCurrentUser(session));
+    }
+
     @GetMapping("/api/marketplace/reviews/{cloth_id}")
     @ResponseBody
     public List<Reviews> getClothReviews(@PathVariable("cloth_id") int cloth_id) {
@@ -182,5 +230,11 @@ public class marketController extends BaseController {
             return ok;
         }
         return err;
+    }
+
+    @GetMapping("/api/marketplace/features/{cloth_id}")
+    @ResponseBody
+    public List<Features> getFeatures(@PathVariable("cloth_id") int cloth_id) {
+        return marketRepository.getFeatures(cloth_id);
     }
 }

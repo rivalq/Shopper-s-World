@@ -53,20 +53,22 @@ public class MarketRepository {
         String sql = "SELECT * FROM marketplace";
         return template.query(sql, new MarketPlaceMapper());
     }
-    public List<MarketPlace> getVisibleClothes(int autoHide){
+
+    public List<MarketPlace> getVisibleClothes(int autoHide) {
         String sql = "";
-        if(autoHide == 1){
+        if (autoHide == 1) {
             sql = "SELECT * FROM marketplace where hide = 0 and (SELECT COUNT(*) FROM stock where stock.cloth_id = marketplace.cloth_id and stock.quantity) > 0";
-        }else{
+        } else {
             sql = "SELECT * FROM marketplace where hide = 0";
         }
-        return template.query(sql,new MarketPlaceMapper());
+        return template.query(sql, new MarketPlaceMapper());
     }
-    public MarketPlace getVisibleCloth(int cloth_id,int autoHide){
+
+    public MarketPlace getVisibleCloth(int cloth_id, int autoHide) {
         String sql = "";
-        if(autoHide == 1){
+        if (autoHide == 1) {
             sql = "SELECT * FROM marketplace where hide = 0 and cloth_id = ? and (SELECT COUNT(*) FROM stock where stock.cloth_id = marketplace.cloth_id and stock.quantity) > 0";
-        }else{
+        } else {
             sql = "SELECT * FROM marketplace where hide = 0 and cloth_id = ?";
         }
         return template.queryForObject(sql, new MarketPlaceMapper(), cloth_id);
@@ -74,21 +76,21 @@ public class MarketRepository {
 
     public MarketPlace getMarketClothes(int cloth_id) {
         String sql = "SELECT * FROM marketplace where cloth_id = ?";
-        try{
+        try {
             return template.query(sql, new MarketPlaceMapper(), new Object[] { cloth_id }).get(0);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new MarketPlace();
         }
     }
 
-    public List<Stock> getStocks(int flag){
+    public List<Stock> getStocks(int flag) {
         String sql = "";
-        if(flag == 0){
+        if (flag == 0) {
             sql = "SELECT * FROM stock where quantity > 0";
-        }else{
+        } else {
             sql = "SELECT * FROM stock";
         }
-        return template.query(sql,new StockMapper());
+        return template.query(sql, new StockMapper());
     }
 
     public List<Stock> getStock(int cloth_id) {

@@ -1,7 +1,6 @@
 package com.dbms.store.controller;
 
 import com.dbms.store.model.Cart;
-import com.dbms.store.model.Order;
 import com.dbms.store.repository.CartRepository;
 import com.dbms.store.repository.OrderRepository;
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class CartController extends BaseController {
 
     @PostMapping("/api/marketplace/checkout")
     @ResponseBody
-    public ResponseEntity<String> completeOrder(HttpSession session, @RequestParam(value = "prices[]", required = false) Integer[] prices) {
+    public ResponseEntity<String> completeOrder(HttpSession session) {
         ResponseEntity<String> err = new ResponseEntity<>(HttpStatus.FORBIDDEN);
         ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
         if (!isAuthenticated(session)) {
@@ -80,22 +79,13 @@ public class CartController extends BaseController {
         }
         String username = authService.getCurrentUser(session);
 
-        if (cartRepository.validCart(username)) {
-            // now copy cart in order and clear cart
-            List<Cart> cart = cartRepository.getUserCart(username);
-            for (int i = 0; i < cart.size(); i++) {
-                Order or = new Order();
-                or.setCloth_id(cart.get(i).getCloth_id());
-                or.setSize(cart.get(i).getSize());
-                or.setQuantity(cart.get(i).getQuantity());
-                or.setUsername(username);
-                or.setPrice(prices[i]);
-                orderRepository.newOrder(or);
+        try {
+            if (cartRepository.validCart(username) == true) {
+                return ok;
             }
-            cartRepository.empty(username);
-        } else {
-            return err;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return ok;
+        return err;
     }
 }

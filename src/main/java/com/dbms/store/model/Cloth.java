@@ -181,5 +181,4 @@ public class Cloth {
     public void setHide(boolean hide) {
         this.hide = hide;
     }
-
 }

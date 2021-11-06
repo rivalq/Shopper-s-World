@@ -13,26 +13,78 @@
             font-size: 18px;
             font-weight: 500;
         }
-        details > p {
+        details > div {
             padding: 5px;
+        }
+        .input-wrapper {
+            display: inline-block;
+            position: relative;
+        }
+        .input-wrapper:after {
+            font-family: "FontAwesome";
+            content: "\f002";
+            position: absolute;
+            right: 6px;
+            bottom: 5px;
+            font-size: 22px;
+            color: rgb(13, 110, 253);
         }
     </style>
     <body>
         <div id="app">
             <nav-bar></nav-bar>
             <div class="container-fluid mt-5">
-                <div id="cloth-body" class="row mt-4 justify-content-md-center" v-if="loading == false">
-                    <div class="col-auto ms-3" style="width: 350px">
-                        <input type="text" placeholder="Search..." class="input" style="width: 300px; padding-left: 5px" />
+                <div id="cloth-body" class="row mt-4" v-if="loading == false">
+                    <div class="col-auto ms-3" style="width: 300px">
+                        <div class="row">
+                            <div class="col" style="font-size: 20px; font-weight: 500">FILTERS</div>
+                            <div class="col-auto ms-auto cursor" style="color: rgb(229, 54, 55)" v-show="any" @click="clearFilter">CLEAR ALL</div>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="text" placeholder="Search..." class="input mt-3" style="width: 300px; padding-left: 5px" v-model="prefix" />
+                        </div>
                         <details class="mt-3">
-                            <summary>Gender</summary>
-                            <p>
-                                <input type="checkbox" name="Men" id="Men" />
-                                <label for="Men"> Men</label>
-                            </p>
+                            <summary>GENDER</summary>
+                            <div>
+                                <div class="form-check" v-for="(itr,index) in genders" :key="itr">
+                                    <input class="form-check-input" type="checkbox" v-model="val_genders[index]" />
+                                    <label class="form-check-label" for="flexCheckDefault"> {{itr}} </label>
+                                </div>
+                            </div>
+                        </details>
+                        <details class="mt-3">
+                            <summary>BRANDING</summary>
+                            <div>
+                                <div class="form-check" v-for="(itr,index) in brands" :key="itr">
+                                    <input class="form-check-input" type="checkbox" v-model="val_brands[index]" />
+                                    <label class="form-check-label" for="flexCheckDefault"> {{itr}} </label>
+                                </div>
+                            </div>
+                        </details>
+                        <details class="mt-3">
+                            <summary>CATEGORIES</summary>
+                            <div>
+                                <div class="form-check" v-for="(itr,index) in categories" :key="itr">
+                                    <input class="form-check-input" type="checkbox" v-model="val_categories[index]" />
+                                    <label class="form-check-label" for="flexCheckDefault"> {{itr}} </label>
+                                </div>
+                            </div>
                         </details>
                     </div>
-                    <div class="col-9">
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-auto ps-5">Showing {{low}} - {{high}} of {{filter.length}} Results</div>
+                            <div class="col-auto ms-auto pe-5 me-2">
+                                Sort by
+                                <select class="input ms-2" v-model="val_sort" style="width: 250px; font-weight: 500">
+                                    <option value="0">Recommended</option>
+                                    <option value="1">Price : Low to High</option>
+                                    <option value="2">Price : High to Low</option>
+                                    <option value="3">Rating</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="row justify-content-md-center">
                             <cloth-menu v-for="index in page_data" :key="index" :index="index"></cloth-menu>
                         </div>

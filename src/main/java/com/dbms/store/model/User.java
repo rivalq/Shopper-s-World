@@ -13,6 +13,7 @@ public class User {
     private String phone;
     private String pincode;
     private String email;
+    private int credits;
 
     /**
      * @return String return the username
@@ -180,5 +181,19 @@ public class User {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * @return int return the credits
+     */
+    public int getCredits() {
+        return credits;
+    }
+
+    /**
+     * @param credits the credits to set
+     */
+    public void setCredits(int credits) {
+        this.credits = credits;
     }
 }

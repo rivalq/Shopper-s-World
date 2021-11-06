@@ -90,10 +90,9 @@ const store = Vuex.createStore({
             $.ajax({
                 url: "/api/marketplace/checkout",
                 type: "POST",
-                data: data,
                 success: function (data) {
                     displaySuccess("Order Successful");
-                    window.location.href = "/dashboard/clothes";
+                    //window.location.href = "/dashboard/clothes";
                 },
                 error: function (data) {
                     displayError("Some error occured");

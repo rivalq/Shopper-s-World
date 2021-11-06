@@ -21,7 +21,7 @@ public class UserMapper implements RowMapper<User> {
         us.setProfile_image(rs.getString("profile_image"));
         us.setIsAdmin(rs.getBoolean("is_admin"));
         us.setIsSeller(rs.getBoolean("is_seller"));
-
+        us.setCredits(rs.getInt("credits"));
         return us;
     }
 }

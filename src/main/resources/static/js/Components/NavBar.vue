@@ -45,6 +45,7 @@
                         <li><a class="dropdown-item" href="/logout">Log Out</a></li>
                     </ul>
                 </a>
+                <span> Rs {{ user.credits }}</span>
             </div>
         </div>
     </div>

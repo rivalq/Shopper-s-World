@@ -15,7 +15,6 @@ import com.dbms.store.repository.RatingRepository;
 import com.dbms.store.repository.ReviewRepository;
 import com.dbms.store.repository.WishListRepository;
 import com.dbms.store.repository.variableRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -48,7 +47,6 @@ public class marketController extends BaseController {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    
     @Autowired
     private variableRepository variableRepository;
 
@@ -56,10 +54,10 @@ public class marketController extends BaseController {
     @ResponseBody
     public List<MarketPlace> getMarketClothes(HttpSession session) {
         String role = authService.getRole(session);
-        if(role != "admin"){
+        if (role != "admin") {
             int autoHide = variableRepository.getVariable("Hide out of Stock");
             return marketRepository.getVisibleClothes(autoHide);
-        }else{
+        } else {
             return marketRepository.getMarketClothes();
         }
     }
@@ -68,10 +66,10 @@ public class marketController extends BaseController {
     @ResponseBody
     public MarketPlace getMarketClothes(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
         String role = authService.getRole(session);
-        if(role != "admin"){
+        if (role != "admin") {
             int autoHide = variableRepository.getVariable("Hide out of Stock");
             return marketRepository.getVisibleCloth(cloth_id, autoHide);
-        }else{
+        } else {
             return marketRepository.getMarketClothes(cloth_id);
         }
     }
@@ -81,13 +79,14 @@ public class marketController extends BaseController {
     public List<Images> getImages(@PathVariable("cloth_id") int cloth_id) {
         return marketRepository.getImages(cloth_id);
     }
+
     @GetMapping("/api/marketplace/stock")
     @ResponseBody
     public List<Stock> getStock(HttpSession session) {
         String role = authService.getRole(session);
-        if(role != "admin"){
+        if (role != "admin") {
             return marketRepository.getStocks(0);
-        }else{
+        } else {
             return marketRepository.getStocks(1);
         }
     }
@@ -95,7 +94,7 @@ public class marketController extends BaseController {
     @GetMapping("/api/marketplace/stock/{cloth_id}")
     @ResponseBody
     public List<Stock> getMarketStock(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
-           return marketRepository.getStock(cloth_id);
+        return marketRepository.getStock(cloth_id);
     }
 
     @GetMapping("/api/marketplace/stock/{cloth_id}/{size}")

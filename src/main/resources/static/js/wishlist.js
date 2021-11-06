@@ -2,6 +2,7 @@ const store = Vuex.createStore({
     state() {
         return {
             wishlist: [],
+            loading: true,
         };
     },
     mutations: {
@@ -10,6 +11,9 @@ const store = Vuex.createStore({
         },
         removeWish(state, payload) {
             state.wishlist.splice(payload, 1);
+        },
+        setloading(state, payload) {
+            state.loading = payload;
         },
     },
     actions: {
@@ -31,7 +35,10 @@ const store = Vuex.createStore({
                         });
                     }
                 };
-                func().then((data) => state.commit("setWishlist", wishlist));
+                func().then((data) => {
+                    state.commit("setWishlist", wishlist);
+                    state.commit("setloading", false);
+                });
             });
         },
         async removeWish(state, payload) {
@@ -49,15 +56,16 @@ const store = Vuex.createStore({
     },
     getters: {
         getWishlist: (state) => state.wishlist,
+        getloading: (state) => state.loading,
     },
 });
 
 const app = Vue.createApp({
-    template: `<nav-bar></nav-bar>
-               <wish-list></wish-list> 
-    `,
     created: function () {
         this.$store.dispatch("getWishlist");
+    },
+    computed: {
+        ...mapGetters({ loading: "getloading" }),
     },
 });
 
@@ -68,6 +76,7 @@ const components = [
     ["nav-bar", NavBar],
     ["wish-list", "/js/Components/WishList.vue"],
     ["pagination", "/js/Components/pagination.vue"],
+    ["footer-menu", Footer],
 ];
 
 addComponents(components).then((data) => app.mount("#app"));

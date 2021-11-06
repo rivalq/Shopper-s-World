@@ -2,11 +2,15 @@ const store = Vuex.createStore({
     state() {
         return {
             orders: [],
+            loading: true,
         };
     },
     mutations: {
         setOrders(state, payload) {
             state.orders = payload;
+        },
+        setloading(state, payload) {
+            state.loading = false;
         },
     },
     actions: {
@@ -22,20 +26,25 @@ const store = Vuex.createStore({
                         });
                     }
                 };
-                func().then((data) => state.commit("setOrders", orders));
+                func().then((data) => {
+                    state.commit("setOrders", orders);
+                    state.commit("setloading", false);
+                });
             });
         },
     },
     getters: {
         getOrders: (state) => state.orders,
+        getloading: (state) => state.loading,
     },
 });
 const app = Vue.createApp({
     created: function () {
         this.$store.dispatch("getOrders");
     },
-    template: `<nav-bar></nav-bar>
-    <order-app></order-app>`,
+    computed: {
+        ...mapGetters({ loading: "getloading" }),
+    },
 });
 app.use(store);
 app.component("star-rating", VueStarRating.default);
@@ -43,6 +52,7 @@ const components = [
     ["nav-bar", NavBar],
     ["order-app", "/js/Components/Orders.vue"],
     ["pagination", "/js/Components/pagination.vue"],
+    ["footer-menu", Footer],
 ];
 
 addComponents(components).then((data) => app.mount("#app"));

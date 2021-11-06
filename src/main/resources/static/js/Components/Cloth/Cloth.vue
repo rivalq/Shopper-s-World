@@ -117,9 +117,6 @@ export default {
     },
 
     created: function () {
-        this.$store.dispatch("setCloth", this.$props.id).then(() => {
-            this.$emit("clothLoaded");
-        });
         axios.get("/api/marketplace/wishlist/" + this.$props.id).then((data) => {
             if (data.data == 1) {
                 this.wish = 1 - this.wish;

@@ -54,14 +54,24 @@
 
     <body>
         <div id="app">
-            <nav-bar></nav-bar>
-            <div class="container-fluid px-5">
-                <mycomp></mycomp>
-                <dfr></dfr>
+            <div v-if="loading == true" class="loading-wrapper">
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
             </div>
-            <fab style="position: fixed; bottom: 40px; right: 40px" th:if="${role == 'admin'}"></fab>
-            <crud-modal th:if="${role == 'admin'}"></crud-modal>
-            <footer-menu></footer-menu>
+            <div v-if="loading == false">
+                <nav-bar></nav-bar>
+                <div class="container-fluid px-5">
+                    <mycomp></mycomp>
+                    <dfr></dfr>
+                </div>
+                <fab style="position: fixed; bottom: 40px; right: 40px" th:if="${role == 'admin'}"></fab>
+                <crud-modal th:if="${role == 'admin'}"></crud-modal>
+                <footer-menu></footer-menu>
+            </div>
         </div>
 
         <link rel="stylesheet" th:href="@{/css/fab.css}" />

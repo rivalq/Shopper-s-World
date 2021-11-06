@@ -3,7 +3,21 @@
     <head th:replace="dashboard/layout/header :: header"></head>
     <style></style>
     <body>
-        <div id="app"></div>
+        <div id="app">
+            <div v-if="loading == true" class="loading-wrapper">
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+            </div>
+            <div v-show="loading == false">
+                <nav-bar></nav-bar>
+                <wish-list></wish-list>
+                <footer-menu></footer-menu>
+            </div>
+        </div>
         <script th:inline="javascript" th:src="@{/js/wishlist.js}"></script>
     </body>
 </html>

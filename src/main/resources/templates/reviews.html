@@ -5,8 +5,19 @@
     <style></style>
     <body>
         <div id="app">
-            <nav-bar></nav-bar>
-            <review-menu></review-menu>
+            <div v-if="loading == true" class="loading-wrapper">
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+            </div>
+            <div v-show="loading == false">
+                <nav-bar></nav-bar>
+                <review-menu></review-menu>
+                <footer-menu></footer-menu>
+            </div>
         </div>
         <script th:src="@{/js/reviews.js}"></script>
     </body>

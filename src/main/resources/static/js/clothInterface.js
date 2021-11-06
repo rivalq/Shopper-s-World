@@ -17,6 +17,7 @@ const store = Vuex.createStore({
             selected_crud_menu: 0,
             reviews: [],
             user: {},
+            loading: true,
         };
     },
     mutations: {
@@ -46,6 +47,10 @@ const store = Vuex.createStore({
         setUser(state, payload) {
             state.user = payload;
         },
+        setloading(state, payload) {
+            console.log(payload);
+            state.loading = payload;
+        },
     },
     actions: {
         async setCloth(state, payload) {
@@ -71,7 +76,11 @@ const store = Vuex.createStore({
                         cloth["features"] = response.data;
                     });
                 };
-                func().then((data) => state.commit("setCloth", cloth));
+                func().then((data) => {
+                    console.log(1);
+                    state.commit("setCloth", cloth);
+                    state.commit("setloading", false);
+                });
             });
         },
         async updateClothdb(state, payload) {
@@ -129,6 +138,7 @@ const store = Vuex.createStore({
         getSelectedCrudMenu: (state) => state.selected_crud_menu,
         getReviews: (state) => state.reviews,
         getUser: (state) => state.user,
+        getloading: (state) => state.loading,
     },
 });
 
@@ -385,10 +395,16 @@ const dfr = {
  */
 
 const app = Vue.createApp({
+    data() {
+        return {};
+    },
     created: function () {
+        let id = window.location.href.split("/").at(-1);
+        this.$store.dispatch("setCloth", id);
         this.$store.dispatch("getReviews");
     },
     computed: {
+        ...mapGetters({ loading: "getloading" }),
         ...mapGetters({ user: "getUser" }),
     },
 });

@@ -49,6 +49,7 @@ export default {
     },
     computed: {
         ...mapGetters({ wishlist: "getWishlist" }),
+        ...mapGetters({ loading: "getloading" }),
         page_data() {
             return this.$refs.page.page_data;
         },

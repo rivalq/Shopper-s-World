@@ -4,7 +4,21 @@
 
     <style></style>
     <body>
-        <div id="app"></div>
+        <div id="app">
+            <div v-if="loading == true" class="loading-wrapper">
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+            </div>
+            <div v-show="loading == false">
+                <nav-bar></nav-bar>
+                <order-app></order-app>
+                <footer-menu></footer-menu>
+            </div>
+        </div>
         <script type="text/javascript" th:inline="javascript" th:src="@{/js/orderInterface.js}"></script>
     </body>
 </html>

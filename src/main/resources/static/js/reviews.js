@@ -2,11 +2,13 @@ const store = Vuex.createStore({
     state() {
         return {
             reviews: [],
+            loading: true,
         };
     },
     mutations: {
         setReviews(state, payload) {
             state.reviews = payload;
+            state.loading = false;
         },
     },
     actions: {
@@ -28,6 +30,7 @@ const store = Vuex.createStore({
     },
     getters: {
         getReviews: (state) => state.reviews,
+        getloading: (state) => state.loading,
     },
 });
 
@@ -35,12 +38,16 @@ const app = Vue.createApp({
     created: function () {
         this.$store.dispatch("getReviews");
     },
+    computed: {
+        ...mapGetters({ loading: "getloading" }),
+    },
 });
 app.use(store);
 
 const components = [
     ["nav-bar", NavBar],
     ["review-menu", "/js/Components/Reviews.vue"],
+    ["footer-menu", Footer],
 ];
 
 addComponents(components).then((data) => app.mount("#app"));

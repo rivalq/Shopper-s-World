@@ -32,7 +32,15 @@
     </style>
     <body>
         <div id="app">
-            <nav-bar></nav-bar>
+            <div v-if="loading == true" class="loading-wrapper">
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+                <div class="loading"></div>
+            </div>
+            <nav-bar v-if="loading == false"></nav-bar>
             <div class="container-fluid mt-5">
                 <div id="cloth-body" class="row mt-4" v-if="loading == false">
                     <div class="col-auto ms-3" style="width: 300px">
@@ -92,7 +100,7 @@
                 </div>
                 <pagination ref="page" :data="filter" :read="true"></pagination>
             </div>
-            <footer-menu></footer-menu>
+            <footer-menu v-if="loading == false"></footer-menu>
         </div>
 
         <script type="text/javascript" th:inline="javascript" th:src="@{/js/market.js}"></script>

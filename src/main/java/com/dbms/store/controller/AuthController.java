@@ -61,7 +61,7 @@ public class AuthController {
     @GetMapping("/logout")
     public String logout(Model model, HttpSession session) {
         authService.logoutUser(session);
-        return "redirect:/login";
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/api/permission")

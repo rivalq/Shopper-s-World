@@ -59,14 +59,9 @@ export default {
         };
     },
     created: function () {
-        if (window.localStorage.getItem("user") == null) {
-            axios.get("/api/user").then((response) => {
-                window.localStorage.setItem("user", JSON.stringify(response.data));
-                this.user = response.data;
-            });
-        } else {
-            this.user = JSON.parse(window.localStorage.getItem("user"));
-        }
+        axios.get("/api/user").then((response) => {
+            this.user = response.data;
+        });
     },
     methods: {
         login() {

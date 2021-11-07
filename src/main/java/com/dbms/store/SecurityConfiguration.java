@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -39,8 +38,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.
-        //requiresChannel(channel -> channel.anyRequest().requiresSecure()).
-        csrf().disable().authorizeRequests().antMatchers("/", "/dashboard", "/dashboard/clothes/**", "/css/**", "/js/**", "/images/**", "/login", "/logout").permitAll().antMatchers("/admin/**").hasAuthority("admin").antMatchers("/seller/**").hasAnyAuthority("seller", "admin").antMatchers("/profile", "/dashboard/cart", "/dashboard/orders", "/dashboard/wishlist", "/dashboard/reviews").authenticated().and().formLogin().loginPage("/login").failureUrl("/login?error=true").and().logout().logoutUrl("/logout").logoutSuccessUrl("/login?logout");
+        http
+            .csrf() //requiresChannel(channel -> channel.anyRequest().requiresSecure()).
+            .disable()
+            .authorizeRequests()
+            .antMatchers("/", "/dashboard", "/dashboard/clothes/**", "/css/**", "/js/**", "/images/**", "/login", "/logout")
+            .permitAll()
+            .antMatchers("/admin/**")
+            .hasAuthority("admin")
+            .antMatchers("/seller/**")
+            .hasAnyAuthority("seller", "admin")
+            .antMatchers("/profile", "/dashboard/cart", "/dashboard/orders", "/dashboard/wishlist", "/dashboard/reviews")
+            .authenticated()
+            .and()
+            .formLogin()
+            .loginPage("/login")
+            .failureUrl("/login?error=true")
+            .and()
+            .logout()
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout");
     }
 }

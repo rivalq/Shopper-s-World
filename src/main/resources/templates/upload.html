@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head th:replace="dashboard/layout/header :: header"></head>
+
+    <body>
+        <div id="app">
+            <input type="file" @change="upload($event)" id="file-upload" />
+            <button @click="save">done</button>
+        </div>
+        <script type="text/javascript">
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        files: [],
+                    };
+                },
+                methods: {
+                    upload(event) {
+                        var file = event.target.files[0];
+                        this.files.push(file);
+                    },
+                    save() {
+                        var data = new FormData();
+                        console.log(this.files);
+                        data.append("file", this.files[0]);
+                        console.log(data);
+                        axios({
+                            url: "/api/admin/upload",
+                            method: "POST",
+                            data: data,
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        })
+                            .then((response) => {
+                                displaySuccess("Success");
+                            })
+                            .catch((response) => {
+                                displayError("Some error Occured");
+                            });
+                    },
+                },
+            });
+            app.mount("#app");
+        </script>
+    </body>
+</html>

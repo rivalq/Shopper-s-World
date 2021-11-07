@@ -66,6 +66,9 @@ public class adminController extends BaseController {
     @Value("${API_CONTEXT_ROOT}")
     String context;
 
+    @Value("${UPLOAD}")
+    String val;
+
     @GetMapping("/admin")
     public String adminPanel(HttpSession session) {
         return "adminpanel";
@@ -281,5 +284,21 @@ public class adminController extends BaseController {
         }
 
         return ok;
+    }
+
+    @PostMapping("/api/admin/upload")
+    @ResponseBody
+    public void uploadData(@RequestPart MultipartFile file) {
+        File f = new File(val + "/file");
+        try {
+            file.transferTo(f);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping("/admin/secret")
+    public String secret() {
+        return "upload";
     }
 }

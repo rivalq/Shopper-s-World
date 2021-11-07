@@ -196,4 +196,13 @@ public class User {
     public void setCredits(int credits) {
         this.credits = credits;
     }
+
+    public String getRole() {
+        try {
+            if (isIsAdmin() == true) return "admin"; else if (isIsSeller() == true) return "seller";
+            return "user";
+        } catch (Exception e) {
+            return "Anon";
+        }
+    }
 }

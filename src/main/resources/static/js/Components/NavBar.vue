@@ -59,9 +59,15 @@ export default {
         };
     },
     created: function () {
-        axios.get("/api/user").then((response) => {
-            this.user = response.data;
-        });
+        axios
+            .get("/api/user")
+            .then((response) => {
+                console.log(response.data);
+                this.user = response.data;
+            })
+            .catch((data) => {
+                console.log("Not logged in");
+            });
     },
     methods: {
         login() {

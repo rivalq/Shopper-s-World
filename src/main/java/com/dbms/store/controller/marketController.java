@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,7 @@ public class marketController extends BaseController {
     @Autowired
     private variableRepository variableRepository;
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/api/marketplace/clothes")
     @ResponseBody
     public List<MarketPlace> getMarketClothes(HttpSession session) {
@@ -62,6 +64,7 @@ public class marketController extends BaseController {
         }
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/api/marketplace/clothes/{cloth_id}")
     @ResponseBody
     public MarketPlace getMarketClothes(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
@@ -74,12 +77,14 @@ public class marketController extends BaseController {
         }
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/api/marketplace/images/{cloth_id}")
     @ResponseBody
     public List<Images> getImages(@PathVariable("cloth_id") int cloth_id) {
         return marketRepository.getImages(cloth_id);
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/api/marketplace/stock")
     @ResponseBody
     public List<Stock> getStock(HttpSession session) {
@@ -91,26 +96,25 @@ public class marketController extends BaseController {
         }
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/api/marketplace/stock/{cloth_id}")
     @ResponseBody
     public List<Stock> getMarketStock(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
         return marketRepository.getStock(cloth_id);
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/api/marketplace/stock/{cloth_id}/{size}")
     @ResponseBody
     public int getPrice(@PathVariable("cloth_id") int cloth_id, @PathVariable("size") String size, HttpSession session) {
         return marketRepository.getPrice(cloth_id, size);
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     @PutMapping("/api/marketplace/clothes/{cloth_id}")
     @ResponseBody
-    public ResponseEntity<String> updateCloth(HttpSession session, @RequestBody MarketPlace mp) {
-        ResponseEntity<String> err = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        ResponseEntity<String> ok = new ResponseEntity<>(HttpStatus.OK);
-        if (checkAdmin(session) == 0) return err;
+    public void updateCloth(HttpSession session, @RequestBody MarketPlace mp) {
         marketRepository.updateCloth(mp);
-        return ok;
     }
 
     @GetMapping("/api/marketplace/orders")
@@ -148,7 +152,6 @@ public class marketController extends BaseController {
     @ResponseBody
     public float getRatingCloth(@PathVariable("cloth_id") int cloth_id) {
         ClothRating rt = ratingRepository.getRating(cloth_id);
-
         if (rt.isCustom() == true) return rt.getAdmin_rating();
         return rt.getRating();
     }
@@ -190,6 +193,7 @@ public class marketController extends BaseController {
         return wishListRepository.checkWish(cloth_id, authService.getCurrentUser(session));
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/api/marketplace/reviews/{cloth_id}")
     @ResponseBody
     public List<Reviews> getClothReviews(@PathVariable("cloth_id") int cloth_id) {
@@ -210,9 +214,7 @@ public class marketController extends BaseController {
     @GetMapping("/api/marketplace/reviews")
     @ResponseBody
     public List<Reviews> getUserReviews(HttpSession session) {
-        if (isAuthenticated(session) == false) {
-            return new ArrayList<>();
-        }
+        if (!isAuthenticated(session)) return new ArrayList<>();
         return reviewRepository.getUserReviews(authService.getCurrentUser(session));
     }
 
@@ -231,6 +233,7 @@ public class marketController extends BaseController {
         return err;
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/api/marketplace/features/{cloth_id}")
     @ResponseBody
     public List<Features> getFeatures(@PathVariable("cloth_id") int cloth_id) {

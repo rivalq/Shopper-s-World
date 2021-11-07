@@ -46,33 +46,33 @@ public class DashboardController extends BaseController {
 
     @GetMapping("/dashboard/orders")
     public String OrderInterface(HttpSession session) {
-        if (!isAuthenticated(session)) {
+        /*if (!isAuthenticated(session)) {
             return "redirect:/login";
-        }
+        }*/
         return "orderInterface";
     }
 
     @GetMapping("/dashboard/wishlist")
     public String wishlist(HttpSession session) {
-        if (!isAuthenticated(session)) {
+        /*if (!isAuthenticated(session)) {
             return "redirect:/login";
-        }
+        }*/
         return "wishlist";
     }
 
     @GetMapping("/dashboard/reviews")
     public String reviews(HttpSession session) {
-        if (!isAuthenticated(session)) {
+        /*if (!isAuthenticated(session)) {
             return "redirect:/login";
-        }
+        }*/
         return "reviews";
     }
 
     @GetMapping("/dashboard/cart")
     public String userCartRedirect(HttpSession session, Model model) {
-        if (!isAuthenticated(session)) {
+        /*if (!isAuthenticated(session)) {
             return "redirect:/login";
-        }
+        }*/
         return "cart";
     }
 }

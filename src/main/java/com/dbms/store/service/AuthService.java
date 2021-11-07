@@ -4,6 +4,8 @@ import com.dbms.store.model.User;
 import com.dbms.store.repository.UserRepository;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,9 +29,11 @@ public class AuthService {
     }
 
     public String getCurrentUser(HttpSession session) {
-        try {
-            return session.getAttribute(SESSION_AUTH_KEY).toString();
-        } catch (Exception e) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            return username;
+        } else {
             return null;
         }
     }
@@ -39,9 +43,9 @@ public class AuthService {
     }
 
     public String getRole(HttpSession session) {
-        if (!isAuthenticated(session)) return "";
+        if (!isAuthenticated(session)) return "Anon";
         User user = users.getUser(getCurrentUser(session));
         if (user.isIsAdmin()) return "admin"; else if (user.isIsSeller()) return "seller";
-        return "customer";
+        return "user";
     }
 }

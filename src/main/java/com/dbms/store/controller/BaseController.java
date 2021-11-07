@@ -28,7 +28,7 @@ abstract class BaseController {
         if (!isAuthenticated(session)) {
             return 0;
         }
-        if (authService.getRole(session) == "customer") {
+        if (authService.getRole(session) == "user") {
             // Error
             return -1;
         }

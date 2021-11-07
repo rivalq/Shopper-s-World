@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'dbms-java'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F5A14E4286B7465382E41899688ED669 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CAC858C7729B42DB889AA3C45EDF9EC8 }}
           package: '*.jar'

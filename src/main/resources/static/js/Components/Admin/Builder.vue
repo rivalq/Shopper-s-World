@@ -394,13 +394,6 @@ export default {
     border: 1px solid black;
     padding: 20px;
 }
-.table thead tr th:nth-last-child(1),
-.table thead tr td:nth-last-child(1),
-.table tbody tr th:nth-last-child(1),
-.table tfoot tr td:nth-last-child(1),
-.table tbody tr td:nth-last-child(1) {
-    text-align: center;
-}
 
 .table tfoot tr,
 .table tbody tr {

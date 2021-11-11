@@ -4,7 +4,6 @@ import com.dbms.store.repository.ClothRepository;
 import com.dbms.store.service.ClothService;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +17,6 @@ public class DashboardController extends BaseController {
 
     @Autowired
     ClothRepository clothRepository;
-
-    @Value("${API_CONTEXT_ROOT}")
-    private String context;
 
     @GetMapping("/")
     public String forward_dashboard() {

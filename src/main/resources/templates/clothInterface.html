@@ -64,7 +64,7 @@
             </div>
             <div v-if="loading == false">
                 <nav-bar></nav-bar>
-                <div class="container-fluid px-5">
+                <div :class="{'container-fluid':1,'px-5':width > 550,'px-3':width <= 550}">
                     <mycomp></mycomp>
                     <dfr></dfr>
                 </div>

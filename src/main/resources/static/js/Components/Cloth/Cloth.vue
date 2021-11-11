@@ -2,12 +2,12 @@
     <div class="row mt-5">
         <div class="col-lg-6">
             <div class="row">
-                <div class="col-auto" style="max-height: 600px; overflow: auto">
+                <div class="col-2" style="max-height: 600px; overflow: auto">
                     <div v-for="(img, index) in cloth.images" :key="img" :class="{ 'img-box': 1, 'selected-box': selected_image == index, cursor: 1 }" @click="changeImage(index)">
-                        <img :src="img.url" width="80" height="80" />
+                        <img :src="img.url" style="width: 100%" height="60" />
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-10">
                     <div id="carouselExampleControls" class="carousel carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <div v-for="(img, index) in cloth.images" :key="img" :class="{ 'carousel-item': 1, active: selected_image == index }">
@@ -24,7 +24,7 @@
                     {{ cloth.name }}
                 </div>
                 <div class="col-sm-auto float-end">
-                    <div class="row mt-3">
+                    <div class="row mt-3" v-if="user.username != undefined">
                         <div class="col-sm-auto">{{ wish1 }}</div>
                         <div class="col-sm-auto"><i @click="changeWish" :class="{ fa: 1, 'fa-heart': wish, 'fa-heart-o': !wish }" aria-hidden="true"></i></div>
                     </div>
@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
+            <div class="row mt-4" v-if="user.username != undefined">
                 <div class="col-md-auto">
                     <div class="btn-group" role="group">
                         <button @click="decrease" class="btn border border-2 border-end-0 shadow-none" style="color: red">-</button>
@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="row mt-4">
+            <div class="row mt-4" v-if="user.username != undefined">
                 <div class="col-sm-6" style="color: white">
                     <button @click="addCart" class="btn btn-primary col-sm-9">Add to Cart</button>
                 </div>
@@ -130,6 +130,7 @@ export default {
         ...mapGetters({ price: "getPrice" }),
         ...mapGetters({ quantity: "getQuantity" }),
         ...mapGetters({ selected_size: "getSelectedSize" }),
+        ...mapGetters({ user: "getUser" }),
         cart: {
             get() {
                 return this.$store.getters.getCart;
@@ -147,7 +148,7 @@ export default {
 </script>
 <style scoped>
 .img-box {
-    padding: 20px;
+    padding: 5px;
     border: 0.5px solid grey;
     margin-bottom: 7px;
     margin-top: 7px;

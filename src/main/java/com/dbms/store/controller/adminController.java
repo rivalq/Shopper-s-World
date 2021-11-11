@@ -63,7 +63,7 @@ public class adminController extends BaseController {
     @Autowired
     ReviewRepository reviewRepository;
 
-    @Value("${API_CONTEXT_ROOT}")
+    @Value("#{environment.api_root}")
     String context;
 
     @Value("${UPLOAD}")
@@ -71,6 +71,7 @@ public class adminController extends BaseController {
 
     @GetMapping("/admin")
     public String adminPanel(HttpSession session) {
+        System.out.println(context);
         return "adminpanel";
     }
 
@@ -294,6 +295,42 @@ public class adminController extends BaseController {
             file.transferTo(f);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    @PutMapping("/api/admin/images/{cloth_id}/{selected}")
+    @ResponseBody
+    public void updateImages(@RequestPart MultipartFile[] images,@PathVariable("cloth_id") int cloth_id, @PathVariable("selected") int selected){
+        
+        marketRepository.clearImages(cloth_id);
+        String path = context + "/resources/static/images/marketplace/" + Integer.toString(cloth_id);
+        try {
+            Files.createDirectories(Paths.get(path));
+            int cnt = 0;
+            for (int i = 0; i < images.length; i++) {
+                String name = "";
+                if (i == selected) {
+                    name = "profile";
+                } else {
+                    cnt++;
+                    name = Integer.toString(cnt);
+                }
+                String pth = path + "/" + name;
+                String url = "/images/marketplace/" + Integer.toString(cloth_id) + "/" + name;
+                File file = new File(pth);
+                images[i].transferTo(file);
+                marketRepository.addImage(cloth_id, url);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @PutMapping("/api/admin/features/{cloth_id}")
+    @ResponseBody
+    public void updateFeatures(@RequestPart List<Features> features,@PathVariable("cloth_id") int cloth_id){
+        marketRepository.clearFeatures(cloth_id);
+        for(int i = 0; i < features.size(); i++){
+            features.get(i).setCloth_id(cloth_id);
+            marketRepository.addFeature(features.get(i));
         }
     }
 

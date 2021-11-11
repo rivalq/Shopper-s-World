@@ -10,11 +10,11 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @Configuration
 @EnableWebMvc
 public class WebMvc implements WebMvcConfigurer {
-    @Value("${IMAGE_DIR}")
+    @Value("#{environment.image_root}")
     private String context;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/css/**", "/js/**", "/images/**").addResourceLocations("classpath:/static/css/", "classpath:/static/js/", "file:" + context).setCachePeriod(31536000).resourceChain(true).addResolver(new PathResourceResolver());
+        registry.addResourceHandler("/css/**", "/js/**", "/images/**").addResourceLocations("classpath:/static/css/", "classpath:/static/js/", "file:" + context).resourceChain(true).addResolver(new PathResourceResolver());
     }
 }

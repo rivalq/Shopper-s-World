@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @PreAuthorize("hasAuthority('seller')")
 public class SellerController extends BaseController {
-    @Value("${API_CONTEXT_ROOT}")
+    @Value("#{environment.api_root}")
     private String context;
 
     @Autowired

@@ -133,6 +133,12 @@ public class MarketRepository {
         String sql = "INSERT INTO images (cloth_id,url) VALUES (?,?)";
         template.update(sql, cloth_id, url);
     }
+    public void clearImages(int cloth_id){
+        template.update("DELETE FROM images where cloth_id = ?",cloth_id);
+    }
+    public void clearFeatures(int cloth_id){
+        template.update("DELETE FROM features where cloth_id = ?",cloth_id);
+    }
 
     public List<Images> getImages() {
         return template.query("SELECT * FROM images", new ImagesMapper());

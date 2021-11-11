@@ -62,12 +62,9 @@ export default {
         axios
             .get("/api/user")
             .then((response) => {
-                console.log(response.data);
                 this.user = response.data;
             })
-            .catch((data) => {
-                console.log("Not logged in");
-            });
+            .catch((data) => {});
     },
     methods: {
         login() {

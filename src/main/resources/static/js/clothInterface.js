@@ -48,7 +48,6 @@ const store = Vuex.createStore({
             state.user = payload;
         },
         setloading(state, payload) {
-            console.log(payload);
             state.loading = payload;
         },
     },
@@ -77,7 +76,6 @@ const store = Vuex.createStore({
                     });
                 };
                 func().then((data) => {
-                    console.log(1);
                     state.commit("setCloth", cloth);
                     state.commit("setloading", false);
                 });
@@ -166,74 +164,6 @@ const fab = {
     },
 };
 
-const basic_settings = {
-    data() {
-        return {};
-    },
-    template: /*html*/ `
-                    
-                    <div class="col-sm-auto">
-                        <label for="basic_input">Name</label>
-                    </div>
-                    <div class="col mt-1">
-                        <input  id = "name" style = "width:auto"   class = "form-control" type = "text" placeholder = "Cloth Name"  v-model.strip = "cloth.name" >
-                    </div>
-                    
-                    <div class="col-sm-auto mt-3">
-                        <label for="basic_input">Category</label>
-                    </div>
-                    <div class="col mt-1">
-                        <input  id = "category"  style = "width:auto"  class = "form-control" type = "text" placeholder = "Category" v-model.strip  = "cloth.category">
-                    </div>
-                    <div class="col-sm-auto mt-3">
-                        <label for="basic_input">Brand</label>
-                    </div>
-                    <div class="col mt-1">
-                        <input  id = "brand" style = "width:auto"  class = "form-control" type = "text" placeholder = "Brand" v-model.strip  = "cloth.brand">
-                    </div>
-                    <div class="col-sm-auto mt-3">
-                        <label for="basic_input">Short Description</label>
-                    </div>
-                    <div class="col mt-1">
-                        <textarea  id = "short_description" style = "width:400px" rows = 3  class = "form-control" type = "text" placeholder = "Short Description" v-model.strip  = "cloth.short_description"></textarea>
-                    </div>
-                    <div class="col-sm-auto mt-3">
-                            <button @click = "saveChanges"  style = "width:90px" type="button" class="btn btn-primary">Save</button>
-                    </div>
-
-    `,
-    computed: {
-        ...mapGetters({ cloth: "getCloth" }),
-    },
-    methods: {
-        saveChanges() {
-            if (this.cloth.name == "" || this.cloth.brand == "" || this.cloth.category == "" || this.cloth.short_description == "") {
-                displayError("All the fields should be non empty");
-            } else {
-                this.$store.dispatch("updateClothdb");
-            }
-        },
-    },
-};
-
-const cloth_images = {
-    data() {
-        return {};
-    },
-    template: /*html*/ `
-            images section
-    `,
-};
-
-const about_product = {
-    data() {
-        return {};
-    },
-    template: /*html*/ `
-            about product
-    `,
-};
-
 const crud_sidebar = {
     data() {
         return {
@@ -258,7 +188,7 @@ const crud_sidebar = {
         <div class="col-sm-auto">
             <img src = "/images/about.svg" width = "19" height = "19" :class = "{'sidebar-icon-selected': selected == 2}"  >
         </div>
-            <div class="col">About Product</div> 
+            <div class="col">Specifications</div> 
     </div>
     `,
     methods: {
@@ -311,8 +241,8 @@ const crud_modal = {
                                              </div>
                                             <div class="col ms-4" id = "menu" >
                                                     <basic-settings v-if = "selected == 0" ></basic-settings>
-                                                    <cloth-images  v-if = "selected == 1"></cloth-images>
-                                                    <about-product v-if = "selected == 2"></about-product>
+                                                    <cloth-images  v-show = "selected == 1"></cloth-images>
+                                                    <about-product v-show = "selected == 2"></about-product>
                                             </div>
                                         </div>
                                         <div class="row mb-2 justify-content-md-end">
@@ -352,10 +282,9 @@ const slider = {
     },
     template: /*html*/ `
 
-            <div class="row mt-5 justify-content-md-center">
-                   <div @click = changeMenu :class="['col-sm-auto','py-1','cursor', selected_menu == 0 ? 'current_menu': 'text-muted']" style = "font-size:18px">Description</div> 
-                   <div @click = changeMenu :class="['col-sm-auto','py-1','cursor', selected_menu == 1 ? 'current_menu': 'text-muted']" style = "font-size:18px">Features</div>
-                   <div @click = changeMenu :class="['col-sm-auto','py-1','cursor', selected_menu == 2 ? 'current_menu': 'text-muted']" style = "font-size:18px">Reviews</div>
+            <div class="row mt-5 justify-content-center">
+                   <div @click = changeMenu :class="['col-auto','py-1','cursor', selected_menu == 0 ? 'current_menu': 'text-muted']" style = "font-size:18px">Description</div> 
+                   <div @click = changeMenu :class="['col-auto','py-1','cursor', selected_menu == 2 ? 'current_menu': 'text-muted']" style = "font-size:18px">Reviews</div>
             </div>
 
     `,
@@ -396,12 +325,20 @@ const dfr = {
 
 const app = Vue.createApp({
     data() {
-        return {};
+        return {
+            width: 0,
+        };
     },
     created: function () {
         let id = window.location.href.split("/").at(-1);
         this.$store.dispatch("setCloth", id);
         this.$store.dispatch("getReviews");
+    },
+    mounted: function () {
+        this.width = $(window).width();
+        window.addEventListener("resize", () => {
+            this.width = $(window).width();
+        });
     },
     computed: {
         ...mapGetters({ loading: "getloading" }),
@@ -419,17 +356,16 @@ const components = [
     ["Reviews", PATH + "Reviews.vue"],
     ["footer-menu", Footer],
     ["Description", PATH + "Description.vue"],
+    ["cloth-images", PATH + "Images.vue"],
+    ["basic-settings", PATH + "EditCloth.vue"],
+    ["about-product", PATH + "EditSpecs.vue"],
 ];
 
 app.component("star-rating", VueStarRating.default);
 app.component("slider", slider);
 app.component("dfr", dfr);
 app.component("mycomp", Main);
-
 app.component("fab", fab);
-app.component("basic-settings", basic_settings);
-app.component("cloth-images", cloth_images);
-app.component("about-product", about_product);
 app.component("crud-modal", crud_modal);
 app.component("crud-sidebar", crud_sidebar);
 

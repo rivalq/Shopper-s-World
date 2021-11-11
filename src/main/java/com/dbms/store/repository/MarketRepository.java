@@ -98,20 +98,9 @@ public class MarketRepository {
         return template.query(sql, new StockMapper(), new Object[] { cloth_id });
     }
 
-    public int getPrice(int cloth_id, String size) {
-        String sql = "SELECT price from stock where cloth_id = ? and size = ?";
-        return template
-            .query(
-                sql,
-                new RowMapper<Integer>() {
-
-                    public Integer mapRow(ResultSet rs, int rownum) throws SQLException {
-                        return rs.getInt("price");
-                    }
-                },
-                new Object[] { cloth_id, size }
-            )
-            .get(0);
+    public Stock getPrice(int cloth_id, String size) {
+        String sql = "SELECT * from stock where cloth_id = ? and size = ?";
+        return template.query(sql,new StockMapper(),new Object[] { cloth_id, size }).get(0);
     }
 
     public void updateCloth(MarketPlace mp) {

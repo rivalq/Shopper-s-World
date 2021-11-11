@@ -2,15 +2,33 @@ const store = Vuex.createStore({
     state() {
         return {
             cart: [],
+            loading: true,
+            user: [],
+            checkout_loading: false,
         };
     },
     mutations: {
         setCart(state, payload) {
             state.cart = payload;
-            console.log(state.cart);
+            state.loading = false;
         },
         removeCart(state, payload) {
             state.cart.splice(payload, 1);
+        },
+        setUser(state, payload) {
+            state.user = payload;
+        },
+        setCheckout(state, payload) {
+            state.checkout_loading = payload;
+            var elem = document.getElementById("root");
+
+            if (payload == true) {
+                elem.classList.add("content");
+                elem.parentNode.replaceChild(elem.cloneNode(true), elem);
+            } else {
+                elem.classList.remove("content");
+                elem.removeAttribute("disabled");
+            }
         },
     },
 
@@ -33,7 +51,9 @@ const store = Vuex.createStore({
                     var id = response.data[i]["cloth_id"];
                     var size = response.data[i]["size"];
                     cart[i]["cloth"] = await state.dispatch("getCloth", id);
-                    cart[i]["price"] = await state.dispatch("getPrice", `${id}/${size}`);
+                    const stock = await state.dispatch("getPrice", `${id}/${size}`);
+                    cart[i]["price"] = stock["price"];
+                    cart[i]["stock"] = stock["quantity"];
                     cart[i]["url"] = "/images/marketplace/" + id + "/profile";
                 }
                 state.commit("setCart", cart);
@@ -61,197 +81,61 @@ const store = Vuex.createStore({
 
         async removeCart(state, payload) {
             let id = state.getters.getCart[payload]["cloth_id"];
-            const data = {
-                quantity: state.getters.getCart[payload]["quantity"],
-                size: state.getters.getCart[payload]["size"],
-            };
-            $.ajax({
-                url: "/api/marketplace/cart/" + id,
-                type: "DELETE",
-                data: data,
-                success: function (data) {
+            let cart = state.getters.getCart[payload];
+            axios
+                .delete("/api/marketplace/cart/" + id, { data: cart })
+                .then((response) => {
                     displaySuccess("Cart updated");
                     state.commit("removeCart", payload);
-                },
-                error: function (data) {
+                })
+                .catch((response) => {
                     displayError("Some error Occurred");
-                },
-            });
+                });
         },
         async checkout(state, payload) {
-            let prices = [];
-            let cart = state.getters.getCart;
-            for (var i = 0; i < cart.length; i++) {
-                prices.push(cart[i]["price"]);
-            }
-            const data = {
-                prices: prices,
-            };
-            $.ajax({
-                url: "/api/marketplace/checkout",
-                type: "POST",
-                success: function (data) {
-                    displaySuccess("Order Successful");
-                    //window.location.href = "/dashboard/clothes";
-                },
-                error: function (data) {
-                    displayError("Some error occured");
-                },
-            });
+            state.commit("setCheckout", true);
+            let success = 0;
+            await axios
+                .post("/api/marketplace/checkout")
+                .then((data) => {
+                    success = 1;
+                    displaySuccess("Checkout Successfull");
+                })
+                .catch((data) => {
+                    displayError("Some error Occured");
+                })
+                .finally(async (data) => {
+                    await new Promise((r) => setTimeout(r, 2000));
+                    state.commit("setCheckout", false);
+                    if (success) window.location.href = "/dashboard/orders";
+                });
+        },
+        async getUser(state, payload) {
+            axios.get("/api/user").then((data) => state.commit("setUser", data.data));
         },
     },
     getters: {
         getCartLength: (state) => state.cart.length,
         getCart: (state) => state.cart,
+        getUser: (stata) => stata.user,
+        getCheckout: (state) => state.checkout_loading,
     },
 });
 
-const cart_card = {
-    data() {
-        return {};
-    },
-    props: ["id"],
-    template: /*html*/ `
-                <div class="row py-2 mt-2 border-bottom">
-                    <div class="col-sm-auto">
-                        <img :src = cart.url  width = 175 height = 175> 
-                    </div>
-                    <div class="col-sm-8 py-2">
-                        <div class="row">
-                            <div class="col fw-bold fs-4 grey-1 text-wrap">{{cart.cloth.name}}</div>
-                            <div class="col-sm-auto ms-auto">
-                                <div class="btn-group" role = "group">
-                                        <button @click = "decrease" class = "btn border border-2 border-end-0 shadow-none" style = "color:red;"> - </button>
-                                        <input  @input = "changeCart"  class = "form-control input-group-sm border border-2 shadow-none" style = "width:70px" type="number" v-model = "cart.quantity">
-                                        <button @click = "increase"  class = "btn border border-2 border-start-0 shadow-none" style = "color:green;"> + </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-1">
-                            <div class="col grey-2">{{cart.cloth.brand + ' | ' + cart.cloth.category}}</div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col grey-2">{{'Size: ' + cart.size}}</div>
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col-sm-auto grey-2 text-wrap">
-                                    <div  @click = "removeItem"  class="row g-2 remove-item">
-                                        <div class="col"> <i class="fas fa-trash-alt"></i></div>
-                                        <div class="col-sm-auto"> Remove Item</div>
-                                    </div>
-                            </div>
-                            <div class="col-sm-auto grey-1 ms-auto fs-5">{{'Rs ' + cart.price }}</div>
-                        </div>
-                    </div>
-                </div>
-    `,
+const app = Vue.createApp({
     computed: {
-        cart: {
-            get() {
-                return this.$store.getters.getCart[this.$props.id - 1];
-            },
-        },
+        ...mapGetters({ checkout: "getCheckout" }),
     },
-    methods: {
-        increase() {
-            this.cart["quantity"]++;
-            this.$store.dispatch("updateCart", this.$props.id - 1);
-        },
-        decrease() {
-            this.cart["quantity"]--;
-            this.$store.dispatch("updateCart", this.$props.id - 1);
-        },
-        changeCart() {
-            this.$store.dispatch("updateCart", this.$props.id - 1);
-        },
-        removeItem() {
-            this.$store.dispatch("removeCart", this.$props.id - 1);
-        },
-    },
-};
-
-const main = {
-    data() {
-        return {};
-    },
-    template: /*html*/ `
-        <div class="container">
-                <div class="row mt-5 justify-content-sm-center">
-                    <div class="col-sm-auto grey-1">
-                        <h3>Shopping Cart</h3>
-                    </div>
-                </div>
-                
-                <div class="row mt-5">
-                        <div class="col-md-8">
-                                <div class="row">
-                                    <div class="col grey-1" style = "font-size:20px;font-weight:550;line-height:24px">
-                                        {{'Cart (' + cartLen +  ' items)'}}
-                                    </div>
-                                </div>
-                               <transition-group name="list-complete" tag = "div">
-                                    <cart-card v-for = "num in cartLen" :key = "num"  :id = num  class = "list-complete-item"  ></cart-card> 
-                               </transition-group>
-                               <div class="row mt-5 text-primary">
-                                   <div class="col-sm-auto"><i class="fas fa-info-circle"></i></div>
-                                   <div class="col"> Do not delay the purchase, adding items to your cart does not mean booking them.</div>
-                               </div>   
-                        </div>
-                        <div class="col-md-4 pt-2 ps-4 ms-auto">
-                                <div class="row ">
-                                    <div class="col grey-1 fs-4">Details</div>
-                                </div>
-                                <div class="row mt-4">
-                                    <div class="col grey-1 fs-5">Items</div>
-                                </div>
-                                <div class="row border-bottom pb-3">
-                                    <div class="col">
-                                        <div class="row mt-3" v-for = "ct in cart" :key = "ct" >
-                                            <div class="col text-wrap grey-3">{{ct.cloth.name}}</div>
-                                            <div class="col text-wrap ms-auto grey-3" style = "font-size:16px">{{ 'Rs ' + ct.price + ' x (' + ct.quantity + ')'}}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                        <div class="col text-wrap grey-1 fs-5 fw-bold">Total Amount</div>
-                                        <div class="col text-wrap grey-1 fs-5 fw-bold"> {{'Rs ' + total}} </div>
-    
-                                </div>
-                                <div class="row mt-4 justify-content-sm-center">
-                                    <div  @click = checkout  class="col-sm-11 rounded py-2 bg-primary" style = "color:white;text-align:center;cursor:pointer;font-weight:550" >
-                                             Checkout
-                                    </div>
-                                </div>
-                        </div>
-                </div>
-                
-        </div>
-    `,
     created: function () {
         this.$store.dispatch("setCart");
+        this.$store.dispatch("getUser");
     },
-    methods: {
-        checkout() {
-            this.$store.dispatch("checkout");
-        },
-    },
-    computed: {
-        ...mapGetters({ cartLen: "getCartLength" }),
-        ...mapGetters({ cart: "getCart" }),
-        total() {
-            let val = 0;
-            for (let i = 0; i < this.cartLen; i++) {
-                val += this.cart[i]["price"] * this.cart[i]["quantity"];
-            }
-            return val;
-        },
-    },
-};
-
-const app = Vue.createApp({});
+});
 app.use(store);
-app.component("mycomp", main);
-app.component("cart-card", cart_card);
-const components = [["nav-bar", NavBar]];
+const components = [
+    ["nav-bar", NavBar],
+    ["cart-menu", "/js/Components/Cart.vue"],
+    ["footer-menu", Footer],
+];
 
 addComponents(components).then((data) => app.mount("#app"));

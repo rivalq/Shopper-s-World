@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -55,14 +56,10 @@ public class CartController extends BaseController {
 
     @DeleteMapping("/api/marketplace/cart/{cloth_id}")
     @ResponseBody
-    public ResponseEntity<String> removeCart(HttpSession session, @PathVariable("cloth_id") int cloth_id, @RequestParam("quantity") int quantity, @RequestParam("size") String size) {
+    public ResponseEntity<String> removeCart(HttpSession session, @PathVariable("cloth_id") int cloth_id,@RequestBody Cart cart) {
         if (!isAuthenticated(session)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
-            Cart cart = new Cart();
-            cart.setCloth_id(cloth_id);
-            cart.setQuantity(quantity);
-            cart.setSize(size);
             cart.setUsername(authService.getCurrentUser(session));
             cartRepository.removeCart(cart);
             return new ResponseEntity<>(HttpStatus.OK);

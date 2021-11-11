@@ -106,7 +106,7 @@ public class marketController extends BaseController {
     @PreAuthorize("permitAll()")
     @GetMapping("/api/marketplace/stock/{cloth_id}/{size}")
     @ResponseBody
-    public int getPrice(@PathVariable("cloth_id") int cloth_id, @PathVariable("size") String size, HttpSession session) {
+    public Stock getPrice(@PathVariable("cloth_id") int cloth_id, @PathVariable("size") String size, HttpSession session) {
         return marketRepository.getPrice(cloth_id, size);
     }
 

@@ -10,12 +10,9 @@ import com.dbms.store.model.Images;
 import com.dbms.store.model.MarketPlace;
 import com.dbms.store.model.Request;
 import com.dbms.store.model.Stock;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -100,7 +97,7 @@ public class MarketRepository {
 
     public Stock getPrice(int cloth_id, String size) {
         String sql = "SELECT * from stock where cloth_id = ? and size = ?";
-        return template.query(sql,new StockMapper(),new Object[] { cloth_id, size }).get(0);
+        return template.query(sql, new StockMapper(), new Object[] { cloth_id, size }).get(0);
     }
 
     public void updateCloth(MarketPlace mp) {
@@ -122,11 +119,13 @@ public class MarketRepository {
         String sql = "INSERT INTO images (cloth_id,url) VALUES (?,?)";
         template.update(sql, cloth_id, url);
     }
-    public void clearImages(int cloth_id){
-        template.update("DELETE FROM images where cloth_id = ?",cloth_id);
+
+    public void clearImages(int cloth_id) {
+        template.update("DELETE FROM images where cloth_id = ?", cloth_id);
     }
-    public void clearFeatures(int cloth_id){
-        template.update("DELETE FROM features where cloth_id = ?",cloth_id);
+
+    public void clearFeatures(int cloth_id) {
+        template.update("DELETE FROM features where cloth_id = ?", cloth_id);
     }
 
     public List<Images> getImages() {

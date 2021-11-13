@@ -10,5 +10,11 @@
         </div>
         <script type="text/javascript" th:inline="javascript" th:src="@{/js/index.js}"></script>
         <script src="https://use.fontawesome.com/0206006232.js"></script>
+        <script th:inline="javascript" type="text/javascript">
+            var msg = [[${username}]];
+            if(msg != null){
+                displaySuccess("Welcome " + msg + "!");
+            }
+        </script>
     </body>
 </html>

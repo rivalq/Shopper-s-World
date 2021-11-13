@@ -1,3 +1,7 @@
+const NavBar = "/js/Components/NavBar.vue";
+const Footer = "/js/Components/Footer.vue";
+const mapGetters = Vuex.mapGetters;
+
 const options = {
     moduleCache: {
         vue: Vue,
@@ -27,6 +31,22 @@ async function addComponents(components) {
     }
     return 0;
 }
-const NavBar = "/js/Components/NavBar.vue";
-const Footer = "/js/Components/Footer.vue";
-const mapGetters = Vuex.mapGetters;
+
+const loadingScreen = (flag) => {
+    if (flag == true) {
+        var elem = document.getElementById("root");
+        elem.classList.add("content");
+    } else {
+        var elem = document.getElementById("root");
+        elem.classList.remove("content");
+    }
+};
+
+const add = (arr) => {
+    let object = admin;
+    for (let i = 0; i < arr.length; i++) {
+        let name = arr[i][1].split("/").at(-1).split(".")[0];
+        app.component(arr[i][0], admin[name]);
+    }
+    app.mount("#app");
+};

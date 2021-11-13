@@ -297,10 +297,10 @@ public class adminController extends BaseController {
             e.printStackTrace();
         }
     }
+
     @PutMapping("/api/admin/images/{cloth_id}/{selected}")
     @ResponseBody
-    public void updateImages(@RequestPart MultipartFile[] images,@PathVariable("cloth_id") int cloth_id, @PathVariable("selected") int selected){
-        
+    public void updateImages(@RequestPart MultipartFile[] images, @PathVariable("cloth_id") int cloth_id, @PathVariable("selected") int selected) {
         marketRepository.clearImages(cloth_id);
         String path = context + "/resources/static/images/marketplace/" + Integer.toString(cloth_id);
         try {
@@ -324,11 +324,12 @@ public class adminController extends BaseController {
             e.printStackTrace();
         }
     }
+
     @PutMapping("/api/admin/features/{cloth_id}")
     @ResponseBody
-    public void updateFeatures(@RequestPart List<Features> features,@PathVariable("cloth_id") int cloth_id){
+    public void updateFeatures(@RequestPart List<Features> features, @PathVariable("cloth_id") int cloth_id) {
         marketRepository.clearFeatures(cloth_id);
-        for(int i = 0; i < features.size(); i++){
+        for (int i = 0; i < features.size(); i++) {
             features.get(i).setCloth_id(cloth_id);
             marketRepository.addFeature(features.get(i));
         }

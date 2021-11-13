@@ -3,14 +3,14 @@
         <div class="row mt-3 justify-content-md-center">
             <div class="col-11">
                 <h3>Clothes Catalog</h3>
-                <table class="table table-hover">
-                    <thead>
+                <vue-table :data="clothes" ref="page">
+                    <template #head>
                         <tr>
                             <th scope="col" v-for="col in columns" :key="col">{{ col }}</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="cloth in clothes" :key="cloth">
+                    </template>
+                    <template v-slot:body="slotProps">
+                        <tr v-for="cloth in slotProps.f_data" :key="cloth">
                             <td style="cursor: pointer" @click="showCloth(cloth.cloth_id)">
                                 <div class="user-info">
                                     <div class="user-info__img">
@@ -28,20 +28,24 @@
                             <td v-else><i class="fad fa-check me-2" style="color: green"></i> In stock</td>
                             <td><span class="active-circle bg-success"></span>Online</td>
                         </tr>
-                    </tbody>
-                </table>
+                    </template>
+                </vue-table>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import VueTable from "/js/Components/VueTable.vue";
+
 export default {
     data() {
         return {
             columns: ["Cloth", "Status", "Visible"],
-            value: "",
         };
+    },
+    components: {
+        "vue-table": VueTable,
     },
     methods: {
         showCloth(id) {
@@ -60,8 +64,8 @@ export default {
     },
     computed: {
         ...mapGetters({ clothes: "getClothes" }),
-        compiled() {
-            return marked(this.value, { sanitize: true });
+        page_data() {
+            return this.$refs.page.page_data;
         },
     },
 };

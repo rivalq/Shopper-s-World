@@ -6,7 +6,7 @@ const store = Vuex.createStore({
             orders: [],
             requests: [],
             seller_clothes: [],
-            selected_menu: 8,
+            selected_menu: 0,
             wishlist: [],
             reviews: [],
         };
@@ -181,6 +181,8 @@ const panel = {
 
 const Component_Path = "/js/Components/Admin/";
 
+
+
 const components = [
     ["nav-bar", "/js/Components/NavBar.vue"],
     ["catalog", Component_Path + "Catalog.vue"],
@@ -198,4 +200,5 @@ app.use(store);
 app.component("side-menu", side_menu);
 app.component("panel", panel);
 app.component("star-rating", VueStarRating.default);
+//add(components);
 addComponents(components).then((data) => app.mount("#app"));

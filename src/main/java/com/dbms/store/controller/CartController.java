@@ -56,7 +56,7 @@ public class CartController extends BaseController {
 
     @DeleteMapping("/api/marketplace/cart/{cloth_id}")
     @ResponseBody
-    public ResponseEntity<String> removeCart(HttpSession session, @PathVariable("cloth_id") int cloth_id,@RequestBody Cart cart) {
+    public ResponseEntity<String> removeCart(HttpSession session, @PathVariable("cloth_id") int cloth_id, @RequestBody Cart cart) {
         if (!isAuthenticated(session)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {

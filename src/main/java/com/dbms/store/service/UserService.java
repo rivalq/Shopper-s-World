@@ -13,6 +13,7 @@ public class UserService {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    
 
     public String getRole(String username) {
         User user = users.getUser(username);
@@ -24,5 +25,17 @@ public class UserService {
 
     public User findByUsername(String username) {
         return users.getUser(username);
+    }
+
+    public User findByEmail(String email){
+        return users.getUserByEmail(email);
+    }
+    public User findByPhone(String phone){
+        return users.getUserByPhone(phone);
+    }
+
+    public void register(User user){
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        users.addUser(user);
     }
 }

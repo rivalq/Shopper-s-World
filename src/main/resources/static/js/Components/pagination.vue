@@ -13,6 +13,12 @@
                                 <option>100</option>
                             </select>
                         </div>
+                        <div class="col-sm-auto pt-2">Page No.</div>
+                        <div class="col-auto me-5 ms-2">
+                            <select class="form-select" v-model="page">
+                                <option v-for="num in max_pages" :key="num" :value="num - 1">{{ num }}</option>
+                            </select>
+                        </div>
                         <div class="col-sm-auto pt-2">{{ left + 1 }} - {{ right + 1 }} of {{ data.length }} entries <i @click="prev()" :class="{ fas: 1, 'fa-chevron-left': 1, cursor: 1, 'fa-disabled': leftPos, 'ms-4': 1 }"></i> <i @click="next()" :class="{ fas: 1, 'fa-chevron-right': 1, cursor: 1, 'fa-disabled': rightPos, 'ms-4': 1 }"></i></div>
                     </div>
                 </td>
@@ -44,7 +50,7 @@ export default {
             if (this.rightPos == 0) this.page++;
         },
         changePage() {
-            this.page = 0;
+            //this.page = 0;
         },
     },
     computed: {
@@ -54,6 +60,7 @@ export default {
         rightPos() {
             return (this.page + 1) * this.page_size >= this.$props.data.length;
         },
+
         left() {
             return Math.min(this.$props.data.length - 1, this.page_size * this.page);
         },
@@ -63,6 +70,19 @@ export default {
 
         page_data() {
             return this.$props.data.filter((elem, index) => index >= this.left && index <= this.right);
+        },
+        max_pages() {
+            let x = Math.ceil(this.$props.data.length / this.page_size);
+            if (this.page >= x) this.page = 0;
+            return Math.ceil(this.$props.data.length / this.page_size);
+        },
+    },
+    watch: {
+        page: {
+            handler(newValue, oldValue) {
+                if (newValue >= this.max_pages) this.page = 0;
+                if (newValue < 0) this.page = 0;
+            },
         },
     },
 };

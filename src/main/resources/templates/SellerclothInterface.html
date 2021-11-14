@@ -52,7 +52,7 @@
     </style>
     <body>
         <div id="app">
-            <div th:replace="/dashboard/layout/loading::loading"></div>
+            <div th:replace="dashboard/layout/loading::loading"></div>
             <div id="root">
                 <nav-bar></nav-bar>
                 <div :class="{'container-fluid':1,'px-5':width > 550,'px-3':width <= 550}">

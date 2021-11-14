@@ -43,7 +43,7 @@ public class SellerController extends BaseController {
     @GetMapping("/seller")
     public String SellerPanel(HttpSession session, Model model) {
         //if(authService.getRole(session) == "admin")return "redirect:/admin";
-        return "/seller";
+        return "seller";
     }
 
     @GetMapping("/seller/clothes/{cloth_id}")
@@ -61,7 +61,7 @@ public class SellerController extends BaseController {
         if ((user.equals(cloth.getSeller()) == false) && (authService.getRole(session) != "admin")) {
             return "/accessDenied";
         }
-        return "/SellerclothInterface";
+        return "SellerclothInterface";
     }
 
     /**  API ENDPOINTS **/

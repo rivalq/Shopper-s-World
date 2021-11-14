@@ -159,6 +159,13 @@
     border: 3px solid #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+.user-info__img-big img {
+    height: 80px;
+    width: 80px;
+    border-radius: 45px;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
 .active-circle {
     height: 10px;

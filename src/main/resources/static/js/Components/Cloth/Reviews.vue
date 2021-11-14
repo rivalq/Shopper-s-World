@@ -7,9 +7,7 @@
                     <tr v-for="itr in reviews" :key="itr">
                         <td style="width: 300px">
                             <div class="user-info">
-                                <div class="user-info__img">
-                                    <img :src="Avatar" alt="Unavailable" />
-                                </div>
+                                <div class="user-info__img"><img :src="`https://avatars.dicebear.com/api/initials/${itr.username}.svg`" alt="Unavailable" /></div>
                                 <div class="user-info__basic">
                                     <h5 class="mb-0 text-wrap" style="max-width: 300px">{{ itr.username }}</h5>
                                     <p class="text-muted mt-2">{{ itr.time }}</p>

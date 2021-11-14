@@ -50,7 +50,8 @@
 
     <body>
         <div id="app">
-            <panel></panel>
+            <div th:replace="/dashboard/layout/loading::loading"></div>
+            <panel v-show="total == 7" id="root"></panel>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/3.0.7/marked.js"></script>
         <script type="text/javascript" th:src="@{/js/admin.umd.min.js}"></script>

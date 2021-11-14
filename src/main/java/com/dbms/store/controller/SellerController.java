@@ -22,13 +22,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@PreAuthorize("hasAuthority('seller')")
+@PreAuthorize("hasAnyAuthority('seller','admin')")
 public class SellerController extends BaseController {
     @Value("#{environment.api_root}")
     private String context;
@@ -50,8 +51,7 @@ public class SellerController extends BaseController {
         if (!isAuthenticated(session)) {
             return "redirect:/login";
         }
-        if (authService.getRole(session) == "customer") {
-            // Error
+        if (authService.getRole(session) == "user") {
             return "/accessDenied";
         }
 
@@ -59,7 +59,6 @@ public class SellerController extends BaseController {
         Cloth cloth = sellerRepository.getCloth(cloth_id);
 
         if ((user.equals(cloth.getSeller()) == false) && (authService.getRole(session) != "admin")) {
-            // Error
             return "/accessDenied";
         }
         return "/SellerclothInterface";
@@ -152,6 +151,21 @@ public class SellerController extends BaseController {
         return cloth;
     }
 
+    @PostMapping("/api/seller/clothes/{cloth_id}")
+    @ResponseBody
+    public void updateCloth(@PathVariable("cloth_id") int cloth_id, HttpSession session, @RequestBody Cloth cloth) {
+        int auth = SellerAuthentication(session);
+        if (auth != 1) {
+            return;
+        }
+        String user = authService.getCurrentUser(session);
+        if ((user.equals(cloth.getSeller()) == false) && (authService.getRole(session) != "admin")) {
+            // Error
+            return;
+        }
+        sellerRepository.updateCloth(cloth);
+    }
+
     @GetMapping("/api/seller/clothes/images/{cloth_id}")
     @ResponseBody
     public List<String> getClothImages(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
@@ -168,6 +182,83 @@ public class SellerController extends BaseController {
         }
 
         return sellerRepository.getClothImages(cloth_id);
+    }
+
+    @PutMapping("/api/seller/images/{cloth_id}/{selected}")
+    @ResponseBody
+    public void updateClothImages(@PathVariable("cloth_id") int cloth_id, @PathVariable("selected") int selected, HttpSession session, @RequestPart MultipartFile[] images) {
+        int auth = SellerAuthentication(session);
+        if (auth != 1) {
+            return;
+        }
+        Cloth cloth = sellerRepository.getCloth(cloth_id);
+        String user = authService.getCurrentUser(session);
+
+        if ((user.equals(cloth.getSeller()) == false) && (authService.getRole(session) != "admin")) {
+            // Error
+            return;
+        }
+        sellerRepository.clearImages(cloth_id);
+        String path = context + "/resources/static/images/" + user + "/created/" + Integer.toString(cloth_id);
+        try {
+            Files.createDirectories(Paths.get(path));
+            int cnt = 0;
+            for (int i = 0; i < images.length; i++) {
+                String name = "";
+                if (i == selected) {
+                    name = "profile";
+                } else {
+                    cnt++;
+                    name = Integer.toString(cnt);
+                }
+                String pth = path + "/" + name;
+                String url = "/images/" + user + "/created/" + Integer.toString(cloth_id) + "/" + name;
+                File file = new File(pth);
+                images[i].transferTo(file);
+                sellerRepository.addImage(url, cloth_id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping("/api/seller/clothes/features/{cloth_id}")
+    @ResponseBody
+    public List<Features> getClothFeaturs(@PathVariable("cloth_id") int cloth_id, HttpSession session) {
+        int auth = SellerAuthentication(session);
+        if (auth != 1) {
+            return new ArrayList<>();
+        }
+        Cloth cloth = sellerRepository.getCloth(cloth_id);
+        String user = authService.getCurrentUser(session);
+
+        if ((user.equals(cloth.getSeller()) == false) && (authService.getRole(session) != "admin")) {
+            // Error
+            return new ArrayList<>();
+        }
+
+        return sellerRepository.getFeatures(cloth_id);
+    }
+
+    @PutMapping("/api/seller/features/{cloth_id}")
+    @ResponseBody
+    public void updateClothFeatures(@PathVariable("cloth_id") int cloth_id, HttpSession session, @RequestPart List<Features> features) {
+        int auth = SellerAuthentication(session);
+        if (auth != 1) {
+            return;
+        }
+        Cloth cloth = sellerRepository.getCloth(cloth_id);
+        String user = authService.getCurrentUser(session);
+
+        if ((user.equals(cloth.getSeller()) == false) && (authService.getRole(session) != "admin")) {
+            // Error
+            return;
+        }
+        sellerRepository.clearFeatures(cloth_id);
+        for (int i = 0; i < features.size(); i++) {
+            features.get(i).setCloth_id(cloth_id);
+            sellerRepository.addFeature(features.get(i));
+        }
     }
 
     @GetMapping("/api/seller/request")

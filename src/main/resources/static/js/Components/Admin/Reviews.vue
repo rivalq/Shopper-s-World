@@ -8,7 +8,7 @@
                         <td style="width: 200px">
                             <div class="user-info">
                                 <div class="user-info__img">
-                                    <img :src="Avatar" alt="Unavailable" />
+                                    <img :src="users[itr.username].profile_image" alt="Unavailable" />
                                 </div>
                                 <div class="user-info__basic">
                                     <h5 class="mb-0 text-wrap" style="max-width: 300px">{{ itr.username }}</h5>
@@ -16,17 +16,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td style="width: 300px">
-                            <div class="user-info" @click="showCloth(itr.cloth_id)">
-                                <div class="user-info__img">
-                                    <img :src="clothes[itr.cloth_id].url" alt="Unavailable" />
-                                </div>
-                                <div class="user-info__basic">
-                                    <h5 class="mb-0 text-wrap" style="max-width: 300px">{{ clothes[itr.cloth_id].name }}</h5>
-                                    <p class="text-muted mt-2">{{ "@" + clothes[itr.cloth_id].brand }}</p>
-                                </div>
-                            </div>
-                        </td>
+                        <td @click="showCloth(itr.cloth_id)">{{ clothes[itr.cloth_id].name }}</td>
                         <td style="text-align: left">
                             <h6>{{ itr.head }}</h6>
                             <p class="text-muted">{{ itr.body }}</p>
@@ -105,6 +95,14 @@ export default {
             let clothe = this.$store.getters.getClothes;
             for (let i = 0; i < clothe.length; i++) {
                 vec[clothe[i]["cloth_id"]] = clothe[i];
+            }
+            return vec;
+        },
+        users() {
+            var vec = new Object();
+            let user = this.$store.getters.getUsers;
+            for (let i = 0; i < user.length; i++) {
+                vec[user[i]["username"]] = user[i];
             }
             return vec;
         },

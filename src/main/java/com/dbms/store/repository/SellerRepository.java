@@ -85,6 +85,14 @@ public class SellerRepository {
         return template.query(sql, new FeatureMapper(), cloth_id);
     }
 
+    public void clearFeatures(int cloth_id) {
+        template.update("DELETE FROM seller_cloth_features where cloth_id = ?", cloth_id);
+    }
+
+    public void clearImages(int cloth_id) {
+        template.update("DELETE FROM seller_cloth_images where cloth_id = ?", cloth_id);
+    }
+
     public List<Images> getClothImages() {
         return template.query("SELECT * FROM seller_cloth_images", new ImagesMapper());
     }

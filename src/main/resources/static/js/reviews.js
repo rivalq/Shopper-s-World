@@ -22,6 +22,11 @@ const store = Vuex.createStore({
                             reviews[i]["cloth"] = response.data;
                             reviews[i]["cloth"]["url"] = "/images/marketplace/" + id + "/profile";
                         });
+                        var seconds = reviews[i]["time"];
+                        console.log(seconds);
+                        var date = new Date(0);
+                        date.setMilliseconds(seconds);
+                        reviews[i]["time"] = date.toLocaleDateString("en-US");
                     }
                 };
                 getCloths().then((data) => state.commit("setReviews", reviews));

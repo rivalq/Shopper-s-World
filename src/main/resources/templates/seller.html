@@ -37,8 +37,8 @@
     </style>
     <body>
         <div id="app">
-            <nav-bar style="position: fixed; top: 0; width: 100%; z-index: 10"></nav-bar>
-            <div class="container-fluid">
+            <div th:replace="/dashboard/layout/loading :: loading"></div>
+            <div class="container-fluid" v-if="total == 3" id="root">
                 <div class="row">
                     <side-menu></side-menu>
                     <display-menu></display-menu>

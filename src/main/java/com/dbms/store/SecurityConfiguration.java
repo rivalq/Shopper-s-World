@@ -42,7 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .csrf() //requiresChannel(channel -> channel.anyRequest().requiresSecure()).
             .disable()
             .authorizeRequests()
-            .antMatchers("/", "/dashboard", "/dashboard/clothes/**", "/css/**", "/js/**", "/images/**", "/login", "/logout","/register")
+            .antMatchers("/", "/dashboard", "/dashboard/clothes/**", "/css/**", "/js/**", "/images/**", "/login", "/logout", "/register")
             .permitAll()
             .antMatchers("/admin/**")
             .hasAuthority("admin")
@@ -54,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .formLogin()
             .loginPage("/login")
             .failureUrl("/login")
-            .defaultSuccessUrl("/login-success",true)
+            .defaultSuccessUrl("/login-success", true)
             .and()
             .logout()
             .logoutUrl("/logout")

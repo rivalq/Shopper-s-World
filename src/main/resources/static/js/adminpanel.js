@@ -6,20 +6,25 @@ const store = Vuex.createStore({
             orders: [],
             requests: [],
             seller_clothes: [],
-            selected_menu: 0,
+            selected_menu: 2,
             wishlist: [],
             reviews: [],
+            user: {},
+            total: 0,
         };
     },
     mutations: {
         setClothes(state, payload) {
             state.clothes = payload;
+            state.total++;
         },
         setRequests(state, payload) {
             state.requests = payload;
+            state.total++;
         },
         setSellerClothes(state, payload) {
             state.seller_clothes = payload;
+            state.total++;
         },
         setSelectedMenu(state, payload) {
             state.selected_menu = payload;
@@ -29,9 +34,22 @@ const store = Vuex.createStore({
         },
         setOrders(state, payload) {
             state.orders = payload;
+            state.total++;
         },
         setReviews(state, payload) {
             state.reviews = payload;
+            state.total++;
+        },
+        setUsers(state, payload) {
+            state.users = payload;
+            state.total++;
+        },
+        setUser(state, payload) {
+            state.user = payload;
+            state.total++;
+        },
+        deleteUser(state, payload) {
+            state.users.splice(payload, 1);
         },
     },
     actions: {
@@ -88,7 +106,24 @@ const store = Vuex.createStore({
         },
         async getReviews(state, payload) {
             axios.get("/api/admin/reviews").then((response) => {
-                state.commit("setReviews", response.data);
+                let reviews = response.data;
+                for (let i = 0; i < reviews.length; i++) {
+                    var seconds = reviews[i]["time"];
+                    var date = new Date(0);
+                    date.setMilliseconds(seconds);
+                    reviews[i]["time"] = date.toLocaleDateString("en-US");
+                }
+                state.commit("setReviews", reviews);
+            });
+        },
+        async getUsers(state, payload) {
+            axios.get("/api/users").then((response) => {
+                state.commit("setUsers", response.data);
+            });
+        },
+        async getUser(state, payload) {
+            axios.get("/api/user").then((response) => {
+                state.commit("setUser", response.data);
             });
         },
     },
@@ -100,39 +135,49 @@ const store = Vuex.createStore({
         getWishlist: (state) => state.wishlist,
         getOrders: (state) => state.orders,
         getReviews: (state) => state.reviews,
+        getUsers: (state) => state.users,
+        getUser: (state) => state.user,
+        getTotal: (state) => state.total,
     },
 });
 
 const side_menu = {
     data() {
         return {
-            columns: ["Catlog", "Stock", "Sellers", "Customers", "Purchased Clothes", "Cloth Requests", "Ratings", "Reviews", "Add New Cloth"],
+            columns: ["Catlog", "Stock", "Users", "Purchased Clothes", "Cloth Requests", "Ratings", "Reviews", "Add New Cloth"],
         };
     },
     template: /*html*/ `
         <div class="col-2 pt-5 admin_sidebar" style="background-color: #0067b8;height:100vh;overflow:auto">
             
             <div class="row mt-5">
-                    <div class="col" style="text-align: center;"> 
-                        <img src = "/images/defalult_user_profile.png" width = "120" height = "100" >
+                    <div class="col user-info__img-big" style="text-align: center;"> 
+                        <img :src = "user.profile_image">
                     </div>
             </div>
             <div class="row  mt-2 justify-content-md-center">
-                <div class="col" style="text-align: center;">
-                        admin
+                <div class="col dropdown" style="text-align: center;">
+                        <a class="btn" style = "color:white;font-size:18px" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"> {{ user.first_name + " " + user.last_name }} </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="/">Home</a></li>
+                            <li><a class="dropdown-item" href="/dashboard/clothes">Shop</a></li>
+                            <li><a class="dropdown-item" href="/profile">Your Profile</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" href="/dashboard/cart">Your Cart</a></li>
+                            <li><a class="dropdown-item" href="/dashboard/orders">Purchased Items</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" href="/logout">Log Out</a></li>
+                        </ul>
                 </div>
             </div>
             <div class="row mt-3">
-                
-                        <div  v-for = "(col,index) in columns" :key = "col" @click = changeMenu(index) :class = "{'menu-item':1,'menu-item-selected':selected_menu == index}">{{col}}</div>
-                        
-
-                
+                <div  v-for = "(col,index) in columns" :key = "col" @click = changeMenu(index) :class = "{'menu-item':1,'menu-item-selected':selected_menu == index}">{{col}}</div>
             </div>
         </div>
     `,
     computed: {
         ...mapGetters({ selected_menu: "getSelectedMenu" }),
+        ...mapGetters({ user: "getUser" }),
     },
     methods: {
         changeMenu(index) {
@@ -156,23 +201,16 @@ const panel = {
                                
                                 <catalog v-show = "selected_menu == 0" ></catalog>
                                 <stock-menu v-show = "selected_menu == 1" ></stock-menu>
-                                <purchased-cloth v-show = "selected_menu == 4" ></purchased-cloth>
-                                <request-menu  v-show = "selected_menu == 5"></request-menu>
-                                <rating-menu v-show = "selected_menu == 6" ></rating-menu>
-                                <review-menu v-show = "selected_menu == 7"></review-menu>
-                                <builder-menu v-show = "selected_menu == 8"> </builder-menu>
+                                <user-menu v-show = "selected_menu == 2"></user-menu>
+                                <purchased-cloth v-show = "selected_menu == 3" ></purchased-cloth>
+                                <request-menu  v-show = "selected_menu == 4"></request-menu>
+                                <rating-menu v-show = "selected_menu == 5" ></rating-menu>
+                                <review-menu v-show = "selected_menu == 6"></review-menu>
+                                <builder-menu v-show = "selected_menu == 7"> </builder-menu>
                         </div>
                     </div>
             </div>
     `,
-
-    created: function () {
-        this.$store.dispatch("getClothes");
-        this.$store.dispatch("getRequests");
-        this.$store.dispatch("getSellerClothes");
-        this.$store.dispatch("getOrders");
-        this.$store.dispatch("getReviews");
-    },
 
     computed: {
         ...mapGetters({ selected_menu: "getSelectedMenu" }),
@@ -180,8 +218,6 @@ const panel = {
 };
 
 const Component_Path = "/js/Components/Admin/";
-
-
 
 const components = [
     ["nav-bar", "/js/Components/NavBar.vue"],
@@ -193,12 +229,41 @@ const components = [
     ["purchased-cloth", Component_Path + "Orders.vue"],
     ["review-menu", Component_Path + "Reviews.vue"],
     ["builder-menu", Component_Path + "Builder.vue"],
+    ["user-menu", Component_Path + "Users.vue"],
 ];
 
-const app = Vue.createApp({});
+const app = Vue.createApp({
+    data() {
+        return {
+            loading: true,
+        };
+    },
+    created: function () {
+        this.$store.dispatch("getClothes");
+        this.$store.dispatch("getRequests");
+        this.$store.dispatch("getSellerClothes");
+        this.$store.dispatch("getOrders");
+        this.$store.dispatch("getReviews");
+        this.$store.dispatch("getUsers");
+        this.$store.dispatch("getUser");
+    },
+    mounted() {
+        //this.loading = false;
+    },
+    computed: {
+        total() {
+            var total = this.$store.getters.getTotal;
+            if (total < 7) {
+                this.loading = true;
+            } else {
+                this.loading = false;
+            }
+            return total;
+        },
+    },
+});
 app.use(store);
 app.component("side-menu", side_menu);
 app.component("panel", panel);
 app.component("star-rating", VueStarRating.default);
-//add(components);
 addComponents(components).then((data) => app.mount("#app"));

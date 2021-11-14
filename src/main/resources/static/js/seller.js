@@ -12,6 +12,7 @@ const store = Vuex.createStore({
             clothes: [],
             user: [],
             requests: [],
+            total: 0,
         };
     },
     mutations: {
@@ -20,12 +21,15 @@ const store = Vuex.createStore({
         },
         setClothes(state, payload) {
             state.clothes = payload;
+            state.total++;
         },
         setUser(state, payload) {
             state.user = payload;
+            state.total++;
         },
         setRequests(state, payload) {
             state.requests = payload;
+            state.total++;
         },
         addRequest(state, payload) {
             state.requests.push(payload);
@@ -44,7 +48,6 @@ const store = Vuex.createStore({
         },
         async getUser(state, payload) {
             await axios.get("/api/user").then((response) => {
-                console.log(response.data);
                 state.commit("setUser", response.data);
             });
         },
@@ -60,6 +63,7 @@ const store = Vuex.createStore({
         getUser: (state) => state.user,
         getClothes: (state) => state.clothes,
         getRequests: (state) => state.requests,
+        getTotal: (state) => state.total,
     },
 });
 
@@ -72,14 +76,24 @@ const side_menu = {
     template: /*html*/ `
         <div class="col-2 pt-5 admin_sidebar" style="background-color: #0067b8;height:100vh;overflow:auto">
             
-            <div class="row mt-5">
-                    <div class="col" style="text-align: center;"> 
-                        <img src = "/images/defalult_user_profile.png" width = "120" height = "100" >
+        <div class="row mt-5">
+                    <div class="col user-info__img-big" style="text-align: center;"> 
+                        <img :src = "user.profile_image">
                     </div>
             </div>
             <div class="row  mt-2 justify-content-md-center">
-                <div class="col" style="text-align: center;color:white">
-                        @seller
+                <div class="col dropdown" style="text-align: center;">
+                        <a class="btn" style = "color:white;font-size:18px" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"> {{ user.first_name + " " + user.last_name }} </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="/">Home</a></li>
+                            <li><a class="dropdown-item" href="/dashboard/clothes">Shop</a></li>
+                            <li><a class="dropdown-item" href="/profile">Your Profile</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" href="/dashboard/cart">Your Cart</a></li>
+                            <li><a class="dropdown-item" href="/dashboard/orders">Purchased Items</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" href="/logout">Log Out</a></li>
+                        </ul>
                 </div>
             </div>
             <div class="row mt-3">
@@ -89,6 +103,7 @@ const side_menu = {
     `,
     computed: {
         ...mapGetters({ selected_menu: "getSelectedMenu" }),
+        ...mapGetters({ user: "getUser" }),
     },
     methods: {
         changeMenu(index) {
@@ -114,9 +129,25 @@ const display_menu = {
 };
 
 const app = Vue.createApp({
+    data() {
+        return {
+            loading: true,
+        };
+    },
     created: function () {
         this.$store.dispatch("getUser").then((data) => this.$store.dispatch("getClothes"));
         this.$store.dispatch("getRequests");
+    },
+    computed: {
+        total() {
+            var total = this.$store.getters.getTotal;
+            if (total < 3) {
+                this.loading = true;
+            } else {
+                this.loading = false;
+            }
+            return total;
+        },
     },
 });
 app.use(store);

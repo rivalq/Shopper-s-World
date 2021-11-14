@@ -58,7 +58,7 @@ const app = Vue.createApp({
                 loadingScreen(false);
             } else {
                 var data = new FormData();
-                let url = "https://avatars.dicebear.com/api/human/" + this.username + ".svg";
+                let url = "https://avatars.dicebear.com/api/initials/" + this.username + ".svg";
                 /*await axios
                     .get(url, {
                         responseType: "arraybuffer",

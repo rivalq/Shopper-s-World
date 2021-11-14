@@ -115,7 +115,15 @@ const store = Vuex.createStore({
         async getReviews(state, payload) {
             var id = window.location.href.split("/").at(-1);
             axios.get("/api/marketplace/reviews/" + id).then((response) => {
-                state.commit("setReviews", response.data);
+                let reviews = response.data;
+                for (let i = 0; i < reviews.length; i++) {
+                    var seconds = reviews[i]["time"];
+                    console.log(seconds);
+                    var date = new Date(0);
+                    date.setMilliseconds(seconds);
+                    reviews[i]["time"] = date.toLocaleDateString("en-US");
+                }
+                state.commit("setReviews", reviews);
             });
         },
         async getUser(state, payload) {
@@ -348,7 +356,6 @@ const app = Vue.createApp({
 
 app.use(store);
 const PATH = "/js/Components/Cloth/";
-const AVATAR = "https://avatars.dicebear.com/api/human/ihojfowhfo.svg";
 
 const components = [
     ["nav-bar", NavBar],

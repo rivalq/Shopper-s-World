@@ -1,118 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head th:replace="dashboard/layout/header :: header"></head>
-<body>
-
-    <nav th:replace="dashboard/layout/navbar :: navbar"></nav>
-     <div class="container mt-5">
-            <div class="row shadow">
-                <div class="col-md-3 p-4" style= "width:auto">
-                    <img id = "cloth-main-image" src = "/images/cloth-upload.svg" alt = "Not found" width = "200" height = "200">
+    <head th:replace="dashboard/layout/header :: header"></head>
+    <style>
+        .cursor {
+            cursor: pointer;
+        }
+        .width {
+            width: 100%;
+        }
+        .fa-heart-o {
+            color: red;
+            cursor: pointer;
+        }
+        .fa-heart {
+            color: red;
+            cursor: pointer;
+        }
+        .current_menu {
+            font-weight: 600;
+            border-bottom: 2px solid #0067b8;
+        }
+        #sidebar {
+            width: 200px;
+            height: 400px;
+            background-color: white;
+        }
+        #menu {
+            height: 400px;
+            overflow: auto;
+        }
+        .sidebar-item {
+            font-size: 14px;
+            color: rgb(32, 33, 36);
+            cursor: pointer;
+            border-top-right-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+        .sidebar-item-hover {
+            background-color: #e0e0e0;
+        }
+        .crud-modal-body {
+            border-radius: 10px;
+        }
+        .sidebar-item-selected {
+            color: rgb(25, 103, 210);
+            background-color: rgb(198, 218, 252);
+        }
+        .sidebar-icon-selected {
+            filter: invert(23%) sepia(100%) saturate(1763%) hue-rotate(209deg) brightness(98%) contrast(96%);
+        }
+    </style>
+    <body>
+        <div id="app">
+            <div th:replace="/dashboard/layout/loading::loading"></div>
+            <div id="root">
+                <nav-bar></nav-bar>
+                <div :class="{'container-fluid':1,'px-5':width > 550,'px-3':width <= 550}">
+                    <mycomp></mycomp>
+                    <Description class="row mt-4"></Description>
                 </div>
-                <div class="col-md-7">
-                    <div class="row">
-                        <div class="col">
-                            <div class="row">
-                                <div id = "cloth-heading" class="col-md-auto pt-3 text-start text-wrap fs-3 fw-bold"></div>
-                            </div>
-                            <div class="row ">
-                                <div id = "cloth-brand" class="col-sm-auto text-wrap"></div>
-                                <div id = "cloth-category" class="col-sm-auto text-wrap"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row pt-3">
-                        <div id = "cloth-short-description" class="col-sm-auto text-wrap"></div>
-                    </div>
-                    
-                </div>
-                <div class="col-md-2">
-                            <div class="row">
-                                <div id = "cloth-price" class="col-sm-auto pt-3 fs-4 fw-bold text-wrap">Price</div>
-                            </div>
-                            <div class="row pt-3 mb-3">
-                                <div class="col-md-auto">
-                                    <button type="button" class="btn" style="background-color: rgb(0,103,184); color:aliceblue; width:200px" >Add to Cart</button>
-                                </div>
-                            </div>
-                </div>
-               
+                <fab style="position: fixed; bottom: 40px; right: 40px"></fab>
+                <crud-modal></crud-modal>
+                <footer-menu></footer-menu>
             </div>
+        </div>
 
-            <div class="row" style="margin-top:140px;">
-                <div class="col">
-                    <div class="row">
-                        <div class="col"><h2>About Product</h2></div>
-                    </div>
-                    <div class="row mt-2">
-                        <div id = "cloth-long-description" class="col-md-6 text-wrap"></div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="row mt-5">
-                <div class="col">
-                    <button id = "edit-heading"  onclick = changeHeading() class = "btn btn-primary"> Edit Cloth</button>
-                </div>
-            </div>
-
-
-
-
-
-
-
-            <div id = "changeHeading" class="modal fade">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header fs-5 fw-bold">
-                             Edit Cloth
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col">
-                                        <label class="form-label">Cloth Heading</label>
-                                        <input type="text" id = "new-heading" class="form-control"/>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col">
-                                        <label class="form-label">Category</label>
-                                        <input type="text" id = "new-category" class="form-control"/>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col">
-                                        <label class="form-label">Brand</label>
-                                        <input type="text" id = "new-brand" class="form-control"/>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col">
-                                        <label class="form-label">Description</label>
-                                        <textarea type="text" id = "new-short_description" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col">
-                                        <label class="form-label">About Product</label>
-                                        <textarea type="text" id = "new-long_description" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                                <button class = "btn btn-primary" onclick = closeHeading()> Cancel </button>
-                                <button class = "btn btn-primary" onclick = saveHeading()> Save </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-     </div>
-
-    <script  type="text/javascript" th:inline="javascript" th:src="@{/js/SellerclothInterface.js}"></script> 
-</body>
+        <link rel="stylesheet" th:href="@{/css/fab.css}" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/3.0.7/marked.js"></script>
+        <script src="https://use.fontawesome.com/0206006232.js"></script>
+        <script type="text/javascript" th:inline="javascript" th:src="@{/js/SellerclothInterface.js}"></script>
+    </body>
+</html>

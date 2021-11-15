@@ -4,7 +4,6 @@ import com.dbms.store.model.User;
 import com.dbms.store.repository.UserRepository;
 import com.dbms.store.service.AuthService;
 import com.dbms.store.service.UserService;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +44,11 @@ public class ProfileController extends BaseController {
     @GetMapping("/profile/{username}")
     public String displayUser(Model model, @PathVariable("username") String username, HttpSession session) {
         String user = authService.getCurrentUser(session);
-        if(user.equals(username) == true){
+        if (user.equals(username) == true) {
             return "profile";
-        }else if(authService.getRole(session) == "admin"){
+        } else if (authService.getRole(session) == "admin") {
             return "profile";
-        }else{
+        } else {
             return "forbidden";
         }
     }
@@ -74,29 +73,28 @@ public class ProfileController extends BaseController {
         User user_temp = users.getUser(username);
         user_temp.setPassword("You Can't See Me!");
         String user = authService.getCurrentUser(session);
-        if(user.equals(username) == true){
+        if (user.equals(username) == true) {
             return user_temp;
-        }else if(authService.getRole(session) == "admin"){
+        } else if (authService.getRole(session) == "admin") {
             return user_temp;
-        }else{
+        } else {
             return new User();
         }
     }
-    
+
     @PutMapping("/api/user/")
     @ResponseBody
-    public ResponseEntity<String> updateUser(HttpSession session,@RequestBody User user) {
+    public ResponseEntity<String> updateUser(HttpSession session, @RequestBody User user) {
         String loggedin = authService.getCurrentUser(session);
-        if(user.getUsername().equals(loggedin) == true){
+        if (user.getUsername().equals(loggedin) == true) {
             users.updateUser(user);
             return new ResponseEntity<>(HttpStatus.OK);
-        }else if(authService.getRole(session) == "admin"){
+        } else if (authService.getRole(session) == "admin") {
             users.updateUser(user);
             return new ResponseEntity<>(HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        
     }
 
     @PreAuthorize("hasAuthority('admin')")

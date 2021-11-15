@@ -51,9 +51,9 @@ public class UserRepository {
         }
     }
 
-    public void updateUser(User user){
+    public void updateUser(User user) {
         String sql = "UPDATE user set first_name = ?, last_name = ?, city = ?, street = ? where username = ?";
-        template.update(sql, user.getFirst_name(),user.getLast_name(),user.getCity(),user.getStreet(),user.getUsername());
+        template.update(sql, user.getFirst_name(), user.getLast_name(), user.getCity(), user.getStreet(), user.getUsername());
     }
 
     public void changeCredits(User user) {

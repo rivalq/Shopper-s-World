@@ -144,7 +144,7 @@ const store = Vuex.createStore({
 const side_menu = {
     data() {
         return {
-            columns: ["Catlog", "Stock", "Users", "Purchased Clothes", "Cloth Requests", "Ratings", "Reviews", "Add New Cloth"],
+            columns: ["Catlog", "Stock", "Users", "Purchased Clothes", "Cloth Requests", "Ratings", "Reviews", "Add New Cloth", "Messages"],
         };
     },
     template: /*html*/ `
@@ -207,6 +207,7 @@ const panel = {
                                 <rating-menu v-show = "selected_menu == 5" ></rating-menu>
                                 <review-menu v-show = "selected_menu == 6"></review-menu>
                                 <builder-menu v-show = "selected_menu == 7"> </builder-menu>
+                                <message-menu v-show = "selected_menu == 8"></message-menu>
                         </div>
                     </div>
             </div>
@@ -230,6 +231,7 @@ const components = [
     ["review-menu", Component_Path + "Reviews.vue"],
     ["builder-menu", Component_Path + "Builder.vue"],
     ["user-menu", Component_Path + "Users.vue"],
+    ["message-menu", Component_Path + "Message.vue"],
 ];
 
 const app = Vue.createApp({

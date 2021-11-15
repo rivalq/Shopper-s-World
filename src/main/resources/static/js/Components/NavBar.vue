@@ -14,7 +14,7 @@
                         <a class="nav-link font-s" href="/dashboard/clothes">Shop</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link font-s" href="/dashboard/clothes">Contact us</a>
+                        <a class="nav-link font-s" href="/contact">Contact us</a>
                     </li>
                 </ul>
                 <div class="col-auto ms-auto me-5" v-if="user.username == undefined">

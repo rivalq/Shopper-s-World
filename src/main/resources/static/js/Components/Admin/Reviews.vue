@@ -4,7 +4,7 @@
             <h5>Product Reviews</h5>
             <table class="table" v-if="clothes_length">
                 <tbody>
-                    <tr v-for="(itr, index) in reviews" :key="itr">
+                    <tr v-for="(itr, index) in page_data" :key="itr">
                         <td style="width: 200px">
                             <div class="user-info">
                                 <div class="user-info__img">
@@ -35,6 +35,7 @@
                     </tr>
                 </tbody>
             </table>
+            <pagination ref="page" :data="reviews"></pagination>
         </div>
         <div id="review-modal" class="modal fade" v-if="reviews.length > 0">
             <div class="modal-dialog modal-dialog-centered">
@@ -82,7 +83,6 @@ export default {
     data() {
         return {
             index: 0,
-            Avatar: "https://avatars.dicebear.com/api/human/ihojfowhfo.svg",
         };
     },
     computed: {
@@ -105,6 +105,9 @@ export default {
                 vec[user[i]["username"]] = user[i];
             }
             return vec;
+        },
+        page_data() {
+            return this.$refs.page.page_data;
         },
     },
     methods: {

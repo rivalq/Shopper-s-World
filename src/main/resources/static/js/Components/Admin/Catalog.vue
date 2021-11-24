@@ -27,6 +27,11 @@
                             <td v-if="outOfStock(cloth.stock)"><i class="fad fa-ban me-2" style="color: red"></i>Out of Stock</td>
                             <td v-else><i class="fad fa-check me-2" style="color: green"></i> In stock</td>
                             <td><span class="active-circle bg-success"></span>Online</td>
+                            <td>
+                                <div @click="removeItem(cloth.cloth_id)" class="row g-2 remove-item">
+                                    <div class="col"><i class="fas fa-trash-alt"></i></div>
+                                </div>
+                            </td>
                         </tr>
                     </template>
                 </vue-table>
@@ -60,6 +65,12 @@ export default {
                 }
             }
             return flag;
+        },
+        removeItem(id) {
+            axios.delete("/api/admin/clothes/" + id).then((data) => {
+                displayInfo("Cloth deleted");
+                window.location.reload();
+            });
         },
     },
     computed: {

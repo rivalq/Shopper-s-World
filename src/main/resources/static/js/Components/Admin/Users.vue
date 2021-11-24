@@ -3,7 +3,7 @@
         <div class="row mt-3 justify-content-md-center">
             <div class="col-11">
                 <h3>Users</h3>
-                <table class="table table-hover">
+                <table class="table table-hover" v-if="users.length > 0">
                     <thead>
                         <tr>
                             <th scope="col" v-for="col in columns" :key="col">
@@ -12,7 +12,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(user, index) in users" :key="user">
+                        <tr v-for="(user, index) in page_data" :key="user">
                             <td style="cursor: pointer" @click="showProfile(user.username)">
                                 <div class="user-info">
                                     <div class="user-info__img">
@@ -44,6 +44,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <pagination ref="page" :data="users"></pagination>
             </div>
         </div>
 
@@ -132,6 +133,9 @@ export default {
     computed: {
         ...mapGetters({ users: "getUsers" }),
         ...mapGetters({ user: "getUser" }),
+        page_data() {
+            return this.$refs.page.page_data;
+        },
     },
     methods: {
         showProfile(username) {

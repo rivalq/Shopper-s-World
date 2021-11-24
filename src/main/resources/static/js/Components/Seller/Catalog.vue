@@ -95,7 +95,12 @@ export default {
         getid(id) {
             return "triggerId" + id;
         },
-        delete_cloth(index) {},
+        delete_cloth(index) {
+            axios.delete("/api/seller/clothes/" + this.clothes[index]["cloth_id"]).then((data) => {
+                displayInfo("Cloth deleted");
+                this.$store.commit("delete_cloth", index);
+            });
+        },
         request_modal(index) {
             this.index = index;
             $("#send-request").modal("show");

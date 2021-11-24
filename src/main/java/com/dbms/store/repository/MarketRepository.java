@@ -145,4 +145,8 @@ public class MarketRepository {
         String sql = "SELECT * from features where cloth_id = ?";
         return template.query(sql, new FeatureMapper(), cloth_id);
     }
+
+    public void deleteCloth(int cloth_id){
+        template.update("DELETE FROM marketplace where cloth_id = ?", cloth_id);
+    }
 }

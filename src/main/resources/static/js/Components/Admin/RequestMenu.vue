@@ -19,7 +19,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(request, index) in pending" :key="request">
+                        <tr v-for="(request, index) in page_data_1" :key="request">
                             <div style="display: none">{{ index }}</div>
                             <td>{{ request.seller }}</td>
                             <td>{{ clothes[request.cloth_id] }}</td>
@@ -41,33 +41,14 @@
                         </tr>
                     </tbody>
                 </table>
-                <table class="table" v-if="pendingLen > 0">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="row justify-content-md-end">
-                                    <div class="col-sm-auto pt-2">Items Per Page</div>
-                                    <div class="col-2 me-5 ms-2">
-                                        <select v-model.number="pending_page_size" class="form-select">
-                                            <option>10</option>
-                                            <option>20</option>
-                                            <option>50</option>
-                                            <option>100</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-auto pt-2">{{ pendingL + 1 }} - {{ pendingR + 1 }} of {{ pendingLen }} entries <i @click="pageDown('pending_page', pending_page_size, pendingLen)" :class="{ fas: 1, 'fa-chevron-left': 1, cursor: 1, 'fa-disabled': downPossible(pending_page, pending_page_size, pendingLen), 'ms-4': 1 }"></i> <i @click="pageUp('pending_page', pending_page_size, pendingLen)" :class="{ fas: 1, 'fa-chevron-right': 1, cursor: 1, 'fa-disabled': upPossible(pending_page, pending_page_size, pendingLen), 'ms-4': 1 }"></i></div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <pagination ref="page1" :data="pending"></pagination>
             </div>
         </div>
 
         <div class="row justify-content-md-center" style="margin-top: 100px">
             <div class="col-11">
                 <h3>Old Requests</h3>
-                <table class="table table-hover">
+                <table class="table table-hover" v-if="older.length > 0">
                     <thead>
                         <tr>
                             <th scope="col">Seller Name</th>
@@ -79,7 +60,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="request in older" :key="request">
+                        <tr v-for="request in page_data_2" :key="request">
                             <td>{{ request.seller }}</td>
                             <td>{{ clothes[request.cloth_id] }}</td>
                             <td>{{ request.quantity }}</td>
@@ -99,26 +80,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="row justify-content-md-end">
-                                    <div class="col-sm-auto pt-2">Items Per Page</div>
-                                    <div class="col-2 me-5 ms-2">
-                                        <select v-model.number="older_page_size" class="form-select">
-                                            <option>10</option>
-                                            <option>20</option>
-                                            <option>50</option>
-                                            <option>100</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-auto pt-2">{{ olderL + 1 }} - {{ olderR + 1 }} of {{ olderLen }} entries <i @click="pageDown('older_page', older_page_size, olderLen)" :class="{ fas: 1, 'fa-chevron-left': 1, cursor: 1, 'fa-disabled': downPossible(older_page, older_page_size, olderLen), 'ms-4': 1 }"></i> <i @click="pageUp('older_page', older_page_size, olderLen)" :class="{ fas: 1, 'fa-chevron-right': 1, cursor: 1, 'fa-disabled': upPossible(older_page, older_page_size, olderLen), 'ms-4': 1 }"></i></div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <pagination ref="page2" :data="older"></pagination>
             </div>
         </div>
 
@@ -179,6 +141,12 @@ export default {
     },
 
     computed: {
+        page_data_1() {
+            return this.$refs.page1.page_data;
+        },
+        page_data_2() {
+            return this.$refs.page2.page_data;
+        },
         pendingL() {
             return this.pending_page * this.pending_page_size;
         },
@@ -195,18 +163,10 @@ export default {
         },
 
         pending() {
-            return this.$store.getters.getRequests
-                .filter((request, index) => request["status"] == 0)
-                .filter((request, index) => {
-                    return index >= this.pendingL && index <= this.pendingR;
-                });
+            return this.$store.getters.getRequests.filter((request, index) => request["status"] == 0);
         },
         older() {
-            return this.$store.getters.getRequests
-                .filter((request, index) => request["status"] == 1)
-                .filter((request, index) => {
-                    return index >= this.olderL && index <= this.olderR;
-                });
+            return this.$store.getters.getRequests.filter((request, index) => request["status"] == 1);
         },
 
         pendingLen() {

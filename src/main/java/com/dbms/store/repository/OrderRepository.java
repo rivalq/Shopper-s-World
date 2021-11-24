@@ -18,12 +18,12 @@ public class OrderRepository {
     }
 
     public List<Order> getOrder(String username) {
-        String sql = "SELECT * from order_details where username = ?";
+        String sql = "SELECT * from order_details where username = ? and cloth_id is NOT NULL";
         return template.query(sql, new OrderMapper(), new Object[] { username });
     }
 
     public List<Order> getOrders() {
-        String sql = "SELECT * from order_details";
+        String sql = "SELECT * from order_details where cloth_id is NOT NULL and username is NOT NULL";
         return template.query(sql, new OrderMapper());
     }
 }

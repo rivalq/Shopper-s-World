@@ -34,6 +34,9 @@ const store = Vuex.createStore({
         addRequest(state, payload) {
             state.requests.push(payload);
         },
+        delete_cloth(state, payload) {
+            state.clothes.splice(payload, 1);
+        },
     },
     actions: {
         async getClothes(state, payload) {

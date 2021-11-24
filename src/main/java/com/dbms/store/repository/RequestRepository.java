@@ -36,7 +36,7 @@ public class RequestRepository {
     }
 
     public List<Request> getRequests() {
-        String sql = "SELECT * FROM requests";
+        String sql = "SELECT * FROM requests where seller is NOT NULL and cloth_id is NOT NULL";
         return template.query(sql, new RequestMapper());
     }
 
@@ -51,7 +51,7 @@ public class RequestRepository {
     }
 
     public List<Request> getRequestsBySeller(String seller) {
-        String sql = "SELECT * FROM requests where seller = ?";
+        String sql = "SELECT * FROM requests where seller = ? and cloth_id is NOT NULL";
         return template.query(sql, new RequestMapper(), new Object[] { seller });
     }
 

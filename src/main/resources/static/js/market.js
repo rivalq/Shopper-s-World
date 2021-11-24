@@ -239,7 +239,7 @@ const app = Vue.createApp({
                         <div class="col-sm-9">
                             <div class="row">
                                 <div class="col-auto ps-5">Showing {{low}} - {{high}} of {{filter.length}} Results</div>
-                                <div class="col-auto ms-auto pe-5 me-2">
+                                <div class="col-auto ms-auto pe-5 me-2" v-show = "false">
                                     Sort by
                                     <select class="input ms-2" v-model="val_sort" style="width: 250px; font-weight: 500">
                                         <option value="0">Recommended</option>

@@ -102,6 +102,6 @@ public class SellerRepository {
     }
 
     public void deleteCloth(int cloth_id) {
-        // Pending;
+        template.update("DELETE FROM seller_cloth where cloth_id = ?", cloth_id);
     }
 }

@@ -3,7 +3,7 @@
         <div class="row mt-3 justify-content-md-center">
             <div class="col-11">
                 <h3>Stock Units</h3>
-                <table class="table table-hover">
+                <table class="table table-hover" v-if="clothes.length > 0">
                     <thead>
                         <tr>
                             <th scope="col" v-for="col in columns" :key="col">
@@ -12,7 +12,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(cloth, index) in clothes" :key="cloth">
+                        <tr v-for="(cloth, index) in page_data" :key="cloth">
                             <th scope="row" class="hide">{{ cloth.cloth_id }}</th>
                             <td style="cursor: pointer" @click="showCloth">
                                 <div class="user-info">
@@ -37,6 +37,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <pagination ref="page" :data="clothes"></pagination>
             </div>
         </div>
 
@@ -191,6 +192,9 @@ export default {
                 temp[this.index] = value;
                 this.$store.commit("setClothes", temp);
             },
+        },
+        page_data() {
+            return this.$refs.page.page_data;
         },
     },
     created() {

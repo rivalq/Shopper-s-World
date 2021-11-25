@@ -12,7 +12,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(user, index) in page_data" :key="user">
+                        <tr v-for="(user, index) in users" :key="user">
                             <td style="cursor: pointer" @click="showProfile(user.username)">
                                 <div class="user-info">
                                     <div class="user-info__img">
@@ -44,7 +44,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <pagination ref="page" :data="users"></pagination>
             </div>
         </div>
 
@@ -133,9 +132,6 @@ export default {
     computed: {
         ...mapGetters({ users: "getUsers" }),
         ...mapGetters({ user: "getUser" }),
-        page_data() {
-            return this.$refs.page.page_data;
-        },
     },
     methods: {
         showProfile(username) {

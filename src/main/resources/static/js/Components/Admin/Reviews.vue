@@ -123,7 +123,7 @@ export default {
         },
         save() {
             axios
-                .post("/api/marketplace/reviews", this.reviews[this.index])
+                .post("/api/marketplace/reviews", this.page_data[this.index])
                 .then((response) => {
                     displaySuccess("Review saved");
                     $("#review-modal").modal("hide");
@@ -134,10 +134,10 @@ export default {
         },
         delete_review(index) {
             axios
-                .delete("/api/marketplace/reviews", { data: this.reviews[index] })
+                .delete("/api/marketplace/reviews", { data: this.page_data[index] })
                 .then((response) => {
                     displaySuccess("Review Deleted");
-                    this.reviews.splice(index, 1);
+                    this.page_data.splice(index, 1);
                 })
                 .catch((response) => {
                     displayError("Some Error occured");

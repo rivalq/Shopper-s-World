@@ -148,7 +148,7 @@ export default {
             let rating = parseFloat(this.getRating(this.index));
             const data = {
                 username: "",
-                cloth_id: this.orders[this.index]["cloth_id"],
+                cloth_id: this.page_data[this.index]["cloth_id"],
                 rating: rating,
             };
             axios
@@ -168,7 +168,7 @@ export default {
             }
             const review = {
                 username: "",
-                cloth_id: this.orders[this.index]["cloth_id"],
+                cloth_id: this.page_data[this.index]["cloth_id"],
                 head: this.head,
                 body: this.body,
                 time: new Date(),
